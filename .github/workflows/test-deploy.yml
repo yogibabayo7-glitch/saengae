@@ -1,0 +1,46 @@
+# 토스 콘솔에 테스트용으로 올리기 (검토 요청은 안 해요)
+# 빌드 → 콘솔 업로드 → 테스트 링크(intoss-private://…)를 실행 요약에 남겨요.
+# ⚠ 사장님이 '올려'라고 허락할 때만 실행해요 (고칠 때마다 올리지 않기).
+# 필요: 저장소 Settings → Secrets and variables → Actions → AIT_API_KEY (콘솔 → 연동 → 콘솔 API 키, bapsang과 같은 '전체 앱' 키면 그대로 됨)
+name: 토스 테스트 업로드
+on:
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: '업데이트 메모 (비우면 커밋 제목)'
+        required: false
+permissions:
+  contents: read
+concurrency:
+  group: test-deploy
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: 빌드
+        env:
+          VITE_BANNER_AD_ID: ${{ vars.BANNER_AD_ID }}
+        run: |
+          npm run build
+          ls -la *.ait
+      - name: 콘솔에 올리기
+        env:
+          AIT_API_KEY: ${{ secrets.AIT_API_KEY }}
+          MEMO: ${{ github.event.inputs.memo || github.event.head_commit.message }}
+        run: |
+          if [ -z "$AIT_API_KEY" ]; then echo "AIT_API_KEY 비밀 값이 없어요"; exit 1; fi
+          VER=$(node -p "require('./package.json').version")
+          npx ait deploy --api-key "$AIT_API_KEY" --location saengae-benefit.ait -m "v$VER 테스트 · ${MEMO:0:200}" 2>&1 | tee deploy.log
+          SCHEME=$(sed "s/\x1b\[[0-9;]*m//g" deploy.log | grep -oE "intoss-private://[^[:space:]]+" | head -1)
+          echo "버전: v$VER" >> "$GITHUB_STEP_SUMMARY"
+          echo "테스트 링크: $SCHEME" >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice title=테스트 링크 v$VER::$SCHEME"
+          [ -n "$SCHEME" ] || { echo "테스트 링크를 못 찾았어요 (위 로그 확인)"; exit 1; }

@@ -1,0 +1,297 @@
+import { useEffect, useRef, useState } from 'react';
+import { CHECKED_AT, DETAILS, FOOTER, NOTICES, SHOP_DISCLOSE, STAGES, findDetail, findStage } from './data/content';
+import type { Action, Card, Detail, DetailBlock, Stage, StageKey } from './data/content';
+import { initBackHandler, useBackLayer } from './back';
+import { attachBanner, openLink, track, BANNER_AD_ID } from './platform';
+import Local from './Local';
+
+type View = 'home' | 'local' | StageKey;
+
+const TAG_CLASS = { 종료: 'end', '올해 마지막': 'end', '2027 예정': 'plan', '진행 중': 'new' } as const;
+
+export default function App() {
+  const [view, setView] = useState<View>('home');
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    initBackHandler();
+  }, []);
+
+  // 뒤로가기: 자세히 창 → 닫기, 분야·동네 화면 → 홈, 홈 → 앱 닫기
+  useBackLayer(view !== 'home', () => setView('home'));
+  useBackLayer(!!detailId, () => setDetailId(null));
+
+  function go(v: View) {
+    setView(v);
+    setDetailId(null);
+    scrollRef.current?.scrollTo({ top: 0 });
+    if (v === 'local') track('local_opened');
+    else if (v !== 'home') track('stage_opened', { stage: v });
+  }
+  function openDetail(id: string) {
+    setDetailId(id);
+    track('detail_opened', { id });
+  }
+
+  const detail = detailId ? findDetail(detailId) : undefined;
+
+  return (
+    <div className="screen">
+      <div className="scroll" ref={scrollRef}>
+        {view === 'home' ? (
+          <Home onGo={go} />
+        ) : (
+          <>
+            <Tabs view={view} onGo={go} />
+            {view === 'local' ? <Local /> : <StageView stage={findStage(view)} onGo={go} onDetail={openDetail} />}
+          </>
+        )}
+        <Footer />
+      </div>
+      {detail && <DetailSheet d={detail} onClose={() => setDetailId(null)} />}
+    </div>
+  );
+}
+
+function Home({ onGo }: { onGo: (v: View) => void }) {
+  return (
+    <>
+      <header className="hero">
+        <h1>
+          <b>0~100세</b> 생애혜택 안내소
+        </h1>
+        <p>나이별로 받을 수 있는 나라 지원과 무료 보험을 공식 자료로 정리했어요. 버튼을 누르면 정부 사이트가 열립니다.</p>
+        <span className="stamp">자료 확인일 {CHECKED_AT}</span>
+      </header>
+
+      <div className="home-grid">
+        <button className="home-tile local" onClick={() => onGo('local')}>
+          <span className="emoji">📍</span>
+          <span>
+            <b>우리 동네 혜택 찾기</b>
+            <br />
+            <small>연금 · 어르신 면허 반납 · 장애인 — 정부24 자료로 시·도별 조회</small>
+          </span>
+        </button>
+        {STAGES.map((s) => (
+          <button key={s.key} className="home-tile" onClick={() => onGo(s.key)}>
+            <span className="emoji">{s.emoji}</span>
+            <b>{s.name}</b>
+            <small>{s.age}</small>
+          </button>
+        ))}
+      </div>
+
+      <aside className="notice">
+        <h2>지금 꼭 확인할 변경 사항</h2>
+        <ul>
+          {NOTICES.map((n) => (
+            <li key={n.title}>
+              <span className={`tag ${TAG_CLASS[n.tag]}`}>{n.tag}</span>
+              <b>{n.title}</b> {n.text}
+            </li>
+          ))}
+        </ul>
+      </aside>
+      <AdSlot />
+    </>
+  );
+}
+
+function Tabs({ view, onGo }: { view: View; onGo: (v: View) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current?.querySelector<HTMLElement>('.tab.on');
+    el?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  }, [view]);
+  return (
+    <nav className="tabs" ref={ref}>
+      <button className="tab" onClick={() => onGo('home')}>
+        🏡 홈
+      </button>
+      <button className={`tab local${view === 'local' ? ' on' : ''}`} onClick={() => onGo('local')}>
+        📍 우리 동네
+      </button>
+      {STAGES.map((s) => (
+        <button key={s.key} className={`tab${view === s.key ? ' on' : ''}`} onClick={() => onGo(s.key)}>
+          {s.name}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) => void; onDetail: (id: string) => void }) {
+  const shop = stage.shop ?? [];
+  const hasLink = shop.some((s) => s.url);
+  return (
+    <>
+      <div className="stage-head">
+        <h2>
+          {stage.emoji} {stage.name}
+          <span className="age">{stage.age}</span>
+        </h2>
+        <p>{stage.intro}</p>
+      </div>
+      <div className="cards">
+        {stage.cards.map((c) => (
+          <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} />
+        ))}
+      </div>
+      {stage.checklist && (
+        <div className="check">
+          <h3>✅ {stage.checklist.title}</h3>
+          <ol>
+            {stage.checklist.items.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {shop.length > 0 && (
+        <div className="shop">
+          <h3>🛒 {stage.shopTitle}</h3>
+          <div className="shop-list">
+            {shop.map((it) =>
+              it.url ? (
+                <button
+                  key={it.name}
+                  onClick={() => {
+                    track('shop_clicked', { stage: stage.key, name: it.name });
+                    void openLink(it.url);
+                  }}
+                >
+                  {it.name}
+                </button>
+              ) : (
+                <span key={it.name} title="링크 준비 중">
+                  {it.name}
+                </span>
+              ),
+            )}
+          </div>
+          {hasLink && <p className="disclose">{SHOP_DISCLOSE}</p>}
+        </div>
+      )}
+      <AdSlot />
+    </>
+  );
+}
+
+function CardView({ c, onGo, onDetail }: { c: Card; onGo: (v: View) => void; onDetail: (id: string) => void }) {
+  function run(a: Action) {
+    if (a.kind === 'link') {
+      track('gov_link_clicked', { url: a.url, title: c.title });
+      void openLink(a.url);
+    } else if (a.kind === 'detail') onDetail(a.id);
+    else onGo(a.stage);
+  }
+  return (
+    <div className={`card${c.tone ? ' ' + c.tone : ''}`}>
+      <h3>{c.title}</h3>
+      <div className="amount">
+        {c.amount}
+        {c.amountNote && <small>{c.amountNote}</small>}
+      </div>
+      {c.who && <p className="who">{c.who}</p>}
+      <ul>
+        {c.bullets.map((b) => (
+          <li key={b}>{b}</li>
+        ))}
+      </ul>
+      <div className="actions">
+        {c.actions.map((a, i) => (
+          <button key={i} className={`btn${a.kind === 'link' && a.primary ? '' : ' ghost'}`} onClick={() => run(a)}>
+            {a.kind === 'link' ? `${a.label} ↗` : a.kind === 'detail' ? (a.label ?? '자세히') : a.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DetailSheet({ d, onClose }: { d: Detail; onClose: () => void }) {
+  return (
+    <div className="sheet-bg" onClick={onClose}>
+      <div className="sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-head">
+          <h3>{d.title}</h3>
+          <button onClick={onClose} aria-label="닫기">
+            ✕
+          </button>
+        </div>
+        <div className="sheet-body">
+          {d.meta && <p className="meta">{d.meta}</p>}
+          {d.blocks.map((b, i) => (
+            <Block key={i} b={b} />
+          ))}
+          <p className="src">출처: {d.source}</p>
+          <p className="src">금액과 조건은 바뀔 수 있으니 신청 전에 공식 사이트에서 한 번 더 확인하세요.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Block({ b }: { b: DetailBlock }) {
+  if (b.kind === 'p') return <p>{b.text}</p>;
+  if (b.kind === 'h') return <h4>{b.text}</h4>;
+  if (b.kind === 'list')
+    return (
+      <ul>
+        {b.items.map((t) => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+    );
+  // 표: 첫 칸을 제목으로, 나머지 칸은 '머리글: 값' 줄로 (폰 폭에 맞게)
+  const header = b.header;
+  return (
+    <div className="tbl">
+      {b.rows.map((r, i) => (
+        <div className="row" key={i}>
+          {header ? (
+            <>
+              <b>{r[0]}</b>
+              {r.slice(1).map((v, j) => (
+                <div className="cell" key={j}>
+                  {header[j + 1] && <i>{header[j + 1]}</i>}
+                  <span>{v}</span>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <b>{r[0]}</b>
+              <span>{r[1]}</span>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AdSlot() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    return attachBanner(ref.current);
+  }, []);
+  if (!BANNER_AD_ID) return null;
+  return <div className="ad-slot" ref={ref} />;
+}
+
+function Footer() {
+  return (
+    <footer className="foot">
+      <p>{FOOTER.notice}</p>
+      <p>{FOOTER.contact}</p>
+      <p>자료 확인일: {CHECKED_AT}</p>
+    </footer>
+  );
+}
+
+// 자세히 목록이 분야와 맞는지 개발 중 확인용 (빌드엔 영향 없음)
+void DETAILS;
