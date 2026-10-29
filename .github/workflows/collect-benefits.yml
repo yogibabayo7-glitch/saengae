@@ -1,0 +1,40 @@
+# 생애혜택 안내소 — 정부24 혜택(국민연금·어르신 면허 반납·장애인) 자동 수집
+# 매주 월요일 한국시간 06:20 + 필요할 때 '실행' 버튼
+name: 혜택 수집
+on:
+  schedule:
+    - cron: '20 21 * * 0'   # UTC 일 21:20 = 한국 월 06:20
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: collect-benefits
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 혜택 받기
+        run: node scripts/collect-benefits.ts
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+      - name: 달라진 것 요약
+        run: |
+          node -e "const c=require('./docs/data/benefits-changes.json');const s=c.first?'첫 수집':'새로 '+c.added.length+' / 바뀜 '+c.changed.length+' / 없어짐 '+c.removed.length;console.log('::notice title=혜택 수집::'+s)"
+      - name: 저장
+        run: |
+          git config user.name "saengae-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/data/benefits.json docs/data/benefits-changes.json
+          git diff --cached --quiet || git commit -m "혜택 $(date -u +%F)"
+          for i in 1 2 3; do
+            git fetch origin main
+            git rebase -X theirs origin/main && git push && break
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
