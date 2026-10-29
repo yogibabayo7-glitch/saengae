@@ -33,7 +33,7 @@ export const RULES: Rule[] = [
     label: '국민연금·노후 연금',
     test: (name) =>
       has(name, ['국민연금', '노령연금', '기초연금', '반환일시금', '분할연금', '유족연금', '장애연금', '연금 크레딧', '크레딧']) &&
-      !has(name, ['공무원연금', '군인연금', '사학연금']),
+      !has(name, ['공무원', '군인', '사학', '사립학교', '교직원', '별정우체국', '장제비']),
   },
   {
     key: 'elderDriving',
@@ -64,6 +64,7 @@ function str(v: unknown): string {
 }
 
 const SIDO: [string, string][] = [
+  ['전남광주', '전남·광주'],
   ['서울', '서울'], ['부산', '부산'], ['대구', '대구'], ['인천', '인천'], ['광주', '광주'], ['대전', '대전'],
   ['울산', '울산'], ['세종', '세종'], ['경기', '경기'], ['강원', '강원'], ['충청북', '충북'], ['충북', '충북'],
   ['충청남', '충남'], ['충남', '충남'], ['전라북', '전북'], ['전북', '전북'], ['전라남', '전남'], ['전남', '전남'],
@@ -72,7 +73,9 @@ const SIDO: [string, string][] = [
 
 // 소관기관명 '서울특별시 강남구' → { sido: '서울', sigungu: '강남구' }. 중앙부처·공공기관이면 전국.
 export function region(orgName: string, orgType: string): { sido: string; sigungu: string } {
-  if (!orgType.includes('지자체') && !orgType.includes('지방')) return { sido: '전국', sigungu: '' };
+  // 소관기관유형: 중앙행정기관·공공기관 = 전국 / 광역시도·시군구·교육청·지방출자_출연기관·지방공기업 = 지역
+  const local = /광역시도|시군구|교육청|지방|지자체/.test(orgType);
+  if (!local) return { sido: '전국', sigungu: '' };
   const parts = orgName.trim().split(/\s+/);
   const first = parts[0] ?? '';
   const hit = SIDO.find(([k]) => first.startsWith(k));
@@ -210,6 +213,7 @@ async function main() {
     totalServices: list.length,
     counts, categories, items,
   }));
+  writeFileSync('docs/data/services-index.json', JSON.stringify(list.map((r) => [str(r['서비스ID']), str(r['서비스명']), str(r['소관기관명']), str(r['소관기관유형'])])));
   writeFileSync(CHANGES, JSON.stringify({ updatedAt: now, first: prev.length === 0, ...changes }, null, 1));
   console.log(`저장: ${OUT} · 새로 ${changes.added.length} / 바뀜 ${changes.changed.length} / 없어짐 ${changes.removed.length}`);
 }
