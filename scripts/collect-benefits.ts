@@ -30,9 +30,9 @@ const has = (s: string, words: string[]) => words.some((w) => s.includes(w));
 export const RULES: Rule[] = [
   {
     key: 'pension',
-    label: '국민연금·노후 연금',
+    label: '국민연금·노후 연금(기초연금·주택연금·농지연금 포함)',
     test: (name) =>
-      has(name, ['국민연금', '노령연금', '기초연금', '반환일시금', '분할연금', '유족연금', '장애연금', '연금 크레딧', '크레딧']) &&
+      has(name, ['국민연금', '노령연금', '기초연금', '반환일시금', '분할연금', '유족연금', '장애연금', '크레딧', '연금보험료', '노후연금', '농지연금', '주택연금']) &&
       !has(name, ['공무원', '군인', '사학', '사립학교', '교직원', '별정우체국', '장제비']),
   },
   {
@@ -65,22 +65,53 @@ function str(v: unknown): string {
 
 const SIDO: [string, string][] = [
   ['전남광주', '전남·광주'],
-  ['서울', '서울'], ['부산', '부산'], ['대구', '대구'], ['인천', '인천'], ['광주', '광주'], ['대전', '대전'],
+  ['서울', '서울'], ['부산', '부산'], ['대구', '대구'], ['인천', '인천'], ['광주', '전남·광주'], ['대전', '대전'],
   ['울산', '울산'], ['세종', '세종'], ['경기', '경기'], ['강원', '강원'], ['충청북', '충북'], ['충북', '충북'],
-  ['충청남', '충남'], ['충남', '충남'], ['전라북', '전북'], ['전북', '전북'], ['전라남', '전남'], ['전남', '전남'],
+  ['충청남', '충남'], ['충남', '충남'], ['전라북', '전북'], ['전북', '전북'], ['전라남', '전남·광주'], ['전남', '전남·광주'],
   ['경상북', '경북'], ['경북', '경북'], ['경상남', '경남'], ['경남', '경남'], ['제주', '제주'],
 ];
 
 // 소관기관명 '서울특별시 강남구' → { sido: '서울', sigungu: '강남구' }. 중앙부처·공공기관이면 전국.
-export function region(orgName: string, orgType: string): { sido: string; sigungu: string } {
+// 지방 재단·공단(예: '강북구도시관리공단')은 이름 속 시·도나 시·군·구로 찾아요(guMap: 시군구 이름 → 시·도).
+const SIDO_ANY: [RegExp, string][] = [
+  [/전남광주/, '전남·광주'], [/서울/, '서울'], [/부산/, '부산'], [/대구/, '대구'], [/인천/, '인천'],
+  [/광주광역시/, '전남·광주'], [/대전/, '대전'], [/울산/, '울산'], [/세종특별자치시|세종시/, '세종'], [/경기/, '경기'],
+  [/강원/, '강원'], [/충청북도|충북/, '충북'], [/충청남도|충남/, '충남'], [/전라북도|전북/, '전북'],
+  [/전라남도|전남/, '전남·광주'], [/경상북도|경북/, '경북'], [/경상남도|경남/, '경남'], [/제주/, '제주'],
+];
+export function region(orgName: string, orgType: string, guMap?: Map<string, string>): { sido: string; sigungu: string } {
   // 소관기관유형: 중앙행정기관·공공기관 = 전국 / 광역시도·시군구·교육청·지방출자_출연기관·지방공기업 = 지역
   const local = /광역시도|시군구|교육청|지방|지자체/.test(orgType);
   if (!local) return { sido: '전국', sigungu: '' };
   const parts = orgName.trim().split(/\s+/);
   const first = parts[0] ?? '';
   const hit = SIDO.find(([k]) => first.startsWith(k));
-  if (!hit) return { sido: '기타', sigungu: orgName.trim() };
-  return { sido: hit[1], sigungu: parts.slice(1).join(' ') };
+  if (hit) return { sido: hit[1], sigungu: parts.slice(1).join(' ') };
+  const clean = orgName.replace(/\(재\)|재단법인|\s/g, '');
+  const any = SIDO_ANY.find(([re]) => re.test(clean));
+  if (any) return { sido: any[1], sigungu: '' };
+  if (guMap) {
+    const m = clean.match(/^([가-힣]{1,4}?(?:시|군|구))/);
+    const gu = m?.[1];
+    if (gu && guMap.has(gu)) return { sido: guMap.get(gu)!, sigungu: gu };
+  }
+  return { sido: '기타', sigungu: orgName.trim() };
+}
+
+// 시군구 이름 → 시·도 (같은 이름이 여러 시·도에 있으면(중구·동구 등) 빼요)
+function makeGuMap(list: Raw[]) {
+  const seen = new Map<string, Set<string>>();
+  for (const r of list) {
+    if (str(r['소관기관유형']) !== '시군구') continue;
+    const { sido, sigungu } = region(str(r['소관기관명']), '시군구');
+    if (!sigungu || sido === '기타') continue;
+    const gu = sigungu.split(' ')[0];
+    if (!seen.has(gu)) seen.set(gu, new Set());
+    seen.get(gu)!.add(sido);
+  }
+  const map = new Map<string, string>();
+  for (const [gu, set] of seen) if (set.size === 1) map.set(gu, [...set][0]);
+  return map;
 }
 
 async function getPage(path: string, key: string, page: number, attempt = 1): Promise<{ data: Raw[]; totalCount: number }> {
@@ -124,6 +155,7 @@ export type Benefit = {
 
 export function build(list: Raw[], details: Raw[]) {
   const det = new Map(details.map((d) => [str(d['서비스ID']), d]));
+  const guMap = makeGuMap(list);
   const items: Benefit[] = [];
   for (const r of list) {
     const id = str(r['서비스ID']);
@@ -135,7 +167,7 @@ export function build(list: Raw[], details: Raw[]) {
     if (!cats.length) continue;
     const orgType = str(r['소관기관유형']);
     const org = str(r['소관기관명']);
-    const { sido, sigungu } = region(org, orgType);
+    const { sido, sigungu } = region(org, orgType, guMap);
     items.push({
       id, name, cats,
       purpose: str(d['서비스목적']) || str(r['서비스목적요약']),
