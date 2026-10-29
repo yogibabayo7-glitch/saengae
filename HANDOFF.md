@@ -2,6 +2,17 @@
 
 새 대화에서 이 파일부터 읽고 이어서 작업해요.
 
+## 10/29 21:45 — v0.2.0: 맨 위로 버튼 + 토스쇼핑 상품 여러 개 (사장님 요청, 실기기 테스트 1·2·3 모두 OK 확인)
+- 사장님 실기기 확인(21:25): 정부 사이트 링크·우리 동네 목록·뒤로가기 모두 정상.
+- `src/App.tsx` 스크롤 600px 넘으면 오른쪽 아래 ▲ 버튼(`.to-top`), 누르면 맨 위로.
+- 상품: `src/shop.ts`가 `docs/data/shop.json`(BASES 순서로 받음, 폰에 저장)을 읽고, `ShopBox`가 분야별 묶음마다 가로 스크롤 상품 카드(사진·이름·가격) 여러 개. shop.json 없으면 content.ts 이름만 회색.
+- 상품 자동 수집은 **사장님 PC**에서 (쉐어링크 API는 출발지 IP 등록이라 GitHub Actions로 못 돌림, bapsang과 같은 이유):
+  - `tools/shop/saengae-shop.ps1` — 오늘밥상물가 shop 폴더에 넣고 그 폴더의 shop-lib.ps1·shop-config.json·quota.txt·link-cache.json을 같이 씀. 매주 일요일 8:30(`saengae_install.bat`), 하루 한도 중 4,500개까지만.
+  - 규칙표 `docs/data/shop-rules.json`(분야 → 묶음: cat=카테고리 경로 정규식, must/not=이름 규칙, max 8). 스크립트가 매번 내려받음 → 규칙만 고치면 PC 파일 안 바꿔도 됨.
+  - 첫 실행 때 `docs/data/toss-categories.txt`(토스쇼핑 카테고리 전체 경로)도 올림 → 이걸 보고 cat 정규식 다듬기. 못 채운 묶음은 shop-log.txt "[생애혜택] 상품을 못 채운 묶음" 줄에 나옴.
+  - ⚠ 사장님이 할 일: ① 파일 4개 복사 ② GitHub 토큰(bapsang-shop)에 saengae 저장소 추가 ③ saengae_install.bat 실행. (README-saengae.txt)
+- ⚠ 카테고리 이름은 토스쇼핑 실제 목록을 못 보고 짐작으로 적음(기저귀·체온계·혈압계…). 첫 실행 로그와 toss-categories.txt 보고 반드시 다듬을 것.
+
 ## 10/29 20:55 — 토스 미니앱 v0.1.0 만듦 (사이트 index.html 내용 전부 옮김)
 - 앱 소스 = 이 저장소 뿌리(오늘밥상물가 bapsang과 같은 틀: React + Vite + @apps-in-toss/web-framework 3.9.0).
   - `src/data/content.ts` 사이트 내용 전부(8분야 카드·자세히·변경사항·상품 자리·바닥글). 금액·조건 고칠 땐 여기만. 분기 점검 때 `CHECKED_AT`도.
@@ -17,7 +28,7 @@
 
 ## 다음 할 일
 - 콘솔에 앱 등록(이름 saengae-benefit) + AIT_API_KEY Secrets → 허락 받고 테스트 업로드 → 실기기에서 정부 사이트 링크(Device.openURL)·raw.githubusercontent 데이터 받기 확인.
-- 상품 링크 채우기(`content.ts` shop url).
+- ~~상품 링크 채우기~~ → PC 스크립트로 자동(위 10/29 21:45). 사장님 PC 설정 후 첫 결과 보고 규칙 다듬기.
 - (선택) GitHub Pages 켜기: Settings → Pages → main /docs → Save (데이터 주소 1순위).
 
 ## 10/29 20:25 — 혜택 자동 수집 시작

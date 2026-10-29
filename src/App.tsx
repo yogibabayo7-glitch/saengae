@@ -4,6 +4,8 @@ import type { Action, Card, Detail, DetailBlock, Stage, StageKey } from './data/
 import { initBackHandler, useBackLayer } from './back';
 import { attachBanner, openLink, track, BANNER_AD_ID } from './platform';
 import Local from './Local';
+import { loadShop, priceLabel } from './shop';
+import type { ShopData, ShopGroup } from './shop';
 
 type View = 'home' | 'local' | StageKey;
 
@@ -13,10 +15,20 @@ export default function App() {
   const [view, setView] = useState<View>('home');
   const [detailId, setDetailId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
     initBackHandler();
   }, []);
+
+  // 스크롤이 길어지면 '맨 위로' 버튼 (10/29 사장님 요청)
+  function onScroll() {
+    const y = scrollRef.current?.scrollTop ?? 0;
+    setShowTop((v) => (y > 600 ? true : y < 300 ? false : v));
+  }
+  function toTop() {
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   // 뒤로가기: 자세히 창 → 닫기, 분야·동네 화면 → 홈, 홈 → 앱 닫기
   useBackLayer(view !== 'home', () => setView('home'));
@@ -38,7 +50,7 @@ export default function App() {
 
   return (
     <div className="screen">
-      <div className="scroll" ref={scrollRef}>
+      <div className="scroll" ref={scrollRef} onScroll={onScroll}>
         {view === 'home' ? (
           <Home onGo={go} />
         ) : (
@@ -49,6 +61,11 @@ export default function App() {
         )}
         <Footer />
       </div>
+      {showTop && !detail && (
+        <button className="to-top" onClick={toTop} aria-label="맨 위로">
+          ▲
+        </button>
+      )}
       {detail && <DetailSheet d={detail} onClose={() => setDetailId(null)} />}
     </div>
   );
@@ -123,8 +140,6 @@ function Tabs({ view, onGo }: { view: View; onGo: (v: View) => void }) {
 }
 
 function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) => void; onDetail: (id: string) => void }) {
-  const shop = stage.shop ?? [];
-  const hasLink = shop.some((s) => s.url);
   return (
     <>
       <div className="stage-head">
@@ -149,33 +164,83 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
           </ol>
         </div>
       )}
-      {shop.length > 0 && (
-        <div className="shop">
-          <h3>🛒 {stage.shopTitle}</h3>
-          <div className="shop-list">
-            {shop.map((it) =>
-              it.url ? (
-                <button
-                  key={it.name}
-                  onClick={() => {
-                    track('shop_clicked', { stage: stage.key, name: it.name });
-                    void openLink(it.url);
-                  }}
-                >
-                  {it.name}
-                </button>
-              ) : (
-                <span key={it.name} title="링크 준비 중">
-                  {it.name}
-                </span>
-              ),
-            )}
-          </div>
-          {hasLink && <p className="disclose">{SHOP_DISCLOSE}</p>}
-        </div>
-      )}
+      <ShopBox stage={stage} />
       <AdSlot />
     </>
+  );
+}
+
+// 분야별 상품: shop.json(토스쇼핑 쉐어링크, PC에서 자동 갱신)이 있으면 묶음마다 상품 카드 여러 개,
+// 없으면 content.ts의 이름(url 있으면 버튼, 없으면 회색)으로.
+function ShopBox({ stage }: { stage: Stage }) {
+  const [data, setData] = useState<ShopData | null>(null);
+  useEffect(() => {
+    let alive = true;
+    loadShop((d) => alive && setData(d)).then((d) => alive && setData(d));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const groups: ShopGroup[] = (data?.stages[stage.key] ?? []).filter((g) => g.items.length > 0);
+  const fallback = stage.shop ?? [];
+  if (groups.length === 0 && fallback.length === 0) return null;
+  const title = stage.shopTitle ?? '함께 준비하면 좋은 물건';
+
+  if (groups.length === 0) {
+    const hasLink = fallback.some((s) => s.url);
+    return (
+      <div className="shop">
+        <h3>🛒 {title}</h3>
+        <div className="shop-list">
+          {fallback.map((it) =>
+            it.url ? (
+              <button
+                key={it.name}
+                onClick={() => {
+                  track('shop_clicked', { stage: stage.key, name: it.name });
+                  void openLink(it.url);
+                }}
+              >
+                {it.name}
+              </button>
+            ) : (
+              <span key={it.name} title="상품 준비 중">
+                {it.name}
+              </span>
+            ),
+          )}
+        </div>
+        {hasLink && <p className="disclose">{SHOP_DISCLOSE}</p>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="shop">
+      <h3>🛒 {title}</h3>
+      {groups.map((g) => (
+        <div className="shop-group" key={g.id}>
+          <div className="shop-group-name">{g.name}</div>
+          <div className="shop-strip">
+            {g.items.map((p) => (
+              <button
+                className="prod"
+                key={p.id}
+                onClick={() => {
+                  track('shop_clicked', { stage: stage.key, group: g.id, id: p.id });
+                  void openLink(p.url);
+                }}
+              >
+                <img src={p.thumb} alt="" loading="lazy" />
+                <span className="prod-name">{p.name}</span>
+                {p.price ? <span className="prod-price">{priceLabel(p.price)}</span> : null}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+      <p className="disclose">ⓘ {data?.disclosure || SHOP_DISCLOSE}</p>
+    </div>
   );
 }
 
