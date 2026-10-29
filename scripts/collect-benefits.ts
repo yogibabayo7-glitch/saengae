@@ -7,16 +7,19 @@
 // 실행: DATA_GO_KR_KEY=... node --experimental-strip-types scripts/collect-benefits.ts
 // 시험: node --experimental-strip-types scripts/collect-benefits.ts --fixture test/fixture.json
 //
-// 결과: docs/data/benefits.json (앱이 읽는 파일), docs/data/benefits-changes.json (지난번과 달라진 것)
+// 결과: docs/data/app/index.json + app/region/*.json (앱이 읽는 가벼운 파일), docs/data/benefits.json (전체 한 파일),
+//       docs/data/benefits-changes.json (지난번과 달라진 것)
 // 안전장치: 받은 서비스 수가 너무 적거나 분야 하나라도 0개면 저장하지 않고 실패로 끝내요(앱엔 지난 데이터 유지).
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 const BASE = 'https://api.odcloud.kr/api/gov24/v3';
 const PER_PAGE = 1000;
-const OUT = 'docs/data/benefits.json';
-const CHANGES = 'docs/data/benefits-changes.json';
+// 시험(--fixture)일 땐 진짜 데이터를 덮어쓰지 않게 임시 폴더에 써요
+const DIR = process.argv.includes('--fixture') ? `${process.env.TMPDIR || '/tmp'}/saengae-test` : 'docs/data';
+const OUT = `${DIR}/benefits.json`;
+const CHANGES = `${DIR}/benefits-changes.json`;
 const MIN_SERVICES = 3000; // 정부24 서비스는 1만 개 넘게 있음 — 이보다 적으면 뭔가 잘못 받은 것
 
 type Raw = Record<string, unknown>;
@@ -208,6 +211,43 @@ export function diff(prev: Benefit[], next: Benefit[]) {
   };
 }
 
+// ───────── 앱용 가벼운 파일 ─────────
+// benefits.json(1MB 넘음)을 앱이 처음부터 다 받으면 느려서 둘로 나눠요.
+//   app/index.json         목록 화면용 — 이름·분야·지역·한 줄 요약만 (전체 혜택)
+//   app/region/<코드>.json  눌렀을 때 보는 상세 — 시·도별로 묶음 (전국 = 중앙부처·공공기관)
+export const REGION_CODE: Record<string, string> = {
+  '전국': 'nation', '서울': 'seoul', '부산': 'busan', '대구': 'daegu', '인천': 'incheon', '전남·광주': 'jeonnam-gwangju',
+  '대전': 'daejeon', '울산': 'ulsan', '세종': 'sejong', '경기': 'gyeonggi', '강원': 'gangwon', '충북': 'chungbuk',
+  '충남': 'chungnam', '전북': 'jeonbuk', '경북': 'gyeongbuk', '경남': 'gyeongnam', '제주': 'jeju', '기타': 'etc',
+};
+
+function oneLine(s: string, max = 70) {
+  const t = s.replace(/^\s*-\s+/gm, ' ').replace(/[○●□■◦•※▶]\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  return t.length > max ? t.slice(0, max - 1) + '…' : t;
+}
+
+export function splitForApp(meta: Record<string, unknown>, items: Benefit[]) {
+  const regions: Record<string, { code: string; count: number }> = {};
+  const byRegion = new Map<string, Benefit[]>();
+  for (const b of items) {
+    const code = REGION_CODE[b.sido] ?? 'etc';
+    if (!byRegion.has(code)) byRegion.set(code, []);
+    byRegion.get(code)!.push(b);
+    regions[b.sido] ??= { code, count: 0 };
+    regions[b.sido].count++;
+  }
+  const index = {
+    ...meta,
+    regions,
+    // [id, 이름, 분야들, 시·도, 시·군·구, 기관, 지원유형, 한 줄 요약]
+    fields: ['id', 'name', 'cats', 'sido', 'sigungu', 'org', 'supportType', 'summary'],
+    items: items.map((b) => [b.id, b.name, b.cats, b.sido, b.sigungu, b.org, b.supportType, oneLine(b.content || b.purpose)]),
+  };
+  const files: Record<string, unknown> = { 'app/index.json': index };
+  for (const [code, list] of byRegion) files[`app/region/${code}.json`] = { updatedAt: meta.updatedAt, items: list };
+  return files;
+}
+
 // ───────── 실행 ─────────
 async function main() {
   const fx = process.argv.indexOf('--fixture');
@@ -238,14 +278,19 @@ async function main() {
   const now = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Seoul' }).replace(' ', 'T') + '+09:00';
 
   mkdirSync(dirname(OUT), { recursive: true });
-  writeFileSync(OUT, JSON.stringify({
+  const meta = {
     updatedAt: now,
     source: '행정안전부 대한민국 공공서비스(혜택) 정보 (정부24·공공데이터포털)',
     sourceUrl: 'https://www.data.go.kr/data/15113968/openapi.do',
     totalServices: list.length,
-    counts, categories, items,
-  }));
-  writeFileSync('docs/data/services-index.json', JSON.stringify(list.map((r) => [str(r['서비스ID']), str(r['서비스명']), str(r['소관기관명']), str(r['소관기관유형'])])));
+    counts,
+    labels: Object.fromEntries(Object.entries(categories).map(([k, v]) => [k, v.label])),
+  };
+  writeFileSync(OUT, JSON.stringify({ ...meta, categories, items }));
+  rmSync(`${DIR}/app`, { recursive: true, force: true });
+  mkdirSync(`${DIR}/app/region`, { recursive: true });
+  for (const [f, v] of Object.entries(splitForApp(meta, items))) writeFileSync(`${DIR}/${f}`, JSON.stringify(v));
+  writeFileSync(`${DIR}/services-index.json`, JSON.stringify(list.map((r) => [str(r['서비스ID']), str(r['서비스명']), str(r['소관기관명']), str(r['소관기관유형'])])));
   writeFileSync(CHANGES, JSON.stringify({ updatedAt: now, first: prev.length === 0, ...changes }, null, 1));
   console.log(`저장: ${OUT} · 새로 ${changes.added.length} / 바뀜 ${changes.changed.length} / 없어짐 ${changes.removed.length}`);
 }
