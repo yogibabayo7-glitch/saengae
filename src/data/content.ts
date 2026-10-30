@@ -18,6 +18,7 @@ export type Card = {
   bullets: string[];
   actions: Action[];
   tone?: 'plan' | 'flag'; // plan=예정(노란 띠), flag=올해 마지막(빨간 띠)
+  hideWithHousing?: boolean; // '집 구할 때'를 숨길 때 같이 숨김
 };
 
 export type ShopItem = { name: string; url: string };
@@ -59,7 +60,7 @@ export const SHOP_DISCLOSE = '이 상품 링크는 제휴 활동의 일환으로
 const L = (label: string, url: string, primary = true): Action => ({ kind: 'link', label, url, primary });
 const D = (id: string, label = '자세히'): Action => ({ kind: 'detail', id, label });
 
-export const STAGES: Stage[] = [
+const ALL_STAGES: Stage[] = [
   {
     key: 'pregnancy',
     name: '임신·출산',
@@ -185,6 +186,7 @@ export const STAGES: Stage[] = [
         actions: [L('고용24 바로가기', 'https://www.work24.go.kr')],
       },
       {
+        hideWithHousing: true,
         title: '전세 보증료 돌려받기',
         amount: '보증료 지원',
         amountNote: '지자체 신청',
@@ -237,8 +239,8 @@ export const STAGES: Stage[] = [
         title: '내 지역 결혼 지원 한 번에 찾기',
         amount: '보조금24',
         who: '거주지·나이·가족 정보로 맞춤 조회',
-        bullets: ['지역별 결혼축하금·신혼부부 지원 검색', '신혼부부 전용 디딤돌·버팀목 대출은 기금e든든'],
-        actions: [L('정부24 바로가기', 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/646000000122'), L('기금e든든', 'https://enhuf.molit.go.kr', false)],
+        bullets: ['지역별 결혼축하금·신혼부부 지원 검색'],
+        actions: [L('정부24 바로가기', 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/646000000122')],
       },
     ],
     shopTitle: '함께 준비하면 좋은 물건',
@@ -444,6 +446,13 @@ export const STAGES: Stage[] = [
     ],
   },
 ];
+
+// ⚠ 앱인토스 서비스 오픈 정책: 부동산 카테고리(전세보증금·대출·이사 등) 한시적 출시 불가 (10/30 확인)
+// → '집 구할 때' 분야와 전세 관련 카드를 숨김. 제한이 풀리면 HIDE_HOUSING = false 로 바꾸면 다시 보여요.
+export const HIDE_HOUSING = true;
+export const STAGES: Stage[] = ALL_STAGES.filter((s) => !(HIDE_HOUSING && s.key === 'housing')).map((s) =>
+  HIDE_HOUSING ? { ...s, cards: s.cards.filter((c) => !c.hideWithHousing) } : s,
+);
 
 // ───────── 자세한 내용 ─────────
 export const DETAILS: Detail[] = [
@@ -762,5 +771,5 @@ export function findDetail(id: string): Detail | undefined {
   return DETAILS.find((d) => d.id === id);
 }
 export function findStage(key: StageKey): Stage {
-  return STAGES.find((s) => s.key === key)!;
+  return STAGES.find((s) => s.key === key) ?? STAGES[0];
 }

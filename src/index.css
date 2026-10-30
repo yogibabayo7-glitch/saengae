@@ -693,3 +693,7 @@ ol {
   display: inline-block;
   vertical-align: -7px;
 }
+/* 분야 수가 홀수면 마지막 칸을 가로로 꽉 채움 */
+.home-grid .home-tile:last-child:nth-child(even) {
+  grid-column: 1 / -1;
+}
