@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { StageIcon } from './StageIcon';
 import { CHECKED_AT, DETAILS, FOOTER, NOTICES, SHOP_DISCLOSE, STAGES, findDetail, findStage } from './data/content';
 import type { Action, Card, Detail, DetailBlock, Stage, StageKey } from './data/content';
 import { initBackHandler, useBackLayer } from './back';
@@ -93,7 +94,7 @@ function Home({ onGo }: { onGo: (v: View) => void }) {
         </button>
         {STAGES.map((s) => (
           <button key={s.key} className="home-tile" onClick={() => onGo(s.key)}>
-            <span className="emoji">{s.emoji}</span>
+            <StageIcon k={s.key} emoji={s.emoji} size={54} />
             <b>{s.name}</b>
             <small>{s.age}</small>
           </button>
@@ -144,7 +145,7 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
     <>
       <div className="stage-head">
         <h2>
-          {stage.emoji} {stage.name}
+          <StageIcon k={stage.key} emoji={stage.emoji} size={38} /> {stage.name}
           <span className="age">{stage.age}</span>
         </h2>
         <p>{stage.intro}</p>

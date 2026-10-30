@@ -685,3 +685,11 @@ ol {
   font-weight: 800;
   color: var(--g900);
 }
+.stage-icon {
+  display: block;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.08));
+}
+.stage-head h2 .stage-icon {
+  display: inline-block;
+  vertical-align: -7px;
+}
