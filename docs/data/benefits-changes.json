@@ -1,7 +1,8 @@
 {
- "updatedAt": "2026-10-30T12:56:51+09:00",
+ "updatedAt": "2026-10-31T05:59:40+09:00",
  "first": false,
- "added": [
+ "added": [],
+ "changed": [
   {
    "id": "BJWLF00005942",
    "name": "청년 어학·자격 시험 응시료 지원사업",
@@ -31725,6 +31726,5 @@
    "updated": "20220629"
   }
  ],
- "changed": [],
  "removed": []
 }
