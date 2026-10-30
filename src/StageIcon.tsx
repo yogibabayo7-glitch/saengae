@@ -7,6 +7,7 @@ type Pal = [string, string, string]; // 밝은 · 중간 · 어두운
 const PAL: Partial<Record<StageKey, Pal>> = {
   pregnancy: ['#ffd0dc', '#ff7fa0', '#d4486f'],
   kids: ['#fff0b8', '#ffc53d', '#dd8f00'],
+  school: ['#d8f5cc', '#6cc95a', '#3a8f2c'],
   youth: ['#cfe6ff', '#5aa2ff', '#2a62c8'],
   senior: ['#ebe2ff', '#a98bff', '#6a4bd0'],
   disability: ['#c9f5ec', '#3cc9b0', '#128a76'],
@@ -121,6 +122,23 @@ function Figure({ k, id }: { k: StageKey; id: string }) {
           <Head id={id} cx={30} cy={28} r={11} />
           <Hair id={id} cx={30} cy={28} r={11} />
           <path d="M30 17.8 C28.5 13.5 31 11.5 33.5 12.8" stroke="#4a2f22" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+        </g>
+      );
+    case 'school':
+      return (
+        <g>
+          <Shadow cx={31} rx={15} />
+          <rect x="17" y="35" width="28" height="20" rx="7" fill={`url(#${id}r)`} />
+          <Body id={id} d="M21 57 C20 46 24 38 31 38 C38 38 42 46 41 57 Z" />
+          <path d="M25 40 C24.5 45 24.5 50 25 54" stroke="#c42e2e" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <path d="M37 40 C37.5 45 37.5 50 37 54" stroke="#c42e2e" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <rect x="40" y="43" width="11" height="13" rx="1.6" fill="#4f8dff" transform="rotate(-10 45 49)" />
+          <rect x="41.5" y="44.5" width="2" height="10" rx="0.8" fill="#fff" opacity="0.7" transform="rotate(-10 45 49)" />
+          <circle cx="40.5" cy="47" r="2.2" fill={`url(#${id}s)`} />
+          <Head id={id} cx={31} cy={27} r={11} />
+          <path d="M19.5 25 C19 13 43 12 42.5 25 C40 21.5 34 20.5 31 20.5 C27 20.5 22 21.5 19.5 25 Z" fill="#ffd23f" />
+          <path d="M18 25.5 Q31 21 44 25.5" stroke="#e0a800" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <ellipse cx="26" cy="16.5" rx="4" ry="2" fill="#fff" opacity="0.55" />
         </g>
       );
     case 'youth':
