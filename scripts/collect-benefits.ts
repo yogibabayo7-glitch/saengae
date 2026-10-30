@@ -60,6 +60,59 @@ export const RULES: Rule[] = [
   },
 ];
 
+// ───────── 생애 단계 나누기 (지원조건 JA 코드 + 이름) ─────────
+// JA 코드(정부24 지원조건): 0110/0111 나이 범위 · 0301 예비부모·난임 0302 임산부 0303 출산·입양
+// 0313~0316 농·어·축·임업인 0317 초 0318 중 0319 고 0320 대학생 0326 근로자·직장인 0327 구직자 0328 장애인
+// 0404 1인가구 (값이 'Y'면 해당). 대부분 서비스는 전부 'Y'(제한 없음)라, 몇 개만 'Y'일 때만 '대상'으로 봐요.
+export const STAGE_KEYS = ['pregnancy', 'kids', 'school', 'youth', 'midlife', 'senior', 'disability'] as const;
+export type StageKey = (typeof STAGE_KEYS)[number];
+export type Tag = 'single' | 'worker';
+type Cond = Record<string, unknown>;
+const G3 = ['JA0301', 'JA0302', 'JA0303', 'JA0313', 'JA0314', 'JA0315', 'JA0316', 'JA0317', 'JA0318', 'JA0319', 'JA0320', 'JA0322', 'JA0326', 'JA0327', 'JA0328', 'JA0329', 'JA0330'];
+const G4 = ['JA0401', 'JA0402', 'JA0403', 'JA0404', 'JA0410', 'JA0411', 'JA0412', 'JA0413', 'JA0414'];
+// 앱인토스 정책(금융상품·부동산 금지)에 걸릴 수 있는 것, 개인 혜택이 아닌 것은 빼요
+const BAN = /대출|융자|모기지|보증(?!금 ?반환)|보험료 지원|펀드|투자|분양|청약|특별공급|우선공급|중개|취득세|자동차세|등록면허세|재산세|적금|저축|재형|자산형성|통장|외국인|계절근로|사업장|법인/;
+
+export function stagesOf(name: string, c: Cond | undefined): { stages: StageKey[]; tags: Tag[] } {
+  const none = { stages: [] as StageKey[], tags: [] as Tag[] };
+  if (!c) return none;
+  if (c['JA0101'] !== 'Y' && c['JA0102'] !== 'Y') return none; // 개인 대상 아님(기업·소상공인)
+  if (BAN.test(name)) return none;
+  const y3 = G3.filter((k) => c[k] === 'Y');
+  const y4 = G4.filter((k) => c[k] === 'Y');
+  const t3 = new Set(y3.length > 0 && y3.length <= 4 ? y3 : []);
+  const t4 = new Set(y4.length > 0 && y4.length <= 3 ? y4 : []);
+  if (t3.size && [...t3].every((k) => ['JA0313', 'JA0314', 'JA0315', 'JA0316'].includes(k))) return none; // 농어업인 전용
+  const a = typeof c['JA0110'] === 'number' ? (c['JA0110'] as number) : 0;
+  const b = typeof c['JA0111'] === 'number' ? (c['JA0111'] as number) : 120;
+  const ov = (lo: number, hi: number) => Math.max(a, lo) <= Math.min(b, hi);
+  const narrow = !(a <= 5 && b >= 70);
+  const st = new Set<StageKey>();
+  const tags = new Set<Tag>();
+  const preg = t3.has('JA0301') || t3.has('JA0302') || t3.has('JA0303') || /임신|임산부|출산|난임|산후|산모|신생아|태아/.test(name);
+  if (preg) st.add('pregnancy');
+  if (narrow) {
+    if (b <= 7 || (/영유아|영아|유아|보육|어린이집|아이돌봄/.test(name) && ov(0, 6))) st.add('kids');
+    if ((a >= 5 && b <= 19 && b > 7) || t3.has('JA0317') || t3.has('JA0318') || t3.has('JA0319')) st.add('school');
+    if (!preg && ((a >= 14 && b <= 45 && b >= 24) || t3.has('JA0320'))) st.add('youth');
+    if (a >= 35 && a < 60 && b <= 70) st.add('midlife');
+    if (a >= 60) st.add('senior');
+  }
+  if (/청년/.test(name)) st.add('youth');
+  if (/중장년|신중년|장년|50플러스|50\+/.test(name)) st.add('midlife');
+  if (/노인|어르신|경로|독거노인|치매|기초연금|노후/.test(name)) st.add('senior');
+  if (/초등|중학|고등학|청소년|학생|입학/.test(name) && !/대학/.test(name)) st.add('school');
+  if (t3.has('JA0328') || /장애/.test(name)) st.add('disability');
+  if (t4.has('JA0404') || /1인 ?가구|독거|고독사|홀몸/.test(name)) tags.add('single');
+  if (t3.has('JA0326') || t3.has('JA0327') || /근로자|직장인|노동자|구직|재취업|일자리/.test(name)) tags.add('worker');
+  if (!st.size && tags.size) {
+    if (a <= 34 && b >= 19) st.add('youth');
+    if (ov(40, 64)) st.add('midlife');
+    if (tags.has('single') && b >= 65) st.add('senior');
+  }
+  return { stages: [...st], tags: [...tags] };
+}
+
 // ───────── 도우미 ─────────
 function str(v: unknown): string {
   if (v == null) return '';
@@ -154,9 +207,10 @@ export type Benefit = {
   supportType: string; how: string; deadline: string; docs: string; receiver: string;
   org: string; orgType: string; dept: string; sido: string; sigungu: string; phone: string;
   url: string; onlineUrl: string; laws: string; views: number; updated: string; cats: string[];
+  stages: StageKey[]; tags: Tag[];
 };
 
-export function build(list: Raw[], details: Raw[]) {
+export function build(list: Raw[], details: Raw[], conds: Record<string, Cond> = {}) {
   const det = new Map(details.map((d) => [str(d['서비스ID']), d]));
   const guMap = makeGuMap(list);
   const items: Benefit[] = [];
@@ -167,12 +221,13 @@ export function build(list: Raw[], details: Raw[]) {
     const name = str(r['서비스명']);
     const all = [str(r['서비스목적요약']), str(d['서비스목적']), str(r['지원대상']), str(r['지원내용'])].join(' ');
     const cats = RULES.filter((rule) => rule.test(name, all, r)).map((rule) => rule.key);
-    if (!cats.length) continue;
+    const { stages, tags } = stagesOf(name, conds[id]);
+    if (!cats.length && !stages.length) continue;
     const orgType = str(r['소관기관유형']);
     const org = str(r['소관기관명']);
     const { sido, sigungu } = region(org, orgType, guMap);
     items.push({
-      id, name, cats,
+      id, name, cats, stages, tags,
       purpose: str(d['서비스목적']) || str(r['서비스목적요약']),
       target: str(d['지원대상']) || str(r['지원대상']),
       criteria: str(d['선정기준']) || str(r['선정기준']),
@@ -195,7 +250,8 @@ export function build(list: Raw[], details: Raw[]) {
   items.sort((a, b) => (a.sido === '전국' ? 0 : 1) - (b.sido === '전국' ? 0 : 1) || b.views - a.views);
   const categories: Record<string, { label: string; ids: string[] }> = {};
   for (const rule of RULES) categories[rule.key] = { label: rule.label, ids: items.filter((i) => i.cats.includes(rule.key)).map((i) => i.id) };
-  return { items, categories };
+  const stageCounts = Object.fromEntries(STAGE_KEYS.map((k) => [k, items.filter((i) => i.stages.includes(k)).length]));
+  return { items, categories, stageCounts };
 }
 
 // 지난번 파일과 비교 — 새로 생김 / 내용 바뀜 / 없어짐 (분기 점검 때 이것만 보면 됨)
@@ -203,7 +259,7 @@ export function diff(prev: Benefit[], next: Benefit[]) {
   const sig = (b: Benefit) => [b.name, b.target, b.criteria, b.content, b.how, b.deadline, b.phone, b.url].join('|');
   const p = new Map(prev.map((b) => [b.id, b]));
   const n = new Map(next.map((b) => [b.id, b]));
-  const pick = (b: Benefit) => ({ id: b.id, name: b.name, org: b.org, cats: b.cats, updated: b.updated });
+  const pick = (b: Benefit) => ({ id: b.id, name: b.name, org: b.org, cats: b.cats, stages: b.stages, updated: b.updated });
   return {
     added: next.filter((b) => !p.has(b.id)).map(pick),
     changed: next.filter((b) => p.has(b.id) && sig(p.get(b.id)!) !== sig(b)).map(pick),
@@ -236,15 +292,27 @@ export function splitForApp(meta: Record<string, unknown>, items: Benefit[]) {
     regions[b.sido] ??= { code, count: 0 };
     regions[b.sido].count++;
   }
+  // 우리 동네(연금·면허 반납·장애인) 화면용 — 예전 그대로
+  const catItems = items.filter((b) => b.cats.length);
   const index = {
     ...meta,
     regions,
     // [id, 이름, 분야들, 시·도, 시·군·구, 기관, 지원유형, 한 줄 요약]
     fields: ['id', 'name', 'cats', 'sido', 'sigungu', 'org', 'supportType', 'summary'],
-    items: items.map((b) => [b.id, b.name, b.cats, b.sido, b.sigungu, b.org, b.supportType, oneLine(b.content || b.purpose)]),
+    items: catItems.map((b) => [b.id, b.name, b.cats, b.sido, b.sigungu, b.org, b.supportType, oneLine(b.content || b.purpose)]),
   };
   const files: Record<string, unknown> = { 'app/index.json': index };
-  for (const [code, list] of byRegion) files[`app/region/${code}.json`] = { updatedAt: meta.updatedAt, items: list };
+  // 분야(생애 단계)별 목록 — 그 분야 화면을 열 때만 받아요
+  for (const k of STAGE_KEYS) {
+    const list = items.filter((b) => b.stages.includes(k));
+    files[`app/stage/${k}.json`] = {
+      updatedAt: meta.updatedAt, source: meta.source, regions,
+      fields: ['id', 'name', 'tags', 'sido', 'sigungu', 'org', 'supportType', 'summary'],
+      items: list.map((b) => [b.id, b.name, b.tags, b.sido, b.sigungu, b.org, b.supportType, oneLine(b.content || b.purpose)]),
+    };
+  }
+  // 상세(시·도별) — 조회수는 매일 바뀌어서 빼요(안 바뀌면 파일도 그대로)
+  for (const [code, list] of byRegion) files[`app/region/${code}.json`] = { items: list.map(({ views: _v, ...rest }) => rest) };
   return files;
 }
 
@@ -252,52 +320,42 @@ export function splitForApp(meta: Record<string, unknown>, items: Benefit[]) {
 async function main() {
   const fx = process.argv.indexOf('--fixture');
   let list: Raw[], details: Raw[];
+  let conds: Record<string, Cond> = {};
   if (fx > 0) {
     const f = JSON.parse(readFileSync(process.argv[fx + 1], 'utf8'));
-    list = f.list; details = f.details;
+    list = f.list; details = f.details; conds = f.conds ?? {};
   } else {
     const key = process.env.DATA_GO_KR_KEY?.trim();
     if (!key) throw new Error('DATA_GO_KR_KEY(공공데이터포털 인증키)가 없어요 — GitHub 저장소 Secrets에 넣어 주세요');
     console.log('정부24 공공서비스 받는 중…');
     list = await getAll('serviceList', key);
     details = await getAll('serviceDetail', key);
-    // 지원조건(나이·가구·직업 표시) — 분야 나누기용. 실패해도 나머지는 계속.
-    try {
-      const conds = await getAll('supportConditions', key);
-      const keys = new Map<string, number>();
-      const compact: Record<string, Record<string, unknown>> = {};
-      for (const c of conds) {
-        const id = str(c['서비스ID']);
-        const o: Record<string, unknown> = {};
-        for (const [k, v] of Object.entries(c)) {
-          if (k === '서비스ID' || k === '서비스명' || v == null || v === '' ) continue;
-          o[k] = v;
-          if (v === 'Y') keys.set(k, (keys.get(k) ?? 0) + 1);
-        }
-        compact[id] = o;
-      }
-      const names = new Map(list.map((r) => [str(r['서비스ID']), str(r['서비스명'])]));
-      const sample: Record<string, { count: number; names: string[] }> = {};
-      for (const [k, n] of [...keys].sort()) sample[k] = { count: n, names: Object.entries(compact).filter(([, o]) => o[k] === 'Y').slice(0, 12).map(([id]) => names.get(id) ?? id) };
-      const ageKeys = Object.keys(conds[0] ?? {});
-      writeFileSync(`${DIR}/conditions-sample.json`, JSON.stringify({ total: conds.length, columns: ageKeys, sample, first: conds.slice(0, 3) }, null, 1));
-      writeFileSync(`${DIR}/conditions.json`, JSON.stringify(compact));
-    } catch (e) { console.warn('지원조건 못 받음:', (e as Error).message); }
+    // 지원조건(나이·가구·직업 표시) — 생애 단계 나누기용
+    for (const c of await getAll('supportConditions', key)) conds[str(c['서비스ID'])] = c;
   }
 
-  const { items, categories } = build(list, details);
+  const { items, categories, stageCounts } = build(list, details, conds);
   const counts = Object.fromEntries(Object.entries(categories).map(([k, v]) => [k, v.ids.length]));
-  console.log(`전체 ${list.length}개 중 우리 분야 ${items.length}개`, counts);
+  console.log(`전체 ${list.length}개 중 우리 분야 ${items.length}개`, counts, stageCounts);
 
   if (fx < 0) {
     if (list.length < MIN_SERVICES) throw new Error(`서비스가 ${list.length}개밖에 안 옴 — 저장 안 함`);
     const empty = Object.entries(counts).filter(([, c]) => c === 0).map(([k]) => k);
     if (empty.length) throw new Error(`0개인 분야: ${empty.join(', ')} — 규칙이나 데이터 확인 필요, 저장 안 함`);
+    const emptyStage = Object.entries(stageCounts).filter(([, c]) => c === 0).map(([k]) => k);
+    if (emptyStage.length) throw new Error(`0개인 생애 단계: ${emptyStage.join(', ')} — 지원조건 확인 필요, 저장 안 함`);
   }
 
-  const prev: Benefit[] = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')).items ?? [] : [];
+  const prevFile = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : null;
+  const prev: Benefit[] = prevFile?.items ?? [];
   const changes = diff(prev, items);
   const now = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Seoul' }).replace(' ', 'T') + '+09:00';
+  const slim = items.map(({ views: _v, ...rest }) => rest);
+  // 내용이 하나도 안 바뀌었으면 큰 파일은 그대로 두고 '확인한 시각'만 적어요(저장소가 매일 커지지 않게)
+  const same = !!prevFile && JSON.stringify(prevFile.items) === JSON.stringify(slim) && existsSync(`${DIR}/app/stage`);
+  mkdirSync(`${DIR}/app`, { recursive: true });
+  writeFileSync(`${DIR}/app/checked.json`, JSON.stringify({ checkedAt: now, totalServices: list.length, changed: !same }));
+  if (same) { console.log('달라진 내용 없음 — 확인 시각만 저장'); return; }
 
   mkdirSync(dirname(OUT), { recursive: true });
   const meta = {
@@ -306,12 +364,17 @@ async function main() {
     sourceUrl: 'https://www.data.go.kr/data/15113968/openapi.do',
     totalServices: list.length,
     counts,
+    stageCounts,
     labels: Object.fromEntries(Object.entries(categories).map(([k, v]) => [k, v.label])),
   };
-  writeFileSync(OUT, JSON.stringify({ ...meta, categories, items }));
-  rmSync(`${DIR}/app`, { recursive: true, force: true });
+  writeFileSync(OUT, JSON.stringify({ ...meta, categories, items: slim }));
+  rmSync(`${DIR}/app/region`, { recursive: true, force: true });
+  rmSync(`${DIR}/app/stage`, { recursive: true, force: true });
   mkdirSync(`${DIR}/app/region`, { recursive: true });
+  mkdirSync(`${DIR}/app/stage`, { recursive: true });
   for (const [f, v] of Object.entries(splitForApp(meta, items))) writeFileSync(`${DIR}/${f}`, JSON.stringify(v));
+  rmSync(`${DIR}/conditions.json`, { force: true });
+  rmSync(`${DIR}/conditions-sample.json`, { force: true });
   writeFileSync(`${DIR}/services-index.json`, JSON.stringify(list.map((r) => [str(r['서비스ID']), str(r['서비스명']), str(r['소관기관명']), str(r['소관기관유형'])])));
   writeFileSync(CHANGES, JSON.stringify({ updatedAt: now, first: prev.length === 0, ...changes }, null, 1));
   console.log(`저장: ${OUT} · 새로 ${changes.added.length} / 바뀜 ${changes.changed.length} / 없어짐 ${changes.removed.length}`);

@@ -1,9 +1,9 @@
-# 생애혜택 안내소 — 정부24 혜택(국민연금·어르신 면허 반납·장애인) 자동 수집
-# 매주 월요일 한국시간 06:20 + 필요할 때 '실행' 버튼
+# 생애혜택 안내소 — 정부24 공공서비스(행정안전부, 지자체 혜택 포함) 자동 수집
+# 매일 새벽 한국시간 05:20 + 필요할 때 '실행' 버튼. 내용이 안 바뀐 날은 확인 시각(app/checked.json)만 저장
 name: 혜택 수집
 on:
   schedule:
-    - cron: '20 21 * * 0'   # UTC 일 21:20 = 한국 월 06:20
+    - cron: '20 20 * * *'   # UTC 20:20 = 한국 매일 05:20
   workflow_dispatch:
 permissions:
   contents: write
@@ -25,7 +25,7 @@ jobs:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
       - name: 달라진 것 요약
         run: |
-          node -e "const c=require('./docs/data/benefits-changes.json');const s=c.first?'첫 수집':'새로 '+c.added.length+' / 바뀜 '+c.changed.length+' / 없어짐 '+c.removed.length;console.log('::notice title=혜택 수집::'+s)"
+          node -e "const k=require('./docs/data/app/checked.json');const c=require('./docs/data/benefits-changes.json');const s=!k.changed?'달라진 것 없음':c.first?'첫 수집':'새로 '+c.added.length+' / 바뀜 '+c.changed.length+' / 없어짐 '+c.removed.length;console.log('::notice title=혜택 수집::'+s)"
       - name: 저장
         run: |
           git config user.name "saengae-bot"
