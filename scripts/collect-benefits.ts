@@ -335,8 +335,20 @@ export async function getBokjiro(key: string): Promise<Record<string, string>[]>
   const all: Record<string, string>[] = [];
   for (let page = 1; page <= 40; page++) {
     const url = `${BOKJIRO}?serviceKey=${sk}&pageNo=${page}&numOfRows=500`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(60_000) });
-    const text = await res.text();
+    let res: Response | null = null;
+    let text = '';
+    for (let a = 1; a <= 4; a++) {
+      try {
+        res = await fetch(url, { signal: AbortSignal.timeout(60_000) });
+        text = await res.text();
+        if (res.status < 500) break;
+      } catch (e) {
+        if (a === 4) throw e;
+      }
+      console.warn(`  복지로 ${page}쪽 다시 시도(${a})`);
+      await new Promise((r) => setTimeout(r, 5000 * a));
+    }
+    if (!res) throw new Error('복지로 응답 없음');
     if (!res.ok || /SERVICE_KEY|NOT_REGISTERED|Unauthorized|등록되지 않은/i.test(text.slice(0, 600))) throw new Error(`복지로 API 응답: HTTP ${res.status} ${text.slice(0, 200)}`);
     const items = xmlItems(text, 'servList');
     if (page === 1) console.log(`  복지로 지자체: 총 ${text.match(/<totalCount>(\d+)</)?.[1] ?? '?'}건`);
@@ -420,7 +432,13 @@ async function main() {
       items = [...items, ...add];
       for (const k of STAGE_KEYS) stageCounts[k] = items.filter((i) => i.stages.includes(k)).length;
       console.log(`  복지로 지자체 ${extra.length}건 중 새로 ${add.length}건 더함`);
-    } catch (e) { console.warn('복지로 지자체 자료는 건너뜀(활용신청 전이면 정상):', (e as Error).message); }
+    } catch (e) {
+      // 일시적인 오류면 지난번에 받은 복지로 자료를 그대로 둬요(목록에서 갑자기 사라지지 않게)
+      const old: Benefit[] = existsSync(OUT) ? (JSON.parse(readFileSync(OUT, 'utf8')).items ?? []).filter((b: Benefit) => b.id.startsWith('BJ')) : [];
+      items = [...items, ...old.map((b) => ({ ...b, views: 0 }))];
+      for (const k of STAGE_KEYS) stageCounts[k] = items.filter((i) => i.stages.includes(k)).length;
+      console.warn(`복지로 지자체 자료 못 받음 — 지난 자료 ${old.length}건 유지:`, (e as Error).message);
+    }
   }
   const counts = Object.fromEntries(Object.entries(categories).map(([k, v]) => [k, v.ids.length]));
   console.log(`전체 ${list.length}개 중 우리 분야 ${items.length}개`, counts, stageCounts);
