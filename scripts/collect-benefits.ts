@@ -261,6 +261,28 @@ async function main() {
     console.log('정부24 공공서비스 받는 중…');
     list = await getAll('serviceList', key);
     details = await getAll('serviceDetail', key);
+    // 지원조건(나이·가구·직업 표시) — 분야 나누기용. 실패해도 나머지는 계속.
+    try {
+      const conds = await getAll('supportConditions', key);
+      const keys = new Map<string, number>();
+      const compact: Record<string, Record<string, unknown>> = {};
+      for (const c of conds) {
+        const id = str(c['서비스ID']);
+        const o: Record<string, unknown> = {};
+        for (const [k, v] of Object.entries(c)) {
+          if (k === '서비스ID' || k === '서비스명' || v == null || v === '' ) continue;
+          o[k] = v;
+          if (v === 'Y') keys.set(k, (keys.get(k) ?? 0) + 1);
+        }
+        compact[id] = o;
+      }
+      const names = new Map(list.map((r) => [str(r['서비스ID']), str(r['서비스명'])]));
+      const sample: Record<string, { count: number; names: string[] }> = {};
+      for (const [k, n] of [...keys].sort()) sample[k] = { count: n, names: Object.entries(compact).filter(([, o]) => o[k] === 'Y').slice(0, 12).map(([id]) => names.get(id) ?? id) };
+      const ageKeys = Object.keys(conds[0] ?? {});
+      writeFileSync(`${DIR}/conditions-sample.json`, JSON.stringify({ total: conds.length, columns: ageKeys, sample, first: conds.slice(0, 3) }, null, 1));
+      writeFileSync(`${DIR}/conditions.json`, JSON.stringify(compact));
+    } catch (e) { console.warn('지원조건 못 받음:', (e as Error).message); }
   }
 
   const { items, categories } = build(list, details);
