@@ -316,6 +316,65 @@ export function splitForApp(meta: Record<string, unknown>, items: Benefit[]) {
   return files;
 }
 
+// ───────── 복지로 지자체 복지서비스 (한국사회보장정보원, 공공데이터포털 15108347) ─────────
+// 같은 DATA_GO_KR_KEY로 받아요(포털에서 이 API 활용신청 필요 — 자동승인). 안 되면 건너뛰고 정부24 자료만 써요.
+// 목록만 받아요(개발계정 하루 1,000회). 생애주기(lifeNmArray)·대상(trgterIndvdlNmArray)·관심주제로 분야를 나눠요.
+const BOKJIRO = 'https://apis.data.go.kr/B554287/LocalGovernmentWelfareInformations/LcgvWelfarelist';
+export function xmlItems(xml: string, tag: string): Record<string, string>[] {
+  const out: Record<string, string>[] = [];
+  const re = new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'g');
+  for (const m of xml.matchAll(re)) {
+    const o: Record<string, string> = {};
+    for (const f of m[1].matchAll(/<([A-Za-z0-9_]+)>([\s\S]*?)<\/\1>/g)) o[f[1]] = f[2].replace(/<!\[CDATA\[|\]\]>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+    out.push(o);
+  }
+  return out;
+}
+export async function getBokjiro(key: string): Promise<Record<string, string>[]> {
+  const sk = key.includes('%') ? key : encodeURIComponent(key);
+  const all: Record<string, string>[] = [];
+  for (let page = 1; page <= 40; page++) {
+    const url = `${BOKJIRO}?serviceKey=${sk}&pageNo=${page}&numOfRows=500`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(60_000) });
+    const text = await res.text();
+    if (!res.ok || /SERVICE_KEY|NOT_REGISTERED|Unauthorized|등록되지 않은/i.test(text.slice(0, 600))) throw new Error(`복지로 API 응답: HTTP ${res.status} ${text.slice(0, 200)}`);
+    const items = xmlItems(text, 'servList');
+    if (page === 1) console.log(`  복지로 지자체: 총 ${text.match(/<totalCount>(\d+)</)?.[1] ?? '?'}건`);
+    all.push(...items);
+    if (items.length < 500) break;
+  }
+  return all;
+}
+const LIFE: [RegExp, StageKey][] = [[/임신|출산/, 'pregnancy'], [/영유아/, 'kids'], [/아동|청소년/, 'school'], [/청년/, 'youth'], [/중장년/, 'midlife'], [/노년|노인/, 'senior']];
+export function fromBokjiro(rows: Record<string, string>[]): Benefit[] {
+  const out: Benefit[] = [];
+  for (const r of rows) {
+    const name = r.servNm ?? '';
+    if (!r.servId || !name || BAN.test(name)) continue;
+    const life = r.lifeNmArray ?? '';
+    const who = r.trgterIndvdlNmArray ?? '';
+    const theme = r.intrsThemaNmArray ?? '';
+    const stages = new Set<StageKey>();
+    for (const [re, k] of LIFE) if (re.test(life)) stages.add(k);
+    if (/장애/.test(who) || /장애/.test(name)) stages.add('disability');
+    const tags = new Set<Tag>();
+    if (/1인|독거|홀몸|고독/.test(who + name)) tags.add('single');
+    if (/일자리|취업|근로/.test(theme + name)) tags.add('worker');
+    if (!stages.size) continue;
+    const { sido, sigungu } = region(`${r.ctpvNm ?? ''} ${r.sggNm ?? ''}`.trim(), '시군구');
+    const summary = r.servDgst ?? '';
+    out.push({
+      id: 'BJ' + r.servId, name, cats: [], stages: [...stages], tags: [...tags],
+      purpose: summary, target: [life && `생애주기: ${life}`, who && `대상: ${who}`].filter(Boolean).join('\n'), criteria: '', content: summary,
+      supportType: r.srvPvsnNm ?? '', how: r.aplyMtdNm ?? '', deadline: '', docs: '', receiver: r.bizChrDeptNm ?? '',
+      org: [r.ctpvNm, r.sggNm].filter(Boolean).join(' '), orgType: '지자체(복지로)', dept: r.bizChrDeptNm ?? '', sido, sigungu,
+      phone: r.inqNum ?? '', url: r.servDtlLink ?? 'https://www.bokjiro.go.kr', onlineUrl: '', laws: '', views: Number(r.inqNum ?? 0) || 0,
+      updated: r.lastModYmd ?? '',
+    });
+  }
+  return out;
+}
+
 // ───────── 실행 ─────────
 async function main() {
   const fx = process.argv.indexOf('--fixture');
@@ -334,7 +393,22 @@ async function main() {
     for (const c of await getAll('supportConditions', key)) conds[str(c['서비스ID'])] = c;
   }
 
-  const { items, categories, stageCounts } = build(list, details, conds);
+  const built = build(list, details, conds);
+  const { categories, stageCounts } = built;
+  let items = built.items;
+  // 복지로 지자체 자료 더하기 (정부24에 같은 이름·지역이 이미 있으면 빼요)
+  const bkey = process.env.DATA_GO_KR_KEY?.trim();
+  if (fx < 0 && bkey) {
+    try {
+      const extra = fromBokjiro(await getBokjiro(bkey));
+      const norm = (s: string) => s.replace(/[\s()\[\]·.,-]/g, '');
+      const seen = new Set(items.map((b) => b.sido + '|' + norm(b.name)));
+      const add = extra.filter((b) => !seen.has(b.sido + '|' + norm(b.name)));
+      items = [...items, ...add];
+      for (const k of STAGE_KEYS) stageCounts[k] = items.filter((i) => i.stages.includes(k)).length;
+      console.log(`  복지로 지자체 ${extra.length}건 중 새로 ${add.length}건 더함`);
+    } catch (e) { console.warn('복지로 지자체 자료는 건너뜀(활용신청 전이면 정상):', (e as Error).message); }
+  }
   const counts = Object.fromEntries(Object.entries(categories).map(([k, v]) => [k, v.ids.length]));
   console.log(`전체 ${list.length}개 중 우리 분야 ${items.length}개`, counts, stageCounts);
 
@@ -360,7 +434,7 @@ async function main() {
   mkdirSync(dirname(OUT), { recursive: true });
   const meta = {
     updatedAt: now,
-    source: '행정안전부 대한민국 공공서비스(혜택) 정보 (정부24·공공데이터포털)',
+    source: items.some((b) => b.id.startsWith('BJ')) ? '행정안전부 공공서비스(정부24) · 한국사회보장정보원 지자체 복지서비스(복지로)' : '행정안전부 대한민국 공공서비스(혜택) 정보 (정부24·공공데이터포털)',
     sourceUrl: 'https://www.data.go.kr/data/15113968/openapi.do',
     totalServices: list.length,
     counts,

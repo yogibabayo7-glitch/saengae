@@ -193,7 +193,7 @@ export function LocalDetail({ b, onClose }: { b: BenefitSummary; onClose: () => 
                   </div>
                 ))}
               </div>
-              {d.updated && <p className="src">정부24 수정일: {d.updated}</p>}
+              {d.updated && <p className="src">{b.id.startsWith('BJ') ? '복지로' : '정부24'} 수정일: {d.updated}</p>}
             </>
           )}
         </div>
@@ -202,12 +202,12 @@ export function LocalDetail({ b, onClose }: { b: BenefitSummary; onClose: () => 
             <button
               className="btn block"
               onClick={() => {
-                const url = d?.url || 'https://www.gov.kr';
+                const url = d?.url || (b.id.startsWith('BJ') ? 'https://www.bokjiro.go.kr' : 'https://www.gov.kr');
                 track('local_gov24_clicked', { id: b.id });
                 void openLink(url);
               }}
             >
-              정부24에서 신청·자세히 보기 ↗
+              {b.id.startsWith('BJ') ? '복지로에서 신청·자세히 보기 ↗' : '정부24에서 신청·자세히 보기 ↗'}
             </button>
           )}
           {d?.onlineUrl && (

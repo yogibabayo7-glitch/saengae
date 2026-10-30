@@ -60,7 +60,7 @@ export default function StageLocal({ stageKey, stageName, initialTag = '' }: { s
   return (
     <div className="stage-local">
       <p className="local-lead">
-        정부24에 등록된 {stageName} 대상 혜택을 사는 곳 기준으로 모았어요. 시·도를 고르면 전국 공통 + 우리 지역 혜택이 나와요. {data && updatedLabel(data.updatedAt)}
+        정부24·복지로에 등록된 {stageName} 대상 혜택을 사는 곳 기준으로 모았어요. 시·도를 고르면 전국 공통 + 우리 지역 혜택이 나와요. {data && updatedLabel(data.updatedAt)}
       </p>
 
       {data && (
