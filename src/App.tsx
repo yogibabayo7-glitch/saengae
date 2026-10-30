@@ -87,7 +87,7 @@ function Home({ onGo }: { onGo: (v: View) => void }) {
 
       <div className="home-grid">
         <button className="home-tile local" onClick={() => onGo('local')}>
-          <span className="emoji">📍</span>
+          <span className="emoji pin">📍</span>
           <span>
             <b>우리 동네 혜택 찾기</b>
             <br />
@@ -131,7 +131,7 @@ function Tabs({ view, onGo }: { view: View; onGo: (v: View) => void }) {
         🏡 홈
       </button>
       <button className={`tab local${view === 'local' ? ' on' : ''}`} onClick={() => onGo('local')}>
-        📍 우리 동네
+        <span className="pin">📍</span> 우리 동네
       </button>
       {STAGES.filter((s) => !s.mini || view === s.key).map((s) => (
         <button key={s.key} className={`tab${view === s.key ? ' on' : ''}`} onClick={() => onGo(s.key)}>
@@ -155,7 +155,7 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
   const subs: [SubTab, string][] = [['', '기본']];
   if (has('single')) subs.push(['single', TAB_LABEL.single]);
   if (has('worker')) subs.push(['worker', TAB_LABEL.worker]);
-  if (!stage.mini) subs.push(['local', '📍 우리 동네']);
+  if (!stage.mini) subs.push(['local', '우리 동네']);
   const cards = sub === 'local' ? [] : stage.cards.filter((c) => (c.tab ?? '') === sub);
   const plain = cards.filter((c) => !c.group);
   const groups = [...new Set(cards.filter((c) => c.group).map((c) => c.group!))];
@@ -180,7 +180,7 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
                 track('stage_subtab', { stage: stage.key, sub: k || 'basic' });
               }}
             >
-              {label}
+              {k === 'local' && <span className="pin">📍</span>} {label}
             </button>
           ))}
         </div>
@@ -214,7 +214,7 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
                 setSub('local');
               }}
             >
-              📍 우리 동네 {sub === 'single' ? '1인가구' : '직장인·일자리'} 혜택 더 보기
+              <span className="pin">📍</span> 우리 동네 {sub === 'single' ? '1인가구' : '직장인·일자리'} 혜택 더 보기
             </button>
           )}
           {sub === '' && stage.checklist && (

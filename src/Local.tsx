@@ -49,7 +49,7 @@ export default function Local() {
   return (
     <>
       <div className="local-top">
-        <h2>📍 우리 동네 혜택</h2>
+        <h2><span className="pin">📍</span> 우리 동네 혜택</h2>
         <p>정부24에 등록된 공공서비스 중 연금·어르신 운전면허 반납·장애인 혜택을 사는 곳 기준으로 보여 줘요. {idx && updatedLabel(idx.updatedAt)}</p>
       </div>
 

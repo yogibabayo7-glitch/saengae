@@ -748,3 +748,29 @@ ol {
 .home-tile.mini {
   min-height: 0;
 }
+/* 우리 동네 빨간 핀 — 통통 튀면서 반짝여요 (사장님 요청 10/30) */
+.pin {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  animation: pin-bounce 1.6s ease-in-out infinite, pin-glow 1.6s ease-in-out infinite;
+}
+.home-tile .pin {
+  font-size: 32px;
+}
+@keyframes pin-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  20% { transform: translateY(-6px) scale(1.06); }
+  40% { transform: translateY(0) scale(0.96, 1.04); }
+  55% { transform: translateY(-2px) scale(1.02); }
+  70% { transform: translateY(0) scale(1); }
+}
+@keyframes pin-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 60, 60, 0)) brightness(1); }
+  25% { filter: drop-shadow(0 0 6px rgba(255, 60, 60, 0.9)) brightness(1.25); }
+  50% { filter: drop-shadow(0 0 2px rgba(255, 60, 60, 0.4)) brightness(1.05); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pin {
+    animation: pin-glow 2.4s ease-in-out infinite;
+  }
+}
