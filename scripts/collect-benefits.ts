@@ -355,11 +355,24 @@ export function fromBokjiro(rows: Record<string, string>[]): Benefit[] {
     const who = r.trgterIndvdlNmArray ?? '';
     const theme = r.intrsThemaNmArray ?? '';
     const stages = new Set<StageKey>();
-    for (const [re, k] of LIFE) if (re.test(life)) stages.add(k);
+    const lifeN = life.split(',').filter((x) => x.trim()).length;
+    // 생애주기를 5개 이상 적은 건 '모든 나이'라 이름으로만 나눠요
+    if (lifeN > 0 && lifeN < 5) for (const [re, k] of LIFE) if (re.test(life)) stages.add(k);
+    if (/임신|임산부|출산|난임|산후|산모|신생아/.test(name)) stages.add('pregnancy');
+    if (/영유아|영아|어린이집|보육/.test(name)) stages.add('kids');
+    if (/초등|중학|고등학|청소년|학생|입학/.test(name) && !/대학/.test(name)) stages.add('school');
+    if (/청년/.test(name)) stages.add('youth');
+    if (/중장년|신중년|50플러스/.test(name)) stages.add('midlife');
+    if (/노인|어르신|경로|치매/.test(name)) stages.add('senior');
     if (/장애/.test(who) || /장애/.test(name)) stages.add('disability');
     const tags = new Set<Tag>();
     if (/1인|독거|홀몸|고독/.test(who + name)) tags.add('single');
     if (/일자리|취업|근로/.test(theme + name)) tags.add('worker');
+    if (!stages.size && tags.size) {
+      stages.add('youth');
+      stages.add('midlife');
+      if (tags.has('single')) stages.add('senior');
+    }
     if (!stages.size) continue;
     const { sido, sigungu } = region(`${r.ctpvNm ?? ''} ${r.sggNm ?? ''}`.trim(), '시군구');
     const summary = r.servDgst ?? '';
