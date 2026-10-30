@@ -2,9 +2,9 @@
 
 새 대화에서 이 파일부터 읽고 이어서 작업해요.
 
-## 10/30 — v0.4.2: 우리 동네 빨간 핀 반짝임 (사장님 요청)
-- 📍 들어간 곳(홈 타일·위 탭·분야 안 칸·더 보기 버튼·우리 동네 제목)을 `<span className="pin">`으로 감싸 통통 튀며 빨갛게 빛나는 애니메이션(`pin-bounce`, `pin-glow`, 1.6초 반복). 움직임 줄이기 설정한 폰은 빛만.
-- 번들 release/saengae-benefit-0.4.2.ait.
+## 10/30 — v0.4.3: 우리 동네 빨간 핀 반짝임 (사장님 요청 — 0.4.2의 튀는 움직임 빼고 제자리 반짝임 + 별 반짝)
+- 📍 들어간 곳(홈 타일·위 탭·분야 안 칸·더 보기 버튼·우리 동네 제목)을 `<span className="pin">`으로 감싸 제자리에서 빨갛게 빛나고(`pin-glow`) 오른쪽 위에 흰 별이 반짝(`pin-twinkle`), 1.4초 반복. 튀는 움직임 없음.
+- 번들 release/saengae-benefit-0.4.3.ait.
 
 ## 10/30 — 복지로 지자체 복지서비스 연결 준비 (v0.4.1)
 - 수집기에 복지로 '지자체복지서비스' 목록(apis.data.go.kr/B554287/LocalGovernmentWelfareInformations/LcgvWelfarelist, XML, 500개씩) 붙임. 생애주기(lifeNmArray)→분야, 대상(trgterIndvdlNmArray)·관심주제→1인가구·직장인 태그. id 앞에 'BJ', 정부24에 같은 지역·이름 있으면 뺌.

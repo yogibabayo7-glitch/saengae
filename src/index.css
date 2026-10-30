@@ -748,29 +748,36 @@ ol {
 .home-tile.mini {
   min-height: 0;
 }
-/* 우리 동네 빨간 핀 — 통통 튀면서 반짝여요 (사장님 요청 10/30) */
+/* 우리 동네 빨간 핀 — 제자리에서 반짝반짝 (사장님 요청 10/30: 튀지 말고 반짝임만, 확실히 반짝이게) */
 .pin {
   display: inline-block;
-  transform-origin: 50% 100%;
-  animation: pin-bounce 1.6s ease-in-out infinite, pin-glow 1.6s ease-in-out infinite;
+  position: relative;
+  animation: pin-glow 1.4s ease-in-out infinite;
+}
+.pin::after {
+  content: '';
+  position: absolute;
+  top: -0.05em;
+  right: -0.2em;
+  width: 0.45em;
+  height: 0.45em;
+  background: #fff;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  filter: drop-shadow(0 0 2px #ffd23f);
+  opacity: 0;
+  animation: pin-twinkle 1.4s ease-in-out infinite;
+  pointer-events: none;
 }
 .home-tile .pin {
   font-size: 32px;
 }
-@keyframes pin-bounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  20% { transform: translateY(-6px) scale(1.06); }
-  40% { transform: translateY(0) scale(0.96, 1.04); }
-  55% { transform: translateY(-2px) scale(1.02); }
-  70% { transform: translateY(0) scale(1); }
-}
 @keyframes pin-glow {
-  0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 60, 60, 0)) brightness(1); }
-  25% { filter: drop-shadow(0 0 6px rgba(255, 60, 60, 0.9)) brightness(1.25); }
-  50% { filter: drop-shadow(0 0 2px rgba(255, 60, 60, 0.4)) brightness(1.05); }
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 50, 50, 0)) brightness(1); }
+  35% { filter: drop-shadow(0 0 10px rgba(255, 40, 40, 1)) drop-shadow(0 0 4px rgba(255, 210, 63, 0.9)) brightness(1.45); }
+  65% { filter: drop-shadow(0 0 3px rgba(255, 50, 50, 0.5)) brightness(1.1); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .pin {
-    animation: pin-glow 2.4s ease-in-out infinite;
-  }
+@keyframes pin-twinkle {
+  0%, 15%, 70%, 100% { opacity: 0; transform: scale(0.2) rotate(0deg); }
+  35% { opacity: 1; transform: scale(1.1) rotate(45deg); }
+  50% { opacity: 0.7; transform: scale(0.7) rotate(80deg); }
 }
