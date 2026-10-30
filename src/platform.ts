@@ -14,6 +14,8 @@ export async function openLink(url: string): Promise<void> {
 
 export type TrackEvent =
   | 'stage_opened' // 분야 탭 누름
+  | 'stage_subtab' // 분야 안 칸(기본·1인가구·직장인·우리 동네)
+  | 'stage_local_opened' // 분야 안 우리 동네 혜택 상세
   | 'detail_opened' // 자세히 열림
   | 'gov_link_clicked' // 정부 사이트 버튼
   | 'shop_clicked' // 상품(제휴) 링크

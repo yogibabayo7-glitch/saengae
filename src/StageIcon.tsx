@@ -9,6 +9,7 @@ const PAL: Partial<Record<StageKey, Pal>> = {
   kids: ['#fff0b8', '#ffc53d', '#dd8f00'],
   school: ['#d8f5cc', '#6cc95a', '#3a8f2c'],
   youth: ['#cfe6ff', '#5aa2ff', '#2a62c8'],
+  midlife: ['#ffe2c6', '#ff9a4d', '#d0621a'],
   senior: ['#ebe2ff', '#a98bff', '#6a4bd0'],
   disability: ['#c9f5ec', '#3cc9b0', '#128a76'],
 };
@@ -152,6 +153,23 @@ function Figure({ k, id }: { k: StageKey; id: string }) {
           <Head id={id} cx={32} cy={22} r={10} />
           <Hair id={id} cx={32} cy={22} r={10} />
           <path d="M51 9 L52.6 13 L56.6 13.6 L53.6 16.2 L54.5 20.2 L51 18 L47.5 20.2 L48.4 16.2 L45.4 13.6 L49.4 13 Z" fill="#ffd23f" stroke="#e0a800" strokeWidth="0.6" />
+        </g>
+      );
+    case 'midlife':
+      return (
+        <g>
+          <Shadow />
+          <Body id={id} d="M19 57 C18 43 23 34 32 34 C41 34 46 43 45 57 Z" />
+          <path d="M27.5 34.6 L32 41 L36.5 34.6 Z" fill="#fff" />
+          <path d="M32 38.5 L30.4 41.2 L32 50 L33.6 41.2 Z" fill="#2a62c8" />
+          <path d="M41 13 L47 13 C48.5 13 49.5 14 49.5 15.5 L49.5 19 L38.5 19 L38.5 15.5 C38.5 14 39.5 13 41 13 Z" fill="none" />
+          <rect x="44" y="40" width="13" height="10" rx="2" fill="#8a5a2b" />
+          <path d="M48 40 L48 38 C48 37 48.6 36.5 49.5 36.5 L51.5 36.5 C52.4 36.5 53 37 53 38 L53 40" stroke="#6a4420" strokeWidth="1.4" fill="none" />
+          <circle cx="43" cy="45" r="2.3" fill={`url(#${id}s)`} />
+          <path d="M22 21 C21 10 43 9 42 21 C40 15 30 13 22 21 Z" fill={`url(#${id}h)`} />
+          <Head id={id} cx={32} cy={22} r={10} />
+          <Hair id={id} cx={32} cy={22} r={10} />
+          <path d="M37.5 14.2 Q40 15.5 41.2 18.5" stroke="#d9d9e0" strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </g>
       );
     case 'senior':

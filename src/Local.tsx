@@ -7,7 +7,7 @@ import { openLink, track } from './platform';
 
 const CATS: CatKey[] = ['pension', 'elderDriving', 'disability'];
 const CAT_SHORT: Record<CatKey, string> = { pension: '연금', elderDriving: '어르신 면허 반납', disability: '장애인' };
-const SIDO_KEY = 'saengae.sido';
+export const SIDO_KEY = 'saengae.sido';
 
 export default function Local() {
   const [idx, setIdx] = useState<BenefitIndex | null>(null);
@@ -137,7 +137,7 @@ export default function Local() {
   );
 }
 
-function LocalDetail({ b, onClose }: { b: BenefitSummary; onClose: () => void }) {
+export function LocalDetail({ b, onClose }: { b: BenefitSummary; onClose: () => void }) {
   const [d, setD] = useState<BenefitDetail | null | undefined>(undefined);
   useEffect(() => {
     let alive = true;

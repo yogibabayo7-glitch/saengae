@@ -3,7 +3,11 @@
 
 export const CHECKED_AT = '2026. 10. 30.';
 
-export type StageKey = 'pregnancy' | 'kids' | 'school' | 'youth' | 'marriage' | 'housing' | 'senior' | 'disability' | 'living' | 'everyone';
+export type StageKey = 'pregnancy' | 'kids' | 'school' | 'youth' | 'midlife' | 'senior' | 'disability' | 'everyone';
+
+// 분야 안의 칸: 기본(없음) · 1인가구 · 직장인
+export type CardTab = 'single' | 'worker';
+export const TAB_LABEL: Record<CardTab, string> = { single: '1인가구', worker: '직장인·일자리' };
 
 export type Action =
   | { kind: 'link'; label: string; url: string; primary?: boolean } // 정부 사이트 (새 창)
@@ -18,7 +22,8 @@ export type Card = {
   bullets: string[];
   actions: Action[];
   tone?: 'plan' | 'flag'; // plan=예정(노란 띠), flag=올해 마지막(빨간 띠)
-  hideWithHousing?: boolean; // '집 구할 때'를 숨길 때 같이 숨김
+  tab?: CardTab; // 없으면 '기본' 칸
+  group?: string; // 기본 칸 안의 소제목 (예: 결혼·신혼)
 };
 
 export type ShopItem = { name: string; url: string };
@@ -33,6 +38,7 @@ export type Stage = {
   checklist?: { title: string; items: string[] };
   shopTitle?: string;
   shop?: ShopItem[];
+  mini?: boolean; // 홈 맨 아래 작은 칸으로만 (모든 나이)
 };
 
 export type DetailBlock =
@@ -113,6 +119,41 @@ const ALL_STAGES: Stage[] = [
         actions: [D('d-2027-baby')],
         tone: 'plan',
       },
+      {
+        tab: 'worker',
+        title: '출산전후휴가',
+        amount: '90일 · 월 최대 220만 원',
+        amountNote: '30일당 상한',
+        who: '출산(예정) 여성 근로자',
+        bullets: ['다태아 120일 · 미숙아 출산은 100일', '유산·사산휴가도 같은 상한 (회사 신청 후 고용24)'],
+        actions: [L('고용24', 'https://www.work24.go.kr'), L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148958223', false)],
+      },
+      {
+        tab: 'worker',
+        title: '임신기 근로시간 단축',
+        amount: '월급 그대로',
+        who: '임신 12주 이내 또는 32주 이후 근로자',
+        bullets: ['2025년부터 36주 → 32주로 앞당겨졌어요', '고위험 임신부는 임신 기간 내내 쓸 수 있어요'],
+        actions: [L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148940076')],
+      },
+      {
+        tab: 'worker',
+        title: '난임치료휴가',
+        amount: '연 6일',
+        amountNote: '유급 4일 (2026.11.27~)',
+        who: '난임 검사·시술을 받는 근로자',
+        bullets: ['11월 27일부터 유급이 2일 → 4일로 늘어나요', '시술비 지원 결정통지서로 진단서 대신 가능'],
+        actions: [L('고용노동부 안내', 'https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=19813')],
+      },
+      {
+        tab: 'worker',
+        title: '배우자 출산휴가 · 아빠 휴가',
+        amount: '20일 유급',
+        amountNote: '최대 168만 원',
+        who: '배우자가 출산한 근로자',
+        bullets: ['나눠 쓸 수 있고, 중소기업은 20일 모두 정부 지원', '배우자 유산·사산휴가 5일, 임신 중 육아휴직도 새로 생겼어요 (2026.9)'],
+        actions: [L('고용24', 'https://www.work24.go.kr'), L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148970585', false)],
+      },
     ],
     shopTitle: '함께 준비하면 좋은 물건',
     shop: [
@@ -170,6 +211,7 @@ const ALL_STAGES: Stage[] = [
         actions: [L('아이돌봄서비스', 'https://www.idolbom.go.kr'), L('복지로', 'https://www.bokjiro.go.kr', false)],
       },
       {
+        tab: 'worker',
         title: '육아휴직 급여',
         amount: '월 최대 250만 원',
         amountNote: '첫 3개월',
@@ -178,6 +220,7 @@ const ALL_STAGES: Stage[] = [
         actions: [L('고용24에서 신청', 'https://www.work24.go.kr'), D('d-parental-leave')],
       },
       {
+        tab: 'worker',
         title: '일하는 부모 지원',
         amount: '배우자 출산휴가 20일',
         amountNote: '유급',
@@ -307,6 +350,24 @@ const ALL_STAGES: Stage[] = [
         bullets: ['버스·지하철 탄 만큼 분기마다 돌려받아요', '늦게 신청하면 지난 분기는 못 받아요'],
         actions: [L('경기도 안내', 'https://gnews.gg.go.kr/news/news_detail.do?number=202603251123487127C076&s_code=C076')],
       },
+      {
+        tab: 'worker',
+        title: '육아기 근로시간 단축',
+        amount: '주 10시간까지 월급 100%',
+        amountNote: '상한 250만 원 기준',
+        who: '어린 자녀를 키우는 근로자',
+        bullets: ['2026.9.18부터 \'대체인력 없음\'으로 회사가 거절 못 해요', '고용24에서 급여 신청'],
+        actions: [L('고용24', 'https://www.work24.go.kr')],
+      },
+      {
+        tab: 'worker',
+        title: '단기 육아휴직 · 가족돌봄휴가',
+        amount: '1~2주 휴직',
+        amountNote: '2026.8.20 신설',
+        who: '8세(초2) 이하 자녀를 둔 근로자',
+        bullets: ['방학·휴원·입원 때 1~2주 육아휴직 (자녀 1명당 연 1회)', '가족돌봄휴가는 연 10일 (무급, 한부모 25일까지)'],
+        actions: [L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148969857')],
+      },
     ],
     checklist: {
       title: '학년별로 챙길 때',
@@ -328,7 +389,7 @@ const ALL_STAGES: Stage[] = [
   {
     key: 'youth',
     name: '청년',
-    age: '19~34세',
+    age: '19~34세 · 결혼·신혼 포함',
     emoji: '🧑‍🎓',
     intro: "대학생은 국가장학금부터, 사회초년생은 취업·교통비·주거 지원부터 챙기세요. 전체 청년정책은 '온통청년'에서 조건을 넣고 찾을 수 있어요.",
     cards: [
@@ -356,6 +417,7 @@ const ALL_STAGES: Stage[] = [
         actions: [L('한국장학재단', 'https://www.kosaf.go.kr')],
       },
       {
+        tab: 'worker',
         title: '국민취업지원제도',
         amount: '구직촉진수당 월 60만 원',
         who: '취업을 준비하는 저소득 구직자·청년 (요건 심사)',
@@ -363,6 +425,7 @@ const ALL_STAGES: Stage[] = [
         actions: [L('고용24 바로가기', 'https://www.work24.go.kr')],
       },
       {
+        tab: 'worker',
         title: '국민내일배움카드',
         amount: '1인 300만~500만 원',
         amountNote: '5년간 훈련비',
@@ -371,19 +434,12 @@ const ALL_STAGES: Stage[] = [
         actions: [L('고용24 바로가기', 'https://www.work24.go.kr')],
       },
       {
+        tab: 'worker',
         title: 'K-패스 (교통비 환급)',
         amount: '청년 30% 환급',
         who: '19~34세 대중교통 이용자',
         bullets: ['쓴 교통비의 30%를 돌려받아요', '정액형과 비교해 유리한 방식 자동 적용 · 앱 등록 필요'],
         actions: [L('정책브리핑 안내', 'https://www.korea.kr/news/policyNewsView.do?newsId=148958934')],
-      },
-      {
-        title: '청년월세 지원',
-        amount: '월 최대 20만 원',
-        amountNote: '최장 24개월 · 평생 1회',
-        who: '부모와 따로 사는 19~34세 무주택 청년',
-        bullets: ['해마다 기간을 정해 모집 (2026년은 3.30~5.29 마감)', '서울은 서울시 청년월세(19~39세)도 따로 있어요'],
-        actions: [L('복지로 바로가기', 'https://www.bokjiro.go.kr'), { kind: 'stage', label: '주거 지원 더 보기', stage: 'housing' }],
       },
       {
         title: '자립준비청년 지원',
@@ -416,16 +472,8 @@ const ALL_STAGES: Stage[] = [
         bullets: ['일자리 · 주거 · 교육 · 복지문화 · 참여권리', '지역·나이로 내게 맞는 정책 검색, 청년 상담'],
         actions: [L('온통청년 바로가기', 'https://www.youthcenter.go.kr')],
       },
-    ],
-  },
-  {
-    key: 'marriage',
-    name: '결혼·신혼',
-    age: '예비부부 · 신혼부부',
-    emoji: '💍',
-    intro: '혼인신고 시점에 따라 받는 혜택이 달라져요. 올해 신고하면 세액공제, 내년부터는 현금 지원(예정)입니다. 정부24 보조금24에서 내가 받을 수 있는 혜택을 한 번에 조회할 수 있어요.',
-    cards: [
       {
+        group: '결혼·신혼',
         title: '혼인 세액공제 (2026년 마지막)',
         amount: '부부 최대 100만 원',
         amountNote: '1인 50만 원',
@@ -435,6 +483,7 @@ const ALL_STAGES: Stage[] = [
         tone: 'flag',
       },
       {
+        group: '결혼·신혼',
         title: '혼인지원금 (2027년 예정)',
         amount: '부부 100만 원',
         amountNote: '현금 · 정부안',
@@ -444,6 +493,7 @@ const ALL_STAGES: Stage[] = [
         tone: 'plan',
       },
       {
+        group: '결혼·신혼',
         title: "서울 '더 아름다운 결혼식'",
         amount: '비품비 100만 원',
         who: '서울 공공예식장 이용 예비부부',
@@ -451,6 +501,7 @@ const ALL_STAGES: Stage[] = [
         actions: [L('서울시 안내', 'https://news.seoul.go.kr/welfare/archives/577079')],
       },
       {
+        group: '결혼·신혼',
         title: '전남 청년부부 결혼축하금',
         amount: '200만 원',
         who: '혼인신고일 기준 49세 이하 · 전남 6개월 이상 거주',
@@ -458,27 +509,24 @@ const ALL_STAGES: Stage[] = [
         actions: [L('전남 아이톡', 'https://italk.jeonnam.go.kr')],
       },
       {
+        group: '결혼·신혼',
         title: '내 지역 결혼 지원 한 번에 찾기',
         amount: '보조금24',
         who: '거주지·나이·가족 정보로 맞춤 조회',
         bullets: ['지역별 결혼축하금·신혼부부 지원 검색'],
         actions: [L('정부24 바로가기', 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/646000000122')],
       },
-    ],
-    shopTitle: '함께 준비하면 좋은 물건',
-    shop: [
-      { name: '신혼 주방 살림', url: '' },
-      { name: '침구 세트', url: '' },
-    ],
-  },
-  {
-    key: 'housing',
-    name: '주거 지원',
-    age: '전세사기 예방 · 주거급여 · 청년 월세',
-    emoji: '🏠',
-    intro: '집 계약은 서류 확인이 가장 큰 예방법이에요. 계약 전·계약할 때·잔금 날 확인할 서류를 순서대로 정리했어요. 피해가 의심되면 혼자 고민하지 말고 바로 전세피해지원센터에 연락하세요.',
-    cards: [
       {
+        tab: 'single',
+        title: '청년월세 지원',
+        amount: '월 최대 20만 원',
+        amountNote: '최장 24개월 · 평생 1회',
+        who: '부모와 따로 사는 19~34세 무주택 청년',
+        bullets: ['해마다 기간을 정해 모집 (2026년은 5.29 마감)', '서울은 서울시 청년월세(19~39세, 월 20만 × 12개월)도 따로'],
+        actions: [L('복지로 바로가기', 'https://www.bokjiro.go.kr')],
+      },
+      {
+        tab: 'single',
         title: '전세사기 예방 체크리스트',
         amount: '단계별 서류 확인',
         amountNote: '계약 전 → 입주 후',
@@ -487,6 +535,7 @@ const ALL_STAGES: Stage[] = [
         actions: [D('d-jeonse', '단계별로 보기')],
       },
       {
+        tab: 'single',
         title: '전세피해지원센터',
         amount: '상담 1533-8119',
         amountNote: 'HUG 운영',
@@ -495,6 +544,7 @@ const ALL_STAGES: Stage[] = [
         actions: [L('전세피해지원센터', 'https://www.khug.or.kr/jeonse/web/s01/s010002.jsp'), D('d-jeonse-victim')],
       },
       {
+        tab: 'single',
         title: '전세사기 피해자 지원',
         amount: '보증금 최소 1/3 보장',
         amountNote: '2026.11.13 시행',
@@ -504,50 +554,209 @@ const ALL_STAGES: Stage[] = [
         tone: 'flag',
       },
       {
-        title: '주거급여',
-        amount: '1인 월 최대 36.9만 원',
-        amountNote: '서울 기준',
-        who: '소득인정액 기준중위소득 48% 이하 (1인 월 약 123만 원)',
-        bullets: ['경기·인천 30만 · 광역시 24.7만 · 그 밖 21.2만 원 (1인)', '부모와 떨어져 사는 19~30세 청년은 따로 받을 수 있어요'],
-        actions: [L('복지로에서 신청', 'https://www.bokjiro.go.kr')],
+        tab: 'single',
+        title: '청년 주거급여 · 공공임대 상담',
+        amount: '주거급여 따로 받기',
+        who: '주거급여 받는 가구의 19~29세 미혼 자녀 (부모와 다른 시·군 거주)',
+        bullets: ['부모님과 따로 내 월세를 주거급여로 받아요 (복지로 신청)', '행복주택 등 공공임대 자격은 마이홈 1600-1004'],
+        actions: [L('복지로', 'https://www.bokjiro.go.kr'), L('마이홈포털', 'https://www.myhome.go.kr', false)],
       },
       {
-        title: '청년월세 지원',
-        amount: '월 최대 20만 원',
-        amountNote: '최장 24개월',
-        who: '부모와 따로 사는 19~34세 무주택 청년',
-        bullets: ['해마다 기간을 정해 모집 (2026년은 5.29 마감)', '서울시 청년월세(19~39세, 월 20만 × 12개월)는 따로 모집'],
-        actions: [L('복지로 바로가기', 'https://www.bokjiro.go.kr')],
+        tab: 'single',
+        title: '서울 1인가구 안심 지원',
+        amount: '안심장비 무료',
+        amountNote: '서울',
+        who: '서울에 사는 1인가구',
+        bullets: ['스마트초인종·홈캠 등 안심홈세트, 누르면 출동 요청하는 안심벨', '혼자 병원 갈 때 동행 매니저 (시간당 6천 원, 저소득 무료)'],
+        actions: [L('서울시 안내', 'https://love.seoul.go.kr/articles/10589')],
       },
       {
-        title: '공공임대주택 상담',
-        amount: '마이홈 1600-1004',
-        who: '무주택 저소득층 · 청년 · 신혼부부 등',
-        bullets: ['행복주택·국민임대·매입임대·전세임대 자격 상담', '평일 9~18시 (점심 12~13시 제외)'],
-        actions: [L('마이홈포털', 'https://www.myhome.go.kr')],
+        tab: 'worker',
+        title: '중소기업 취업 청년 소득세 감면',
+        amount: '소득세 90% 감면',
+        amountNote: '5년 · 연 200만 원 한도',
+        who: '중소기업에 취업한 15~34세',
+        bullets: ['회사에 감면 신청서만 내면 돼요', '60세 이상·장애인·경력단절자는 70%, 3년'],
+        actions: [L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148958309')],
       },
       {
-        title: '쪽방·고시원·반지하 이주 지원',
-        amount: '공공임대 이주',
-        who: '쪽방·고시원·반지하 등에 사는 사람',
-        bullets: ['LH 이주지원센터가 상담하고 집을 함께 찾아줘요', '보증금·이사비 등 지원'],
-        actions: [L('마이홈포털', 'https://www.myhome.go.kr')],
+        tab: 'worker',
+        title: '청년 근속 인센티브',
+        amount: '2년간 최대 480만~720만 원',
+        amountNote: '비수도권',
+        who: '비수도권 참여기업에 정규직으로 취업한 청년',
+        bullets: ['청년 본인에게 직접 줘요 (6·12·18·24개월째)', '지역(일반·우대·특별)에 따라 금액이 달라요'],
+        actions: [L('고용24', 'https://www.work24.go.kr'), L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148972497', false)],
+      },
+      {
+        tab: 'worker',
+        title: '근로장려금',
+        amount: '단독 최대 165만 원',
+        amountNote: '맞벌이 최대 330만 원',
+        who: '소득·재산 기준을 갖춘 일하는 가구',
+        bullets: ['정기 신청은 5월 · 놓쳤다면 12월 1일까지 (95% 지급)', '1인 가구는 연소득 2,200만 원 미만'],
+        actions: [L('홈택스', 'https://www.hometax.go.kr')],
+      },
+      {
+        tab: 'worker',
+        title: '임금체불 · 직장 내 괴롭힘 신고',
+        amount: '상담 1350',
+        who: '모든 근로자',
+        bullets: ['노동포털에서 온라인 진정 (체불·괴롭힘 공통)', '체불 대지급금: 간이 최대 1,000만 원까지 나라가 먼저'],
+        actions: [L('노동포털 진정', 'https://labor.moel.go.kr/minwonApply/minwonFormat.do?searchVal=SN001')],
       },
     ],
-    checklist: {
-      title: '계약 전 꼭 볼 서류 5가지',
-      items: [
-        '등기부등본(인터넷등기소): 갑구에서 집주인 이름·압류, 을구에서 근저당 같은 앞선 빚 확인',
-        '건축물대장(정부24): 위반건축물 표시가 있으면 피하기',
-        '집주인 국세·지방세 납세증명서 요청 (계약 후엔 동의 없이 열람 가능)',
-        '다가구주택이면 다른 세입자 보증금(확정일자 부여현황) 확인',
-        '보증금이 집값의 80%를 넘으면 위험 신호 (깡통전세)',
-      ],
-    },
-    shopTitle: '혼자 살 때 필요한 물건',
+    shopTitle: '혼자 살거나 신혼 살림 준비할 때',
     shop: [
+      { name: '신혼 주방 살림', url: '' },
+      { name: '침구 세트', url: '' },
       { name: '현관 보조키·도어락', url: '' },
       { name: '1인 가구 수납용품', url: '' },
+    ],
+  },
+  {
+    key: 'midlife',
+    name: '중장년',
+    age: '40~64세',
+    emoji: '🧑‍💼',
+    intro: '40대부터는 건강검진과 노후 준비, 퇴직 뒤 재취업이 중요해져요. 갑자기 어려워지면 129(보건복지상담센터)에 먼저 연락하세요.',
+    cards: [
+      {
+        title: '생애전환기 건강검진',
+        amount: '무료',
+        amountNote: '만 40세 · 66세',
+        who: '만 40세가 되는 해 (국가건강검진)',
+        bullets: ['40세: B형간염·생활습관·구강 검사 추가', '공단 안내문 받으면 신분증만 들고 지정 병원으로'],
+        actions: [L('건강보험공단', 'https://www.nhis.or.kr')],
+      },
+      {
+        title: '국가 암검진 (6대 암)',
+        amount: '본인부담 10%',
+        amountNote: '대장·자궁경부암 무료',
+        who: '위·유방암 40세+ 2년마다 · 대장암 50세+ 매년',
+        bullets: ['간암 40세+ 고위험군, 폐암 54~74세 고위험군', '의료급여 수급자는 전액 무료'],
+        actions: [L('국가암정보센터', 'https://www.cancer.go.kr/lay1/S1T261C262/contents.do')],
+      },
+      {
+        title: '노후준비서비스',
+        amount: '무료 상담',
+        amountNote: '☎ 1355',
+        who: '국민 누구나 (국민연금공단)',
+        bullets: ['돈·건강·여가·관계를 함께 점검해요', '내 연금 예상액과 노후 준비 상담'],
+        actions: [L('국민연금공단', 'https://csa.nps.or.kr/ohkb/gdnc/UHKB0301M0.do')],
+      },
+      {
+        title: '마음건강 심리상담',
+        amount: '상담 8회',
+        amountNote: '본인부담 0~50%',
+        who: '우울·불안이 있는 분 (나이·소득 제한 없음)',
+        bullets: ['의뢰서·진단서 또는 검진 우울척도 10점 이상', '주민센터·복지로에서 신청'],
+        actions: [L('복지로', 'https://www.bokjiro.go.kr')],
+      },
+      {
+        title: '생계급여 · 의료급여',
+        amount: '1인 월 82만 원',
+        amountNote: '생계급여 최대',
+        who: '소득인정액 기준중위소득 32%(생계)·40%(의료) 이하',
+        bullets: ['2027년 생계급여 1인 87.6만 원으로 인상 확정', '의료급여는 2026년 부양비 폐지'],
+        actions: [L('복지로에서 신청', 'https://www.bokjiro.go.kr'), D('d-median')],
+      },
+      {
+        title: '긴급복지지원',
+        amount: '1인 월 78만 원',
+        amountNote: '생계지원',
+        who: '실직·폐업·중병 등 갑자기 위기에 처한 가구',
+        bullets: ['먼저 지원하고 나중에 조사해요', '☎ 129 (24시간) 또는 주민센터'],
+        actions: [L('복지로', 'https://www.bokjiro.go.kr')],
+      },
+      {
+        title: '에너지바우처 · 문화누리카드',
+        amount: '난방비 · 연 15만 원',
+        who: '기초수급·차상위 가구',
+        bullets: ['에너지바우처 12월 31일 신청 마감 (연 29.5만~70.1만 원)', '문화누리카드 11월 30일 발급 마감'],
+        actions: [L('복지로', 'https://www.bokjiro.go.kr'), L('문화누리카드', 'https://www.mnuri.kr', false)],
+        tone: 'flag',
+      },
+      {
+        tab: 'single',
+        title: '외로움 상담 · 고독사 예방',
+        amount: '무료',
+        who: '혼자 지내며 외로움·고립을 느끼는 분과 가족·이웃',
+        bullets: ['주민센터에서 안부 확인 서비스로 연결', '서울은 외로움안녕120 (120 → 5번, 24시간)'],
+        actions: [L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148964300')],
+      },
+      {
+        tab: 'single',
+        title: '서울 1인가구 지원',
+        amount: '병원 동행 · 안심장비',
+        amountNote: '서울',
+        who: '서울에 사는 1인가구',
+        bullets: ['병원 안심동행 시간당 6천 원 (저소득 무료) ☎ 1533-1179', '40~67세 1인가구 요리·모임 프로그램 (1인가구지원센터)'],
+        actions: [L('서울시 안내', 'https://love.seoul.go.kr/articles/10589')],
+      },
+      {
+        tab: 'single',
+        title: '주거급여 · 공공임대 상담',
+        amount: '1인 월 최대 36.9만 원',
+        amountNote: '서울 기준',
+        who: '소득인정액 기준중위소득 48% 이하',
+        bullets: ['경기·인천 30만 · 광역시 24.7만 · 그 밖 21.2만 원 (1인)', '공공임대 자격은 마이홈 1600-1004 · 쪽방·고시원 이주 지원도'],
+        actions: [L('복지로', 'https://www.bokjiro.go.kr'), L('마이홈포털', 'https://www.myhome.go.kr', false)],
+      },
+      {
+        tab: 'worker',
+        title: '중장년내일센터',
+        amount: '무료',
+        amountNote: '전국 38곳',
+        who: '만 40세 이상 재직자·퇴직(예정)자·구직자',
+        bullets: ['경력 진단, 전직·재취업 준비 교육', '생애경력설계 서비스 (40+·50+·60+ 과정)'],
+        actions: [L('고용24', 'https://www.work24.go.kr/wk/u/a/1000/seniorCenterSvcInfo.do')],
+      },
+      {
+        tab: 'worker',
+        title: '중장년 경력지원제',
+        amount: '월 최대 150만 원',
+        amountNote: '1~3개월 · 2026 신설',
+        who: '만 50~65세 퇴직자 (자격증·훈련 마친 분)',
+        bullets: ['새 직무를 기업에서 직접 일하며 경험해요', '실무와 멘토링을 함께 · 문의 1350'],
+        actions: [L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148959330')],
+      },
+      {
+        tab: 'worker',
+        title: '서울 중장년 가치동행일자리',
+        amount: '월 최대 58만 원',
+        amountNote: '월 57시간 · 서울',
+        who: '40세 이상 서울시민',
+        bullets: ['경력을 살려 지역사회 일자리에서 일해요', '50플러스포털에서 온라인 신청'],
+        actions: [L('50플러스포털', 'https://www.50plus.or.kr/nwc/value.do')],
+      },
+      {
+        tab: 'worker',
+        title: '실업급여 · 체불 대지급금',
+        amount: '하루 최대 6만 8,100원',
+        who: '원치 않게 일을 그만둔 고용보험 가입자',
+        bullets: ['임금을 못 받았으면 대지급금 (간이 최대 1,000만 원)', '고용24 신청 · 체불 상담 1350'],
+        actions: [L('고용24', 'https://www.work24.go.kr')],
+      },
+      {
+        tab: 'worker',
+        title: '근로장려금 · 자녀장려금',
+        amount: '최대 330만 원',
+        amountNote: '자녀 1명당 최대 100만 원',
+        who: '소득·재산 기준을 갖춘 일하는 가구',
+        bullets: ['홑벌이 285만 · 맞벌이 330만 원까지', '놓쳤다면 12월 1일까지 기한 후 신청 (95% 지급)'],
+        actions: [L('홈택스', 'https://www.hometax.go.kr')],
+        tone: 'flag',
+      },
+      {
+        tab: 'worker',
+        title: '국민내일배움카드',
+        amount: '300만~500만 원',
+        amountNote: '5년간 훈련비',
+        who: '국민 누구나 (공무원·고소득자·75세 이상 제외)',
+        bullets: ['재취업·전직에 필요한 직업훈련', '고용24에서 카드 신청'],
+        actions: [L('고용24', 'https://www.work24.go.kr')],
+      },
     ],
   },
   {
@@ -615,6 +824,31 @@ const ALL_STAGES: Stage[] = [
         bullets: ['돌봄 목적의 시설 · 등급 신청은 건강보험공단', '기초생활수급자는 본인부담 면제'],
         actions: [L('장기요양보험', 'https://www.longtermcare.or.kr'), D('d-care')],
       },
+      {
+        tab: 'single',
+        title: '노인맞춤돌봄서비스',
+        amount: '무료',
+        who: '65세 이상 기초연금·차상위·수급자 중 돌봄이 필요한 분 (홀로 사는 분 등)',
+        bullets: ['안부 확인, 외출·가사 도움, 친구 만들기 프로그램', '주소지 주민센터에서 신청'],
+        actions: [L('복지로', 'https://www.bokjiro.go.kr')],
+      },
+      {
+        tab: 'single',
+        title: '응급안전안심서비스',
+        amount: '감지기·호출기 설치',
+        who: '65세 이상 홀로 사는 분 · 노인부부 · 조손가구 (독거는 소득 무관)',
+        bullets: ['화재·활동량 감지기와 응급호출기를 집에 달아요', '위급할 때 119로 바로 연결'],
+        actions: [L('복지로', 'https://www.bokjiro.go.kr')],
+      },
+      {
+        tab: 'worker',
+        title: '노인일자리 (공익활동)',
+        amount: '월 29만 원',
+        amountNote: '월 30시간',
+        who: '65세 이상 기초연금 수급자',
+        bullets: ['2026년 노인일자리 115만 개 · 공익활동 70만 개', '역량활용형·공동체사업단 등 다른 유형도 있어요'],
+        actions: [L('노인일자리 여기', 'https://www.seniorro.or.kr'), L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148958935', false)],
+      },
     ],
     shopTitle: '어르신 건강에 도움 되는 물건',
     shop: [
@@ -659,6 +893,24 @@ const ALL_STAGES: Stage[] = [
         bullets: ['휴대폰 요금 35% 할인 (본인 명의 1회선, 통신사·주민센터 신청)', '고속도로 통행료 50% 감면', '시·청각장애인 가정 TV 수신료 면제', '연말정산 장애인 추가공제 1인당 200만 원'],
         actions: [D('d-disability')],
       },
+      {
+        tab: 'worker',
+        title: '근로지원인 서비스',
+        amount: '본인부담 시간당 300원',
+        amountNote: '하루 8시간까지',
+        who: '월 60시간 이상 일하는 중증장애인 근로자',
+        bullets: ['업무를 도와주는 근로지원인이 함께 일해요', '사업주 동의를 받아 장애인고용공단에 신청'],
+        actions: [L('장애인고용공단', 'https://www.kead.or.kr/sprlbsprt/cntntsPage.do?menuId=MENU0632')],
+      },
+      {
+        tab: 'worker',
+        title: '보조공학기기 지원',
+        amount: '1인 최대 1,500만 원',
+        amountNote: '중증 2,000만 원',
+        who: '장애인 근로자 또는 장애인을 고용한 사업주',
+        bullets: ['일할 때 필요한 기기를 지원해요', '공단 보조공학센터(hub.kead.or.kr)에서 신청'],
+        actions: [L('장애인고용공단', 'https://www.kead.or.kr/atintrdbsns/cntntsPage.do?menuId=MENU0629')],
+      },
     ],
     shopTitle: '생활에 도움 되는 물건',
     shop: [
@@ -667,80 +919,8 @@ const ALL_STAGES: Stage[] = [
     ],
   },
   {
-    key: 'living',
-    name: '생활안정',
-    age: '저소득 · 위기 가구 · 모든 나이',
-    emoji: '🤝',
-    intro: '갑자기 일이 끊기거나 생활비가 모자랄 때 받을 수 있는 지원이에요. 급하면 보건복지상담센터 129나 주민센터에 먼저 연락하세요.',
-    cards: [
-      {
-        title: '근로장려금 · 자녀장려금',
-        amount: '최대 330만 원',
-        amountNote: '자녀 1명당 최대 100만 원',
-        who: '소득·재산 기준을 갖춘 일하는 가구',
-        bullets: ['단독 165만 · 홑벌이 285만 · 맞벌이 330만 원까지', '놓쳤다면 12월 1일까지 기한 후 신청 (95% 지급)'],
-        actions: [L('홈택스', 'https://www.hometax.go.kr')],
-        tone: 'flag',
-      },
-      {
-        title: '에너지바우처',
-        amount: '연 29.5만~70.1만 원',
-        amountNote: '가구원 수별',
-        who: '기초수급 가구 중 노인·영유아·장애인·한부모 등이 있는 가구',
-        bullets: ['전기·가스·난방비 지원', '12월 31일까지 신청 · 겨울분은 2027.5.31까지 사용'],
-        actions: [L('복지로', 'https://www.bokjiro.go.kr')],
-        tone: 'flag',
-      },
-      {
-        title: '문화누리카드',
-        amount: '연 15만 원',
-        amountNote: '13~18세·60~64세 16만 원',
-        who: '6세 이상 기초수급자·차상위',
-        bullets: ['문화·여행·체육에 써요', '11월 30일 발급 마감 · 12월 31일까지 사용'],
-        actions: [L('문화누리카드', 'https://www.mnuri.kr')],
-        tone: 'flag',
-      },
-      {
-        title: '생계급여',
-        amount: '1인 월 82만 원',
-        amountNote: '4인 월 207.8만 원',
-        who: '소득인정액 기준중위소득 32% 이하 가구',
-        bullets: ['모자란 생활비를 매달 채워줘요', '2027년 1인 87.6만 · 4인 221.8만 원으로 인상 확정'],
-        actions: [L('복지로에서 신청', 'https://www.bokjiro.go.kr'), D('d-median')],
-      },
-      {
-        title: '의료급여',
-        amount: '병원비 대부분 지원',
-        who: '기준중위소득 40% 이하 가구',
-        bullets: ['2026년 부양비 제도 폐지', '연락 끊긴 가족 때문에 탈락하지 않아요'],
-        actions: [L('복지로에서 신청', 'https://www.bokjiro.go.kr'), D('d-median')],
-      },
-      {
-        title: '긴급복지 생계지원',
-        amount: '1인 월 78만 원',
-        amountNote: '4인 월 199만 원',
-        who: '갑자기 소득이 끊기는 등 위기에 처한 가구',
-        bullets: ['먼저 지원하고 나중에 조사해요', '129 또는 행정복지센터에 바로 연락'],
-        actions: [L('복지로', 'https://www.bokjiro.go.kr')],
-      },
-      {
-        title: '실업급여 (구직급여)',
-        amount: '하루 최대 6만 8,100원',
-        who: '고용보험에 가입했다가 원치 않게 일을 그만둔 사람',
-        bullets: ['2026년 상한액 6만 6천 → 6만 8,100원', '고용24에서 신청 · 구직활동 필요'],
-        actions: [L('고용24', 'https://www.work24.go.kr')],
-      },
-      {
-        title: '한부모가족 지원',
-        amount: '자녀 1명당 월 23만 원',
-        who: '기준중위소득 63% 이하 한부모 가구',
-        bullets: ['18세 미만 자녀 아동양육비', '초중고생 학용품비 연 10만 원'],
-        actions: [L('복지로에서 신청', 'https://www.bokjiro.go.kr')],
-      },
-    ],
-  },
-  {
     key: 'everyone',
+    mini: true,
     name: '모든 나이',
     age: '누구나',
     emoji: '🌐',
@@ -770,12 +950,7 @@ const ALL_STAGES: Stage[] = [
   },
 ];
 
-// ⚠ 앱인토스 서비스 오픈 정책: 부동산 카테고리(전세보증금·대출·이사 등) 한시적 출시 불가 (10/30 확인)
-// → '집 구할 때' 분야와 전세 관련 카드를 숨김. 제한이 풀리면 HIDE_HOUSING = false 로 바꾸면 다시 보여요.
-export const HIDE_HOUSING = false; // 10/30 사장님: 전세사기 예방·주거복지로 바꿔서 다시 보이기 (보증상품·대출·이사 내용은 뺌)
-export const STAGES: Stage[] = ALL_STAGES.filter((s) => !(HIDE_HOUSING && s.key === 'housing')).map((s) =>
-  HIDE_HOUSING ? { ...s, cards: s.cards.filter((c) => !c.hideWithHousing) } : s,
-);
+export const STAGES: Stage[] = ALL_STAGES;
 
 // ───────── 자세한 내용 ─────────
 export const DETAILS: Detail[] = [
@@ -889,7 +1064,7 @@ export const DETAILS: Detail[] = [
   },
   {
     id: 'd-jeonse',
-    stage: 'housing',
+    stage: 'youth',
     title: '전세사기 예방 — 단계별로 확인할 것',
     blocks: [
       { kind: 'h', text: '1. 계약 전' },
@@ -941,7 +1116,7 @@ export const DETAILS: Detail[] = [
   },
   {
     id: 'd-jeonse-victim',
-    stage: 'housing',
+    stage: 'youth',
     title: '전세 피해를 입었을 때',
     blocks: [
       {
@@ -959,7 +1134,7 @@ export const DETAILS: Detail[] = [
   },
   {
     id: 'd-median',
-    stage: 'living',
+    stage: 'midlife',
     title: '기준중위소득과 급여 기준 (월)',
     blocks: [
       {
@@ -1099,7 +1274,7 @@ export const DETAILS: Detail[] = [
   },
   {
     id: 'd-marriage-money',
-    stage: 'marriage',
+    stage: 'youth',
     title: '혼인 세액공제와 혼인지원금',
     blocks: [
       {

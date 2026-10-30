@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { StageIcon } from './StageIcon';
 import { CHECKED_AT, DETAILS, FOOTER, NOTICES, SHOP_DISCLOSE, STAGES, findDetail, findStage } from './data/content';
-import type { Action, Card, Detail, DetailBlock, Stage, StageKey } from './data/content';
+import type { Action, Card, CardTab, Detail, DetailBlock, Stage, StageKey } from './data/content';
+import { TAB_LABEL } from './data/content';
+import StageLocal from './StageLocal';
 import { initBackHandler, useBackLayer } from './back';
 import { attachBanner, openLink, track, BANNER_AD_ID } from './platform';
 import Local from './Local';
@@ -93,7 +95,7 @@ function Home({ onGo }: { onGo: (v: View) => void }) {
           </span>
         </button>
         {STAGES.map((s) => (
-          <button key={s.key} className="home-tile" onClick={() => onGo(s.key)}>
+          <button key={s.key} className={`home-tile${s.mini ? ' mini' : ''}`} onClick={() => onGo(s.key)}>
             <StageIcon k={s.key} emoji={s.emoji} size={54} />
             <b>{s.name}</b>
             <small>{s.age}</small>
@@ -131,7 +133,7 @@ function Tabs({ view, onGo }: { view: View; onGo: (v: View) => void }) {
       <button className={`tab local${view === 'local' ? ' on' : ''}`} onClick={() => onGo('local')}>
         📍 우리 동네
       </button>
-      {STAGES.map((s) => (
+      {STAGES.filter((s) => !s.mini || view === s.key).map((s) => (
         <button key={s.key} className={`tab${view === s.key ? ' on' : ''}`} onClick={() => onGo(s.key)}>
           {s.name}
         </button>
@@ -140,7 +142,23 @@ function Tabs({ view, onGo }: { view: View; onGo: (v: View) => void }) {
   );
 }
 
+type SubTab = '' | CardTab | 'local';
+
 function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) => void; onDetail: (id: string) => void }) {
+  const [sub, setSub] = useState<SubTab>('');
+  const [localTag, setLocalTag] = useState('');
+  useEffect(() => {
+    setSub('');
+    setLocalTag('');
+  }, [stage.key]);
+  const has = (t: CardTab) => stage.cards.some((c) => c.tab === t);
+  const subs: [SubTab, string][] = [['', '기본']];
+  if (has('single')) subs.push(['single', TAB_LABEL.single]);
+  if (has('worker')) subs.push(['worker', TAB_LABEL.worker]);
+  if (!stage.mini) subs.push(['local', '📍 우리 동네']);
+  const cards = sub === 'local' ? [] : stage.cards.filter((c) => (c.tab ?? '') === sub);
+  const plain = cards.filter((c) => !c.group);
+  const groups = [...new Set(cards.filter((c) => c.group).map((c) => c.group!))];
   return (
     <>
       <div className="stage-head">
@@ -150,20 +168,66 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
         </h2>
         <p>{stage.intro}</p>
       </div>
-      <div className="cards">
-        {stage.cards.map((c) => (
-          <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} />
-        ))}
-      </div>
-      {stage.checklist && (
-        <div className="check">
-          <h3>✅ {stage.checklist.title}</h3>
-          <ol>
-            {stage.checklist.items.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ol>
+      {subs.length > 1 && (
+        <div className="subtabs">
+          {subs.map(([k, label]) => (
+            <button
+              key={k}
+              className={`subtab${sub === k ? ' on' : ''}`}
+              onClick={() => {
+                setSub(k);
+                setLocalTag('');
+                track('stage_subtab', { stage: stage.key, sub: k || 'basic' });
+              }}
+            >
+              {label}
+            </button>
+          ))}
         </div>
+      )}
+      {sub === 'local' ? (
+        <StageLocal key={stage.key + localTag} stageKey={stage.key} stageName={stage.name} initialTag={localTag} />
+      ) : (
+        <>
+          <div className="cards">
+            {plain.map((c) => (
+              <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} />
+            ))}
+          </div>
+          {groups.map((g) => (
+            <div key={g}>
+              <h3 className="group-head">{g}</h3>
+              <div className="cards">
+                {cards
+                  .filter((c) => c.group === g)
+                  .map((c) => (
+                    <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} />
+                  ))}
+              </div>
+            </div>
+          ))}
+          {sub !== '' && (
+            <button
+              className="btn ghost block more-local"
+              onClick={() => {
+                setLocalTag(sub);
+                setSub('local');
+              }}
+            >
+              📍 우리 동네 {sub === 'single' ? '1인가구' : '직장인·일자리'} 혜택 더 보기
+            </button>
+          )}
+          {sub === '' && stage.checklist && (
+            <div className="check">
+              <h3>✅ {stage.checklist.title}</h3>
+              <ol>
+                {stage.checklist.items.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </>
       )}
       <ShopBox stage={stage} />
       <AdSlot />

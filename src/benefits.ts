@@ -175,3 +175,31 @@ export function updatedLabel(iso: string) {
 export function toLines(s: string): string[] {
   return s.split(/\n+|(?=○)|(?=●)/).map((t) => t.replace(/^[\s○●□■◦•※▶-]+/, '').trim()).filter(Boolean);
 }
+
+// ───────── 분야(생애 단계)별 목록 ─────────
+// app/stage/<분야>.json — 그 분야 화면에서 '우리 동네' 칸을 열 때만 받아요. tags: single(1인가구) · worker(직장인·일자리)
+export type StageItem = BenefitSummary & { tags: string[] };
+export type StageList = { updatedAt: string; source: string; items: StageItem[] };
+
+export async function loadStage(key: string, onUpdate?: (s: StageList) => void): Promise<StageList> {
+  const ck = `saengae.stage.${key}`;
+  const toList = (raw: RawIndex): StageList => {
+    const f = raw.fields;
+    const items = raw.items.map((row) => {
+      const o = Object.fromEntries(f.map((k, i) => [k, row[i]])) as unknown as StageItem;
+      o.cats = [];
+      return o;
+    });
+    return { updatedAt: raw.updatedAt, source: raw.source, items };
+  };
+  const cached = cacheGet<RawIndex>(ck);
+  const fresh = fetchJson<RawIndex>(`app/stage/${key}.json`).then((raw) => {
+    if (!cached || raw.updatedAt !== cached.updatedAt) {
+      cacheSet(ck, raw);
+      if (cached) onUpdate?.(toList(raw));
+    }
+    return toList(raw);
+  });
+  if (cached) { fresh.catch(() => {}); return toList(cached); }
+  return fresh;
+}
