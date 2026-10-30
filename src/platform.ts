@@ -30,8 +30,8 @@ export function track(name: TrackEvent, params: Record<string, string | number> 
 }
 
 // ── 배너 광고 (토스가 광고를 채워줘요) ──
-// .env의 VITE_BANNER_AD_ID에 콘솔에서 받은 광고 그룹 ID를 넣어요. 비어 있으면 광고 자리를 안 만들어요.
-export const BANNER_AD_ID: string = import.meta.env.VITE_BANNER_AD_ID ?? '';
+// 콘솔 인앱 광고 '생애혜택' 배너 그룹 ID (10/30 사장님 발급). VITE_BANNER_AD_ID를 넣으면 그게 먼저예요.
+export const BANNER_AD_ID: string = import.meta.env.VITE_BANNER_AD_ID || 'ait.v2.live.9902f46410c347b4';
 let adsInitialized = false;
 
 export function attachBanner(el: HTMLElement): () => void {
