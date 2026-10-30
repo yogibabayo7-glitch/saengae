@@ -55,7 +55,7 @@ export default function App() {
     <div className="screen">
       <div className="scroll" ref={scrollRef} onScroll={onScroll}>
         {view === 'home' ? (
-          <Home onGo={go} />
+          <Home onGo={go} onDetail={openDetail} />
         ) : (
           <>
             <Tabs view={view} onGo={go} />
@@ -74,7 +74,7 @@ export default function App() {
   );
 }
 
-function Home({ onGo }: { onGo: (v: View) => void }) {
+function Home({ onGo, onDetail }: { onGo: (v: View) => void; onDetail: (id: string) => void }) {
   return (
     <>
       <header className="hero">
@@ -110,6 +110,24 @@ function Home({ onGo }: { onGo: (v: View) => void }) {
             <li key={n.title}>
               <span className={`tag ${TAG_CLASS[n.tag]}`}>{n.tag}</span>
               <b>{n.title}</b> {n.text}
+              {n.go && (
+                <div className="notice-go">
+                  {n.go.map((a, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        if (a.kind === 'link') {
+                          track('gov_link_clicked', { url: a.url, title: n.title });
+                          void openLink(a.url);
+                        } else if (a.kind === 'detail') onDetail(a.id);
+                        else onGo(a.stage);
+                      }}
+                    >
+                      {a.kind === 'detail' ? a.label ?? '자세히' : a.label} {a.kind === 'link' ? '↗' : '›'}
+                    </button>
+                  ))}
+                </div>
+              )}
             </li>
           ))}
         </ul>

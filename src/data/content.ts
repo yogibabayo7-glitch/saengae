@@ -49,27 +49,28 @@ export type DetailBlock =
 
 export type Detail = { id: string; title: string; meta?: string; blocks: DetailBlock[]; source: string; stage: StageKey };
 
-export type Notice = { tag: '종료' | '올해 마지막' | '2027 예정' | '진행 중'; title: string; text: string };
+export type Notice = { tag: '종료' | '올해 마지막' | '2027 예정' | '진행 중'; title: string; text: string; go?: Action[] }; // go: 누르면 바로 가는 곳
+
+const L = (label: string, url: string, primary = true): Action => ({ kind: 'link', label, url, primary });
+const D = (id: string, label = '자세히'): Action => ({ kind: 'detail', id, label });
 
 // ───────── 지금 꼭 확인할 변경 사항 ─────────
 export const NOTICES: Notice[] = [
-  { tag: '종료', title: '경기도 산후조리비(50만 원)', text: '2026년 9월 30일 신청분까지만 지원하고 10월 1일부터 끝났어요. 일부 시·군은 자체 지원을 이어갑니다.' },
-  { tag: '올해 마지막', title: '혼인 세액공제', text: '2024~2026년에 혼인신고한 부부까지만 적용돼요.' },
-  { tag: '2027 예정', title: '혼인지원금 100만 원 · 아이맞이지원금 최대 2,000만 원', text: '혼인지원금(2027.1.1 이후 혼인신고)과 아이맞이지원금(2027.7.1 이후 출생)은 정부 예산안 단계라 국회 심의 결과에 따라 바뀔 수 있어요.' },
-  { tag: '올해 마지막', title: '문화누리카드 11월 30일 발급 마감', text: '기초수급·차상위 연 15만 원. 발급은 11월 30일까지, 사용은 12월 31일까지예요.' },
-  { tag: '올해 마지막', title: '근로·자녀장려금 기한 후 신청 12월 1일까지', text: '5월에 놓쳤다면 12월 1일까지 홈택스에서 신청하면 95%를 받아요.' },
-  { tag: '올해 마지막', title: '에너지바우처 12월 31일 신청 마감', text: '기초수급 가구 중 노인·영유아·장애인 등이 있으면 연 29.5만~70.1만 원 난방비 지원.' },
-  { tag: '진행 중', title: '전세사기 피해자 보증금 최소 1/3 보장', text: '11월 13일부터 시행. 돌려받은 돈이 보증금 1/3에 못 미치면 나라가 차액을 지원해요.' },
-  { tag: '진행 중', title: '2027학년도 1학기 국가장학금 신청', text: '보통 11월 중순에 1차 신청이 열려요. 고3·대학생은 한국장학재단 공지를 확인하세요.' },
-  { tag: '진행 중', title: '65세 이상 독감·코로나19 무료 접종', text: '연령별로 시작됐어요. 코로나19는 2027년 6월 30일까지 맞을 수 있어요.' },
+  { tag: '종료', title: '경기도 산후조리비(50만 원)', text: '2026년 9월 30일 신청분까지만 지원하고 10월 1일부터 끝났어요. 일부 시·군은 자체 지원을 이어갑니다.', go: [D('d-postpartum', '지역별 산후조리비 보기')] },
+  { tag: '올해 마지막', title: '혼인 세액공제', text: '2024~2026년에 혼인신고한 부부까지만 적용돼요.', go: [D('d-marriage-money', '혼인 세액공제 자세히')] },
+  { tag: '2027 예정', title: '혼인지원금 100만 원 · 아이맞이지원금 최대 2,000만 원', text: '혼인지원금(2027.1.1 이후 혼인신고)과 아이맞이지원금(2027.7.1 이후 출생)은 정부 예산안 단계라 국회 심의 결과에 따라 바뀔 수 있어요.', go: [D('d-marriage-money', '혼인지원금'), D('d-2027-baby', '아이맞이지원금')] },
+  { tag: '올해 마지막', title: '문화누리카드 11월 30일 발급 마감', text: '기초수급·차상위 연 15만 원. 발급은 11월 30일까지, 사용은 12월 31일까지예요.', go: [L('문화누리카드 신청', 'https://www.mnuri.kr')] },
+  { tag: '올해 마지막', title: '근로·자녀장려금 기한 후 신청 12월 1일까지', text: '5월에 놓쳤다면 12월 1일까지 홈택스에서 신청하면 95%를 받아요.', go: [L('홈택스에서 신청', 'https://www.hometax.go.kr')] },
+  { tag: '올해 마지막', title: '에너지바우처 12월 31일 신청 마감', text: '기초수급 가구 중 노인·영유아·장애인 등이 있으면 연 29.5만~70.1만 원 난방비 지원.', go: [L('복지로에서 신청', 'https://www.bokjiro.go.kr')] },
+  { tag: '진행 중', title: '전세사기 피해자 보증금 최소 1/3 보장', text: '11월 13일부터 시행. 돌려받은 돈이 보증금 1/3에 못 미치면 나라가 차액을 지원해요.', go: [D('d-jeonse-victim', '피해 지원 자세히'), L('국토부 안내', 'https://www.korea.kr/news/policyNewsView.do?newsId=148973064')] },
+  { tag: '진행 중', title: '2027학년도 1학기 국가장학금 신청', text: '보통 11월 중순에 1차 신청이 열려요. 고3·대학생은 한국장학재단 공지를 확인하세요.', go: [L('한국장학재단', 'https://www.kosaf.go.kr'), D('d-scholarship', '구간별 금액')] },
+  { tag: '진행 중', title: '65세 이상 독감·코로나19 무료 접종', text: '연령별로 시작됐어요. 코로나19는 2027년 6월 30일까지 맞을 수 있어요.', go: [L('예방접종도우미', 'https://nip.kdca.go.kr'), D('d-vaccine', '자세히')] },
 ];
 
 // ───────── 상품(제휴) 링크 — url을 넣으면 그 분야 아래에 버튼으로 보여요. 비우면 이름만 회색 ─────────
 // 토스 쉐어링크 / 네이버 브랜드커넥트 / 쿠팡 파트너스 주소를 넣으면 돼요.
 export const SHOP_DISCLOSE = '이 상품 링크는 제휴 활동의 일환으로, 구매 시 운영자가 일정액의 수수료를 받을 수 있습니다.';
 
-const L = (label: string, url: string, primary = true): Action => ({ kind: 'link', label, url, primary });
-const D = (id: string, label = '자세히'): Action => ({ kind: 'detail', id, label });
 
 const ALL_STAGES: Stage[] = [
   {
