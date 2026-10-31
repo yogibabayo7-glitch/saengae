@@ -3,7 +3,7 @@
 // 폭 1080px, 높이는 내용만큼. *글자* = 테마 색 굵게.
 const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
 const c=JSON.parse(fs.readFileSync(process.argv[2]));const outDir=process.argv[3]||'.';
-const T={guide:['#e6faf3','#a9e8d4','#0f8a6c'],money:['#fff6e3','#ffd98a','#d9480f'],digital:['#e8f1ff','#a9c8ff','#1c5fd4'],job:['#fff0e8','#ffc4a3','#c2410c']}[c.theme||'guide'];
+const T={guide:['#e6faf3','#a9e8d4','#0f8a6c'],money:['#fff6e3','#ffd98a','#d9480f'],digital:['#e8f1ff','#a9c8ff','#1c5fd4'],job:['#f0fae3','#c3e79a','#4a8c12']}[c.theme||'guide'];
 const hl=s=>String(s).replace(/\*(.+?)\*/g,`<b class="hl">$1</b>`);
 const page=t=>`<html><head><style>
 *{margin:0;box-sizing:border-box}body{font-family:'Noto Sans CJK KR',sans-serif;background:#fff;word-break:keep-all}
