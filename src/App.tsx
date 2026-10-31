@@ -8,8 +8,11 @@ import { initBackHandler, useBackLayer } from './back';
 import { attachBanner, openLink, track, BANNER_AD_ID } from './platform';
 import Local from './Local';
 import { loadShop, priceLabel } from './shop';
-import { SHARE_STAGES, shareBenefit, startStage } from './share';
-import type { ShareWho } from './share';
+import { SHARE_STAGES, entryURL, shareBenefit, startTarget } from './share';
+import type { ShareWho, StartTarget } from './share';
+
+// 가족 공유 링크로 들어온 경우: 그 메뉴·카드부터 (앱 시작 때 한 번 읽음)
+const START: StartTarget | null = startTarget();
 import type { ShopData, ShopGroup } from './shop';
 
 type View = 'home' | 'local' | StageKey;
@@ -18,9 +21,10 @@ const TAG_CLASS = { 종료: 'end', '올해 마지막': 'end', '2027 예정': 'pl
 
 export default function App() {
   // 가족 공유 링크로 들어오면 그 메뉴부터 열어요
-  const [view, setView] = useState<View>(() => startStage() ?? 'home');
+  const [view, setView] = useState<View>(() => START?.stage ?? 'home');
   const [detailId, setDetailId] = useState<string | null>(null);
   const [toast, setToast] = useState('');
+  const [entry, setEntry] = useState<StartTarget | null>(START); // 첫 화면에서만 카드 반짝
   const toastTimer = useRef<number | undefined>(undefined);
   function showToast(text: string) {
     setToast(text);
@@ -32,6 +36,8 @@ export default function App() {
 
   useEffect(() => {
     initBackHandler();
+    if (START) track('share_link_opened', { stage: START.stage, card: START.card });
+    else if (/stage=/.test(entryURL())) track('share_link_opened', { stage: 'unknown', url: entryURL().slice(0, 200) });
   }, []);
 
   // 스크롤이 길어지면 '맨 위로' 버튼 (10/29 사장님 요청)
@@ -48,6 +54,7 @@ export default function App() {
   useBackLayer(!!detailId, () => setDetailId(null));
 
   function go(v: View) {
+    setEntry(null);
     setView(v);
     setDetailId(null);
     scrollRef.current?.scrollTo({ top: 0 });
@@ -72,7 +79,13 @@ export default function App() {
             {view === 'local' ? (
               <Local />
             ) : (
-              <StageView stage={findStage(view)} onGo={go} onDetail={openDetail} onToast={showToast} />
+              <StageView
+                stage={findStage(view)}
+                onGo={go}
+                onDetail={openDetail}
+                onToast={showToast}
+                focusCard={entry && entry.stage === view ? entry.card : -1}
+              />
             )}
           </>
         )}
@@ -182,18 +195,41 @@ function StageView({
   onGo,
   onDetail,
   onToast,
+  focusCard = -1,
 }: {
   stage: Stage;
   onGo: (v: View) => void;
   onDetail: (id: string) => void;
   onToast: (text: string) => void;
+  focusCard?: number;
 }) {
-  const [sub, setSub] = useState<SubTab>('');
+  // 공유 링크로 들어왔으면 그 카드가 있는 칸(기본·1인가구·직장인)부터 열어요
+  const target = focusCard >= 0 ? stage.cards[focusCard] : undefined;
+  const [sub, setSub] = useState<SubTab>(() => target?.tab ?? '');
   const [localTag, setLocalTag] = useState('');
+  const [flash, setFlash] = useState<Card | undefined>(target);
+  const first = useRef(true);
   useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
     setSub('');
     setLocalTag('');
+    setFlash(undefined);
   }, [stage.key]);
+  // 그 카드로 스크롤하고 잠깐 반짝여요
+  useEffect(() => {
+    if (!flash) return;
+    const t1 = window.setTimeout(() => {
+      document.querySelector('.card.focus')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350);
+    const t2 = window.setTimeout(() => setFlash(undefined), 4000);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [flash]);
   const has = (t: CardTab) => stage.cards.some((c) => c.tab === t);
   const subs: [SubTab, string][] = [['', '기본']];
   if (has('single')) subs.push(['single', TAB_LABEL.single]);
@@ -243,7 +279,7 @@ function StageView({
         <>
           <div className="cards">
             {plain.map((c) => (
-              <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} onShare={onCardShare} />
+              <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} onShare={onCardShare} focus={c === flash} />
             ))}
           </div>
           {groups.map((g) => (
@@ -253,7 +289,7 @@ function StageView({
                 {cards
                   .filter((c) => c.group === g)
                   .map((c) => (
-                    <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} onShare={onCardShare} />
+                    <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} onShare={onCardShare} focus={c === flash} />
                   ))}
               </div>
             </div>
@@ -383,11 +419,13 @@ function CardView({
   onGo,
   onDetail,
   onShare,
+  focus = false,
 }: {
   c: Card;
   onGo: (v: View) => void;
   onDetail: (id: string) => void;
   onShare?: (who: ShareWho, c: Card) => void;
+  focus?: boolean;
 }) {
   function run(a: Action) {
     if (a.kind === 'link') {
@@ -397,7 +435,8 @@ function CardView({
     else onGo(a.stage);
   }
   return (
-    <div className={`card${c.tone ? ' ' + c.tone : ''}`}>
+    <div className={`card${c.tone ? ' ' + c.tone : ''}${focus ? ' focus' : ''}`}>
+      {focus && <div className="focus-tag">💌 가족이 보내 준 혜택이에요</div>}
       <h3>{c.title}</h3>
       <div className="amount">
         {c.amount}

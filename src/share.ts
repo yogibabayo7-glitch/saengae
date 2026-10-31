@@ -2,7 +2,8 @@
 // 자녀 → 부모님: "엄마, 아빠 이거 대상자일 수 있대요"
 // 부모님 → 자녀: "이거 나도 받을 수 있는지 봐 주고 신청 좀 도와줄래?"
 // 토스 안에서는 휴대폰 공유창(카카오톡 등)을 열고, 미리보기에서는 브라우저 공유 또는 복사로 대신해요.
-import { Share } from '@apps-in-toss/web-framework';
+import { Environment, Share } from '@apps-in-toss/web-framework';
+import { STAGES } from './data/content';
 import type { Card, StageKey } from './data/content';
 
 export type ShareWho = 'toParent' | 'toChild';
@@ -17,14 +18,20 @@ const APP_NAME = 'saengae-benefit';
 
 const linkCache = new Map<string, string>();
 
-// 누르면 토스에서 이 앱의 해당 메뉴가 바로 열리는 링크
-async function appLink(stage: StageKey): Promise<string> {
-  const hit = linkCache.get(stage);
+// 카드 번호 = 그 분야 cards 배열 안의 순서 (링크에 넣어 그 카드로 바로 가요)
+export function cardIndex(stage: StageKey, c: Card): number {
+  return STAGES.find((s) => s.key === stage)?.cards.indexOf(c) ?? -1;
+}
+
+// 누르면 토스에서 이 앱의 해당 메뉴(와 카드)가 바로 열리는 링크
+async function appLink(stage: StageKey, card: number): Promise<string> {
+  const q = card >= 0 ? `stage=${stage}&card=${card}` : `stage=${stage}`;
+  const hit = linkCache.get(q);
   if (hit) return hit;
   try {
-    const url = await Share.createLink({ path: `intoss://${APP_NAME}?stage=${stage}` });
+    const url = await Share.createLink({ path: `intoss://${APP_NAME}?${q}` });
     if (url) {
-      linkCache.set(stage, url);
+      linkCache.set(q, url);
       return url;
     }
   } catch {}
@@ -61,7 +68,7 @@ export function buildMessage(who: ShareWho, cards: Card[], link: string, stageNa
 }
 
 export async function shareBenefit(who: ShareWho, stage: StageKey, stageName: string, cards: Card[]): Promise<ShareResult> {
-  const link = await appLink(stage);
+  const link = await appLink(stage, cards.length === 1 ? cardIndex(stage, cards[0]) : -1);
   const message = buildMessage(who, cards, link, stageName);
   try {
     await Share.sendMessage({ message });
@@ -82,13 +89,27 @@ export async function shareBenefit(who: ShareWho, stage: StageKey, stageName: st
   return 'failed';
 }
 
-// 공유 링크로 들어왔을 때 열 메뉴 (intoss://saengae-benefit?stage=senior)
-export function startStage(): StageKey | null {
+// 공유 링크로 들어왔을 때 열 메뉴·카드 (intoss://saengae-benefit?stage=senior&card=1)
+// 토스는 들어올 때 쓴 주소를 Environment.initialURL로 알려줘요 (웹 주소창 쿼리엔 안 붙어요 — 10/31 실기기 확인).
+export type StartTarget = { stage: StageKey; card: number };
+
+export function entryURL(): string {
+  const parts: string[] = [];
   try {
-    const s = new URLSearchParams(window.location.search).get('stage');
-    const ok: StageKey[] = ['pregnancy', 'kids', 'school', 'youth', 'midlife', 'senior', 'disability', 'everyone'];
-    return s && (ok as string[]).includes(s) ? (s as StageKey) : null;
-  } catch {
-    return null;
-  }
+    parts.push(String(Environment.initialURL ?? ''));
+  } catch {}
+  try {
+    parts.push(window.location.search, window.location.hash);
+  } catch {}
+  return parts.join(' ');
+}
+
+export function startTarget(): StartTarget | null {
+  const url = entryURL();
+  const m = url.match(/[?&#]stage=([a-z]+)/);
+  if (!m) return null;
+  const stage = STAGES.find((s) => s.key === m[1])?.key;
+  if (!stage) return null;
+  const c = url.match(/[?&#]card=(\d+)/);
+  return { stage, card: c ? Number(c[1]) : -1 };
 }

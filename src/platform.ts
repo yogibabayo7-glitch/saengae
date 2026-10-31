@@ -22,7 +22,8 @@ export type TrackEvent =
   | 'local_opened' // 우리 동네 혜택 열림
   | 'local_detail_opened' // 정부24 혜택 상세
   | 'local_gov24_clicked' // 정부24 상세 페이지 열기
-  | 'share_clicked'; // 가족에게 혜택 보내기 (중장년·어르신)
+  | 'share_clicked' // 가족에게 혜택 보내기 (중장년·어르신)
+  | 'share_link_opened'; // 가족이 보낸 링크로 들어옴
 
 export function track(name: TrackEvent, params: Record<string, string | number> = {}): void {
   try {

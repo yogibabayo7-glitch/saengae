@@ -730,7 +730,7 @@ ol {
   font-size: 17px;
   font-weight: 800;
 }
-.more-local {
+.btn.block.more-local {
   margin: 4px 16px 16px;
   width: calc(100% - 32px);
 }
@@ -853,4 +853,23 @@ ol {
   font-size: 14px;
   z-index: 50;
   text-align: center;
+}
+.card.focus {
+  box-shadow: 0 0 0 3px #fee500, 0 6px 18px rgba(0, 0, 0, 0.12);
+  animation: focus-pulse 1s ease-in-out 3;
+}
+@keyframes focus-pulse {
+  50% {
+    box-shadow: 0 0 0 6px #fee500, 0 6px 18px rgba(0, 0, 0, 0.12);
+  }
+}
+.focus-tag {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fee500;
+  color: #191600;
+  font-size: 12px;
+  font-weight: 800;
 }

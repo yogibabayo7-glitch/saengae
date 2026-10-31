@@ -2,6 +2,15 @@
 
 새 대화에서 이 파일부터 읽고 이어서 작업해요.
 
+## 10/31 — v0.4.7: 공유 링크 누르면 그 탭·그 카드로 바로 (사장님 실기기 테스트 결과 반영)
+- 0.4.6 실기기: 카톡으로 메시지·링크는 잘 감. 링크 누르면 앱 홈으로만 열림 → 원인: 토스는 들어온 주소를 웹 주소창(location.search)이 아니라 `Environment.initialURL`로 줌.
+- `share.ts startTarget()`: Environment.initialURL + location.search/hash에서 `stage=`·`card=` 읽음. 링크는 `intoss://saengae-benefit?stage=senior&card=1`(card = 그 분야 cards 배열 순서, 카드에서 보낼 때만).
+- 들어오면 그 카드가 있는 칸(기본·1인가구·직장인)을 열고, 카드로 스크롤 + 노란 테두리 반짝 + '💌 가족이 보내 준 혜택이에요' 4초. 다른 화면 갔다 오면 다시 안 반짝임.
+- 이벤트 share_link_opened(stage·card). stage를 못 읽었는데 주소에 stage=가 있으면 url 앞 200자를 같이 남김 → 콘솔 이벤트로 원인 확인 가능.
+- ⚠ 카톡에 온 링크가 `tossminiapp.com/s/XAESUR6e`면 Share.createLink 실패(대체 링크라 메뉴 정보 없음). 토스 링크여야 탭까지 감.
+- 같이 고침: '우리 동네 … 더 보기' 버튼이 화면 오른쪽으로 삐져나가던 것(.btn.block이 width 덮어씀).
+- 미리보기 확인: ?stage=senior&card=1 → 어르신 기본 칸 기초연금 반짝, ?stage=midlife&card=15 → 직장인·일자리 칸 국민내일배움카드 반짝. 번들 release/saengae-benefit-0.4.7.ait.
+
 ## 10/31 — v0.4.6: 가족에게 혜택 보내기 (중장년·어르신만, 사장님 요청)
 - 목적: 네이버 블로그(50+ 인생 2막) ↔ 이 앱 상생. 3040 자녀와 부모님 사이 카톡 공유로 앱 유입.
 - 카드마다 아래에 [💬 부모님께 보내기] [🙋 자녀에게 부탁하기], 화면 아래(상품 위)에 '가족에게 이 혜택 알리기' 상자 — [카카오톡으로 부모님께 이 혜택 보내기] [자녀에게 대리 신청 부탁하기]. 우리 동네 칸에선 안 보임.
