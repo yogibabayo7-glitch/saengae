@@ -3,3 +3,4 @@ dist/
 *.ait
 tsconfig.tsbuildinfo
 .env
+viewer/
