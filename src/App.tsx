@@ -8,6 +8,8 @@ import { initBackHandler, useBackLayer } from './back';
 import { attachBanner, openLink, track, BANNER_AD_ID } from './platform';
 import Local from './Local';
 import { loadShop, priceLabel } from './shop';
+import { SHARE_STAGES, shareBenefit, startStage } from './share';
+import type { ShareWho } from './share';
 import type { ShopData, ShopGroup } from './shop';
 
 type View = 'home' | 'local' | StageKey;
@@ -15,8 +17,16 @@ type View = 'home' | 'local' | StageKey;
 const TAG_CLASS = { 종료: 'end', '올해 마지막': 'end', '2027 예정': 'plan', '진행 중': 'new' } as const;
 
 export default function App() {
-  const [view, setView] = useState<View>('home');
+  // 가족 공유 링크로 들어오면 그 메뉴부터 열어요
+  const [view, setView] = useState<View>(() => startStage() ?? 'home');
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [toast, setToast] = useState('');
+  const toastTimer = useRef<number | undefined>(undefined);
+  function showToast(text: string) {
+    setToast(text);
+    window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(''), 2500);
+  }
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showTop, setShowTop] = useState(false);
 
@@ -59,7 +69,11 @@ export default function App() {
         ) : (
           <>
             <Tabs view={view} onGo={go} />
-            {view === 'local' ? <Local /> : <StageView stage={findStage(view)} onGo={go} onDetail={openDetail} />}
+            {view === 'local' ? (
+              <Local />
+            ) : (
+              <StageView stage={findStage(view)} onGo={go} onDetail={openDetail} onToast={showToast} />
+            )}
           </>
         )}
         <Footer />
@@ -70,6 +84,7 @@ export default function App() {
         </button>
       )}
       {detail && <DetailSheet d={detail} onClose={() => setDetailId(null)} />}
+      {toast && <div className="toast">{toast}</div>}
     </div>
   );
 }
@@ -162,7 +177,17 @@ function Tabs({ view, onGo }: { view: View; onGo: (v: View) => void }) {
 
 type SubTab = '' | CardTab | 'local';
 
-function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) => void; onDetail: (id: string) => void }) {
+function StageView({
+  stage,
+  onGo,
+  onDetail,
+  onToast,
+}: {
+  stage: Stage;
+  onGo: (v: View) => void;
+  onDetail: (id: string) => void;
+  onToast: (text: string) => void;
+}) {
   const [sub, setSub] = useState<SubTab>('');
   const [localTag, setLocalTag] = useState('');
   useEffect(() => {
@@ -177,6 +202,15 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
   const cards = sub === 'local' ? [] : stage.cards.filter((c) => (c.tab ?? '') === sub);
   const plain = cards.filter((c) => !c.group);
   const groups = [...new Set(cards.filter((c) => c.group).map((c) => c.group!))];
+  // 중장년·어르신만: 가족에게 혜택 보내기
+  const canShare = SHARE_STAGES.includes(stage.key) && sub !== 'local';
+  async function share(who: ShareWho, list: Card[], from: 'card' | 'box') {
+    track('share_clicked', { stage: stage.key, who, from, title: list.length === 1 ? list[0].title : 'all' });
+    const r = await shareBenefit(who, stage.key, stage.name, list);
+    if (r === 'copied') onToast('메시지를 복사했어요. 카카오톡에 붙여 넣어 보내세요.');
+    else if (r === 'failed') onToast('공유창을 열지 못했어요. 잠시 뒤 다시 눌러 주세요.');
+  }
+  const onCardShare = canShare ? (who: ShareWho, c: Card) => void share(who, [c], 'card') : undefined;
   return (
     <>
       <div className="stage-head">
@@ -209,7 +243,7 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
         <>
           <div className="cards">
             {plain.map((c) => (
-              <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} />
+              <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} onShare={onCardShare} />
             ))}
           </div>
           {groups.map((g) => (
@@ -219,7 +253,7 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
                 {cards
                   .filter((c) => c.group === g)
                   .map((c) => (
-                    <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} />
+                    <CardView key={c.title} c={c} onGo={onGo} onDetail={onDetail} onShare={onCardShare} />
                   ))}
               </div>
             </div>
@@ -246,6 +280,23 @@ function StageView({ stage, onGo, onDetail }: { stage: Stage; onGo: (v: View) =>
             </div>
           )}
         </>
+      )}
+      {canShare && cards.length > 0 && (
+        <div className="family-share">
+          <h3>💌 가족에게 이 혜택 알리기</h3>
+          <p>
+            {stage.key === 'senior'
+              ? '부모님이 받을 수 있는 혜택, 카카오톡으로 바로 보내 보세요.'
+              : '부모님과 우리 집이 받을 수 있는 혜택을 가족과 나눠 보세요.'}
+          </p>
+          <button className="btn block" onClick={() => void share('toParent', cards, 'box')}>
+            💬 카카오톡으로 부모님께 이 혜택 보내기
+          </button>
+          <button className="btn ghost block" onClick={() => void share('toChild', cards, 'box')}>
+            🙋 자녀에게 대리 신청 부탁하기
+          </button>
+          <small>공유창에서 카카오톡을 고르면 돼요. 혜택 이름·금액과 이 화면 링크가 함께 가요.</small>
+        </div>
       )}
       <ShopBox stage={stage} />
       <AdSlot />
@@ -327,7 +378,17 @@ function ShopBox({ stage }: { stage: Stage }) {
   );
 }
 
-function CardView({ c, onGo, onDetail }: { c: Card; onGo: (v: View) => void; onDetail: (id: string) => void }) {
+function CardView({
+  c,
+  onGo,
+  onDetail,
+  onShare,
+}: {
+  c: Card;
+  onGo: (v: View) => void;
+  onDetail: (id: string) => void;
+  onShare?: (who: ShareWho, c: Card) => void;
+}) {
   function run(a: Action) {
     if (a.kind === 'link') {
       track('gov_link_clicked', { url: a.url, title: c.title });
@@ -355,6 +416,12 @@ function CardView({ c, onGo, onDetail }: { c: Card; onGo: (v: View) => void; onD
           </button>
         ))}
       </div>
+      {onShare && (
+        <div className="card-share">
+          <button onClick={() => onShare('toParent', c)}>💬 부모님께 보내기</button>
+          <button onClick={() => onShare('toChild', c)}>🙋 자녀에게 부탁하기</button>
+        </div>
+      )}
     </div>
   );
 }

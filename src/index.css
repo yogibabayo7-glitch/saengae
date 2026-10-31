@@ -796,3 +796,61 @@ ol {
   font-size: 13px;
   font-weight: 700;
 }
+
+/* 가족에게 혜택 보내기 (중장년·어르신, 11/1) */
+.card-share {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--g300);
+}
+.card-share button {
+  flex: 1;
+  padding: 9px 6px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  background: #fff7d6;
+  color: #5c4a00;
+}
+.family-share {
+  margin: 8px 16px 16px;
+  padding: 18px 16px;
+  border-radius: 16px;
+  background: var(--white);
+  border: 2px solid #fee500;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.family-share h3 {
+  font-size: 17px;
+  font-weight: 800;
+}
+.family-share p {
+  font-size: 14px;
+  color: var(--g700);
+}
+.family-share .btn:not(.ghost) {
+  background: #fee500;
+  color: #191600;
+}
+.family-share small {
+  font-size: 12px;
+  color: var(--g500);
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 88px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 48px);
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(25, 31, 40, 0.92);
+  color: var(--white);
+  font-size: 14px;
+  z-index: 50;
+  text-align: center;
+}
