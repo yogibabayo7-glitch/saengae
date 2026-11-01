@@ -1,18 +1,7 @@
 {
- "updatedAt": "2026-11-01T05:56:14+09:00",
+ "updatedAt": "2026-11-02T05:56:27+09:00",
  "first": false,
- "added": [
-  {
-   "id": "BJWLF00006784",
-   "name": "발달장애인 생활안심보험 가입 지원",
-   "org": "서울특별시 관악구",
-   "cats": [],
-   "stages": [
-    "disability"
-   ],
-   "updated": "20261008"
-  }
- ],
+ "added": [],
  "changed": [
   {
    "id": "BJWLF00005942",
@@ -471,6 +460,16 @@
     "disability"
    ],
    "updated": "20261009"
+  },
+  {
+   "id": "BJWLF00006784",
+   "name": "발달장애인 생활안심보험 가입 지원",
+   "org": "서울특별시 관악구",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20261008"
   },
   {
    "id": "BJWLF00006783",
@@ -31727,16 +31726,5 @@
    "updated": "20220629"
   }
  ],
- "removed": [
-  {
-   "id": "BJWLF00006523",
-   "name": "종로구 발달장애인 배상책임보험",
-   "org": "서울특별시 종로구",
-   "cats": [],
-   "stages": [
-    "disability"
-   ],
-   "updated": "20260704"
-  }
- ]
+ "removed": []
 }
