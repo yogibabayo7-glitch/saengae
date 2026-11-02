@@ -368,9 +368,18 @@ ol {
   font-weight: 500;
 }
 .disclose {
-  margin: 10px 0 0;
-  font-size: 11px;
-  color: var(--g500);
+  margin: 0 0 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #fff7e0;
+  border: 1px solid #f5dc9a;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #5c4600;
+}
+.disclose b {
+  color: #9a6a00;
+  margin-right: 2px;
 }
 
 /* 바닥글 */

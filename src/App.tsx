@@ -361,6 +361,7 @@ function ShopBox({ stage }: { stage: Stage }) {
     return (
       <div className="shop">
         <h3>🛒 {title}</h3>
+        {hasLink && <Disclose />}
         <div className="shop-list">
           {fallback.map((it) =>
             it.url ? (
@@ -380,7 +381,6 @@ function ShopBox({ stage }: { stage: Stage }) {
             ),
           )}
         </div>
-        {hasLink && <p className="disclose">{SHOP_DISCLOSE}</p>}
       </div>
     );
   }
@@ -388,6 +388,7 @@ function ShopBox({ stage }: { stage: Stage }) {
   return (
     <div className="shop">
       <h3>🛒 {title}</h3>
+      <Disclose />
       {groups.map((g) => (
         <div className="shop-group" key={g.id}>
           <div className="shop-group-name">{g.name}</div>
@@ -409,8 +410,16 @@ function ShopBox({ stage }: { stage: Stage }) {
           </div>
         </div>
       ))}
-      <p className="disclose">ⓘ {data?.disclosure || SHOP_DISCLOSE}</p>
     </div>
+  );
+}
+
+// 대가성 문구 — 상품 카드보다 먼저, 눈에 띄는 색 상자로 (맨 아래 작은 회색 글씨는 '고지 미흡')
+function Disclose() {
+  return (
+    <p className="disclose" role="note">
+      <b>[광고]</b> {SHOP_DISCLOSE}
+    </p>
   );
 }
 
