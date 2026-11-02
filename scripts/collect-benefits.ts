@@ -393,7 +393,7 @@ export function fromBokjiro(rows: Record<string, string>[]): Benefit[] {
       purpose: summary, target: [life && `생애주기: ${life}`, who && `대상: ${who}`].filter(Boolean).join('\n'), criteria: '', content: summary,
       supportType: r.srvPvsnNm ?? '', how: r.aplyMtdNm ?? '', deadline: '', docs: '', receiver: r.bizChrDeptNm ?? '',
       org: [r.ctpvNm, r.sggNm].filter(Boolean).join(' '), orgType: '지자체(복지로)', dept: r.bizChrDeptNm ?? '', sido, sigungu,
-      phone: r.inqNum ?? '', url: r.servDtlLink ?? 'https://www.bokjiro.go.kr', onlineUrl: '', laws: '', views: Number(r.inqNum ?? 0) || 0,
+      phone: '', /* inqNum은 조회수라 문의처 아님 */ url: r.servDtlLink ?? 'https://www.bokjiro.go.kr', onlineUrl: '', laws: '', views: Number(r.inqNum ?? 0) || 0,
       updated: r.lastModYmd ?? '',
     });
   }
