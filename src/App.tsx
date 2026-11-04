@@ -8,6 +8,7 @@ import { initBackHandler, useBackLayer } from './back';
 import { attachBanner, openLink, track, BANNER_AD_ID } from './platform';
 import Local from './Local';
 import { loadShop, priceLabel } from './shop';
+import { cachedCheckedAt, loadCheckedAt } from './benefits';
 import { SHARE_STAGES, entryURL, shareBenefit, startTarget } from './share';
 import type { ShareWho, StartTarget } from './share';
 
@@ -102,6 +103,28 @@ export default function App() {
   );
 }
 
+// 앱에 박힌 CHECKED_AT 과 매일 갱신되는 app/checked.json 중 더 최근 날짜
+function fmtDay(d: Date) { return `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()}.`; }
+function parseChecked(s: string | null): Date | null {
+  if (!s) return null;
+  const m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function newerLabel(remote: string | null) {
+  const base = parseChecked(CHECKED_AT);
+  const r = parseChecked(remote);
+  return r && (!base || r > base) ? fmtDay(r) : CHECKED_AT;
+}
+function useCheckedLabel() {
+  const [label, setLabel] = useState(() => newerLabel(cachedCheckedAt()));
+  useEffect(() => {
+    let alive = true;
+    loadCheckedAt().then((v) => { if (alive) setLabel(newerLabel(v)); });
+    return () => { alive = false; };
+  }, []);
+  return label;
+}
+
 function Home({ onGo, onDetail }: { onGo: (v: View) => void; onDetail: (id: string) => void }) {
   return (
     <>
@@ -110,7 +133,7 @@ function Home({ onGo, onDetail }: { onGo: (v: View) => void; onDetail: (id: stri
           <b>0~100세</b> 생애혜택 안내소
         </h1>
         <p>나이별로 받을 수 있는 나라 지원과 무료 보험을 공식 자료로 정리했어요. 버튼을 누르면 정부 사이트가 열립니다.</p>
-        <span className="stamp">자료 확인일 {CHECKED_AT}</span>
+        <span className="stamp">자료 확인일 {useCheckedLabel()}</span>
       </header>
 
       <div className="home-grid">
@@ -551,7 +574,7 @@ function Footer() {
     <footer className="foot">
       <p>{FOOTER.notice}</p>
       <p>{FOOTER.contact}</p>
-      <p>자료 확인일: {CHECKED_AT}</p>
+      <p>자료 확인일: {useCheckedLabel()}</p>
     </footer>
   );
 }

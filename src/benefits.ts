@@ -166,6 +166,21 @@ export async function loadDetail(b: BenefitSummary): Promise<BenefitDetail | nul
 }
 
 // ───────── 보여 주기 도우미 ─────────
+// ───────── 자료 확인일 ─────────
+// 정부24·복지로 자동 수집(매일 새벽)이 끝날 때마다 app/checked.json 의 checkedAt 이 바뀌어요.
+// 앱에 박힌 날짜(CHECKED_AT)보다 새로우면 그 날짜를 '자료 확인일'로 보여 줘요 → 앱을 다시 안 올려도 매일 바뀜.
+const CHECKED_KEY = 'saengae.checked.v1';
+export function cachedCheckedAt(): string | null {
+  return cacheGet<string>(CHECKED_KEY);
+}
+export async function loadCheckedAt(): Promise<string | null> {
+  try {
+    const raw = await fetchJson<{ checkedAt?: string }>('app/checked.json');
+    if (raw.checkedAt) { cacheSet(CHECKED_KEY, raw.checkedAt); return raw.checkedAt; }
+  } catch { /* 못 받으면 저장해 둔 값 */ }
+  return cachedCheckedAt();
+}
+
 export function updatedLabel(iso: string) {
   const d = new Date(iso);
   return isNaN(+d) ? '' : `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} 기준`;
