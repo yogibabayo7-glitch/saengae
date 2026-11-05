@@ -65,7 +65,7 @@ export function buildMessage(who: ShareWho, cards: Card[], link: string, stageNa
     parts.push(`${stageName} 혜택 중에 이런 게 있어요.`);
     for (const c of cards.slice(0, 5)) parts.push(`· ${c.title} — ${c.amount}`);
   }
-  parts.push('', CLOSE[who], '', `👉 생애혜택 안내소에서 자세히 보기`, link);
+  parts.push('', CLOSE[who], '', `👉 토스에서 생애혜택 안내소 열어보기 (설치 없이 바로 열려요)`, link);
   return parts.join('\n');
 }
 
