@@ -1,0 +1,96 @@
+# 사용법: python3 tools/clip/make-card-clip.py 장면.json 출력.mp4
+# 생애혜택 클립 (작업 규칙 문서 '최종 클립 화면 2026-11-04' 기준)
+# - 세로 1080x1920, 카드 정중앙 고정(폭 960, y=480 칸), 움직임 없음
+# - 위아래 바탕 = 요일색을 조금 옅게, 위 띠 가운데 주제 제목(연노랑 #FFF4C2 70px), 아래 띠 자막(흰색 70px 1~2줄)
+# - 카드 뒤 진한 남색 3겹 그림자(아래 60·28·8px) + 흰 테두리 4px, 카드 안 요일색은 15% 옅게
+# - 목소리: sherpa-onnx vits-mimic3-ko_KO-kss_low(무료 여자), 속도 0.9, 문장마다 0.45초 쉼, 음성 보정 후 -14 LUFS
+# 장면.json: {"theme":"#4A8C12","title":"주제 제목","scenes":[{"img":"카드.png","lines":[["자막","나레이션(숫자는 한글)"],...]}]}
+import json, sys, os, subprocess, wave, tempfile
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+import sherpa_onnx
+
+MODEL = os.environ.get('KSS_MODEL', '/home/claude/tts/vits-mimic3-ko_KO-kss_low')
+FONT = '/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc'
+W, H, CW, TOP, BOX = 1080, 1920, 960, 480, 960
+
+cfg = json.load(open(sys.argv[1], encoding='utf-8'))
+out = sys.argv[2]
+base = os.path.dirname(os.path.abspath(sys.argv[1]))
+tmp = tempfile.mkdtemp()
+hexrgb = lambda h: tuple(int(h.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+theme = hexrgb(cfg['theme'])
+band = tuple(int(c * .8 + 255 * .2) for c in theme)          # 요일색 20% 옅게
+font = lambda s: ImageFont.truetype(FONT, s)
+
+def soften(img):  # 카드 안 요일색(진한 색) 15% 옅게
+    a = np.asarray(img.convert('RGB')).astype(np.float32)
+    d = np.sqrt(((a - np.array(theme)) ** 2).sum(-1))
+    m = (d < 70)[..., None]
+    a = np.where(m, a * .85 + 255 * .15, a)
+    return Image.fromarray(a.astype(np.uint8))
+
+def center_text(dr, text, y, size, fill, maxw=1000):
+    f = font(size)
+    lines = text.split('\n')
+    lh = int(size * 1.3)
+    y0 = y - lh * len(lines) // 2
+    for i, t in enumerate(lines):
+        w = dr.textlength(t, font=f)
+        dr.text(((W - w) / 2, y0 + i * lh), t, font=f, fill=fill)
+
+def frame(card_path, sub, path):
+    bg = Image.new('RGB', (W, H), band)
+    card = soften(Image.open(os.path.join(base, card_path)))
+    s = min(BOX / card.width, BOX / card.height)
+    card = card.resize((int(card.width * s), int(card.height * s)), Image.LANCZOS)
+    cw, ch = card.size
+    x, y = (W - cw) // 2, TOP + (BOX - ch) // 2
+    # 3겹 그림자
+    sh = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    for off, blur, alpha in ((60, 40, 90), (28, 18, 110), (8, 6, 140)):
+        layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(layer).rounded_rectangle([x, y + off, x + cw, y + ch + off], 28, fill=(11, 31, 58, alpha))
+        sh = Image.alpha_composite(sh, layer.filter(ImageFilter.GaussianBlur(blur)))
+    bg = Image.alpha_composite(bg.convert('RGBA'), sh)
+    # 흰 테두리 + 둥근 카드
+    dr = ImageDraw.Draw(bg)
+    dr.rounded_rectangle([x - 4, y - 4, x + cw + 4, y + ch + 4], 30, fill='white')
+    mask = Image.new('L', card.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, cw, ch], 26, fill=255)
+    bg.paste(card, (x, y), mask)
+    dr = ImageDraw.Draw(bg)
+    center_text(dr, cfg['title'], TOP // 2, 70, (255, 244, 194))
+    center_text(dr, sub, TOP + BOX + (H - TOP - BOX) // 2, 70, 'white')
+    bg.convert('RGB').save(path)
+
+tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(
+    vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=f'{MODEL}/ko_KO-kss_low.onnx', tokens=f'{MODEL}/tokens.txt', data_dir=f'{MODEL}/espeak-ng-data'),
+    num_threads=2)))
+sr = None; pcm = []; segs = []; t = 0.0; n = 0
+for sc in cfg['scenes']:
+    for sub, say in sc['lines']:
+        a = tts.generate(say, sid=0, speed=0.9)
+        sr = a.sample_rate
+        x = np.array(a.samples, dtype=np.float32)
+        gap = np.zeros(int(sr * .45), dtype=np.float32)
+        x = np.concatenate([x, gap]); dur = len(x) / sr
+        pcm.append(x)
+        img = os.path.join(tmp, f'f{n:02d}.png'); frame(sc['img'], sub, img)
+        segs.append((img, dur)); t += dur; n += 1
+raw = os.path.join(tmp, 'raw.wav')
+with wave.open(raw, 'wb') as w:
+    w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
+    w.writeframes((np.clip(np.concatenate(pcm), -1, 1) * 32767).astype(np.int16).tobytes())
+voice = os.path.join(tmp, 'voice.m4a')
+af = ('highpass=f=80,equalizer=f=250:t=q:w=1:g=-2,equalizer=f=3000:t=q:w=1:g=4,'
+      'equalizer=f=7500:t=q:w=1:g=-3,acompressor=threshold=-18dB:ratio=3:attack=5:release=80,loudnorm=I=-14:TP=-1.5:LRA=7')
+subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', raw, '-af', af, '-ar', '44100', '-c:a', 'aac', '-b:a', '160k', voice], check=True)
+lst = os.path.join(tmp, 'list.txt')
+with open(lst, 'w') as f:
+    for img, d in segs: f.write(f"file '{img}'\nduration {d:.3f}\n")
+    f.write(f"file '{segs[-1][0]}'\n")
+subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', lst, '-i', voice,
+                '-vf', 'fps=30,format=yuv420p', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20',
+                '-c:a', 'copy', '-shortest', '-movflags', '+faststart', out], check=True)
+print('ok', out, f'{t:.1f}s', n, 'lines')
