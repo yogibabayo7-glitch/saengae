@@ -44,9 +44,18 @@ def center_text(dr, text, y, size, fill, maxw=1000):
         dr.text((x + 3, yy + 4), t, font=f, fill=TXT_SHADOW, stroke_width=3, stroke_fill=TXT_SHADOW)
         dr.text((x, yy), t, font=f, fill=fill, stroke_width=2, stroke_fill=TXT_SHADOW)
 
+# 토스 미니앱 배지 (토스 외부 광고 가이드: 블랙 기본, 영상 하나에 1개, 아래쪽에 작게, 비율·각도·움직임 변경 금지)
+BADGE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'app-kit', 'badge', 'toss-miniapp-badge-black.png')
+BADGE_W = 300
+
+def put_badge(img):
+    b = Image.open(BADGE).convert('RGBA')
+    b = b.resize((BADGE_W, round(b.height * BADGE_W / b.width)), Image.LANCZOS)
+    img.alpha_composite(b, ((W - b.width) // 2, H - b.height - 36))
+
 NUMS = ['하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉', '열']
 
-def frame(card_path, sub, path, num=None):
+def frame(card_path, sub, path, num=None, badge=False):
     # 가운데 카드 판은 크기·위치 고정(960x960, y=480) — 카드 그림만 그 안에서 바뀜
     bg = Image.new('RGB', (W, H), band)
     px, py, pw, ph = (W - CW) // 2, TOP, CW, BOX
@@ -73,7 +82,10 @@ def frame(card_path, sub, path, num=None):
         dr.rounded_rectangle([bx, by, bx + bw, by + bh], bh / 2, fill=theme)
         dr.text(((W - tw) / 2, by + 10), num, font=f, fill='white')
     center_text(dr, cfg['title'], TOP // 2 - 20, 70, (255, 244, 194))
-    center_text(dr, sub, TOP + BOX + (H - TOP - BOX) // 2, 70, 'white')
+    sub_y = TOP + BOX + (H - TOP - BOX) // 2
+    if badge: sub_y -= 50  # 배지 자리만큼 자막을 조금 위로
+    center_text(dr, sub, sub_y, 70, 'white')
+    if badge: put_badge(bg)
     bg.convert('RGB').save(path)
 
 tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(
@@ -82,14 +94,15 @@ tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.Offl
 sr = None; pcm = []; segs = []; t = 0.0; n = 0
 for si, sc in enumerate(cfg['scenes']):
     num = None if si == 0 else NUMS[si - 1]  # 첫 장(대표)은 번호 없음, 다음부터 하나·둘·셋…
-    for sub, say in sc['lines']:
+    last_scene = si == len(cfg['scenes']) - 1
+    for li, (sub, say) in enumerate(sc['lines']):
         a = tts.generate(say, sid=0, speed=0.9)
         sr = a.sample_rate
         x = np.array(a.samples, dtype=np.float32)
         gap = np.zeros(int(sr * .45), dtype=np.float32)
         x = np.concatenate([x, gap]); dur = len(x) / sr
         pcm.append(x)
-        img = os.path.join(tmp, f'f{n:02d}.png'); frame(sc['img'], sub, img, num)
+        img = os.path.join(tmp, f'f{n:02d}.png'); frame(sc['img'], sub, img, num, badge=cfg.get('badge', True) and last_scene and li == len(sc['lines']) - 1)
         segs.append((img, dur)); t += dur; n += 1
 raw = os.path.join(tmp, 'raw.wav')
 with wave.open(raw, 'wb') as w:
