@@ -3,6 +3,7 @@
 # - 세로 1080x1920, 카드 정중앙 고정(폭 960, y=480 칸), 움직임 없음
 # - 위아래 바탕 = 요일색을 조금 옅게, 위 띠 가운데 주제 제목(연노랑 #FFF4C2 70px), 아래 띠 자막(흰색 70px 1~2줄)
 # - 카드 뒤 진한 남색 3겹 그림자(아래 60·28·8px) + 흰 테두리 4px, 카드 안 요일색은 15% 옅게
+# - 카드 판 고정 + 둘째 장부터 판 맨 위 가운데에 번호(하나·둘·셋…) (사용자 11/6)
 # - 목소리: sherpa-onnx vits-mimic3-ko_KO-kss_low(무료 여자), 속도 0.9, 문장마다 0.45초 쉼, 음성 보정 후 -14 LUFS
 # 장면.json: {"theme":"#4A8C12","title":"주제 제목","scenes":[{"img":"카드.png","lines":[["자막","나레이션(숫자는 한글)"],...]}]}
 import json, sys, os, subprocess, wave, tempfile
@@ -39,28 +40,35 @@ def center_text(dr, text, y, size, fill, maxw=1000):
         w = dr.textlength(t, font=f)
         dr.text(((W - w) / 2, y0 + i * lh), t, font=f, fill=fill)
 
-def frame(card_path, sub, path):
+NUMS = ['하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉', '열']
+
+def frame(card_path, sub, path, num=None):
+    # 가운데 카드 판은 크기·위치 고정(960x960, y=480) — 카드 그림만 그 안에서 바뀜
     bg = Image.new('RGB', (W, H), band)
-    card = soften(Image.open(os.path.join(base, card_path)))
-    s = min(BOX / card.width, BOX / card.height)
-    card = card.resize((int(card.width * s), int(card.height * s)), Image.LANCZOS)
-    cw, ch = card.size
-    x, y = (W - cw) // 2, TOP + (BOX - ch) // 2
-    # 3겹 그림자
+    px, py, pw, ph = (W - CW) // 2, TOP, CW, BOX
     sh = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     for off, blur, alpha in ((60, 40, 90), (28, 18, 110), (8, 6, 140)):
         layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-        ImageDraw.Draw(layer).rounded_rectangle([x, y + off, x + cw, y + ch + off], 28, fill=(11, 31, 58, alpha))
+        ImageDraw.Draw(layer).rounded_rectangle([px, py + off, px + pw, py + ph + off], 28, fill=(11, 31, 58, alpha))
         sh = Image.alpha_composite(sh, layer.filter(ImageFilter.GaussianBlur(blur)))
     bg = Image.alpha_composite(bg.convert('RGBA'), sh)
-    # 흰 테두리 + 둥근 카드
     dr = ImageDraw.Draw(bg)
-    dr.rounded_rectangle([x - 4, y - 4, x + cw + 4, y + ch + 4], 30, fill='white')
+    dr.rounded_rectangle([px - 4, py - 4, px + pw + 4, py + ph + 4], 30, fill='white')
+    card = soften(Image.open(os.path.join(base, card_path)))
+    s = min(pw / card.width, ph / card.height)
+    card = card.resize((int(card.width * s), int(card.height * s)), Image.LANCZOS)
+    cw, ch = card.size
     mask = Image.new('L', card.size, 0)
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, cw, ch], 26, fill=255)
-    bg.paste(card, (x, y), mask)
+    bg.paste(card, (px + (pw - cw) // 2, py + (ph - ch) // 2), mask)
     dr = ImageDraw.Draw(bg)
-    center_text(dr, cfg['title'], TOP // 2, 70, (255, 244, 194))
+    if num:  # 카드 맨 윗부분 가운데 번호 (하나·둘·셋…)
+        f = font(52); tw = dr.textlength(num, font=f); bw, bh = tw + 80, 92
+        bx, by = (W - bw) / 2, py - bh / 2
+        dr.rounded_rectangle([bx - 4, by - 4, bx + bw + 4, by + bh + 4], (bh + 8) / 2, fill='white')
+        dr.rounded_rectangle([bx, by, bx + bw, by + bh], bh / 2, fill=theme)
+        dr.text(((W - tw) / 2, by + 10), num, font=f, fill='white')
+    center_text(dr, cfg['title'], TOP // 2 - 20, 70, (255, 244, 194))
     center_text(dr, sub, TOP + BOX + (H - TOP - BOX) // 2, 70, 'white')
     bg.convert('RGB').save(path)
 
@@ -68,7 +76,8 @@ tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.Offl
     vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=f'{MODEL}/ko_KO-kss_low.onnx', tokens=f'{MODEL}/tokens.txt', data_dir=f'{MODEL}/espeak-ng-data'),
     num_threads=2)))
 sr = None; pcm = []; segs = []; t = 0.0; n = 0
-for sc in cfg['scenes']:
+for si, sc in enumerate(cfg['scenes']):
+    num = None if si == 0 else NUMS[si - 1]  # 첫 장(대표)은 번호 없음, 다음부터 하나·둘·셋…
     for sub, say in sc['lines']:
         a = tts.generate(say, sid=0, speed=0.9)
         sr = a.sample_rate
@@ -76,7 +85,7 @@ for sc in cfg['scenes']:
         gap = np.zeros(int(sr * .45), dtype=np.float32)
         x = np.concatenate([x, gap]); dur = len(x) / sr
         pcm.append(x)
-        img = os.path.join(tmp, f'f{n:02d}.png'); frame(sc['img'], sub, img)
+        img = os.path.join(tmp, f'f{n:02d}.png'); frame(sc['img'], sub, img, num)
         segs.append((img, dur)); t += dur; n += 1
 raw = os.path.join(tmp, 'raw.wav')
 with wave.open(raw, 'wb') as w:
