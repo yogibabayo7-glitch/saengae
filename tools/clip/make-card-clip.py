@@ -21,7 +21,9 @@ base = os.path.dirname(os.path.abspath(sys.argv[1]))
 tmp = tempfile.mkdtemp()
 hexrgb = lambda h: tuple(int(h.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
 theme = hexrgb(cfg['theme'])
-band = tuple(int(c * .8 + 255 * .2) for c in theme)          # 요일색 20% 옅게
+LIGHT = float(cfg.get('band_light', os.environ.get('BAND_LIGHT', 0.2)))  # 위아래 바탕: 요일색 20% 옅게 (11/6 사장님: 38%와 비교해 보고 20%가 낫다고 확정)
+band = tuple(int(c * (1 - LIGHT) + 255 * LIGHT) for c in theme)
+TXT_SHADOW = tuple(int(c * .55) for c in theme)               # 연한 바탕에서도 흰 글씨가 또렷하게 — 요일색을 어둡게 한 그림자
 font = lambda s: ImageFont.truetype(FONT, s)
 
 def soften(img):  # 카드 안 요일색(진한 색) 15% 옅게
@@ -38,7 +40,9 @@ def center_text(dr, text, y, size, fill, maxw=1000):
     y0 = y - lh * len(lines) // 2
     for i, t in enumerate(lines):
         w = dr.textlength(t, font=f)
-        dr.text(((W - w) / 2, y0 + i * lh), t, font=f, fill=fill)
+        x, yy = (W - w) / 2, y0 + i * lh
+        dr.text((x + 3, yy + 4), t, font=f, fill=TXT_SHADOW, stroke_width=3, stroke_fill=TXT_SHADOW)
+        dr.text((x, yy), t, font=f, fill=fill, stroke_width=2, stroke_fill=TXT_SHADOW)
 
 NUMS = ['하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉', '열']
 
