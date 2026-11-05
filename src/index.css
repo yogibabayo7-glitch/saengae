@@ -805,6 +805,11 @@ ol {
   font-size: 13px;
   font-weight: 700;
 }
+.notice-go button.alert-btn {
+  background: #fff7e0;
+  color: #8a5a00;
+  border: 1px solid #f5dc9a;
+}
 
 /* 가족에게 혜택 보내기 (중장년·어르신, 11/1) */
 .card-share {

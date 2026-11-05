@@ -12,6 +12,7 @@ import { cachedCheckedAt, loadCheckedAt } from './benefits';
 import { SHARE_STAGES, entryURL, shareBenefit, startTarget } from './share';
 import type { ShareWho, StartTarget } from './share';
 import { remember, setScrollGetter, takeResume } from './resume';
+import { alertSupported, askAlert, askReview, countVisit } from './growth';
 
 // 가족 공유 링크로 들어온 경우: 그 메뉴·카드부터 (앱 시작 때 한 번 읽음)
 const START: StartTarget | null = startTarget();
@@ -62,6 +63,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    countVisit();
+    // 정부 사이트에서 신청하고 돌아온 순간 = 리뷰 부탁하기 좋은 때
+    if (RESUME?.kind === 'gov') window.setTimeout(() => askReview('gov_return'), 1200);
     initBackHandler();
     if (START) track('share_link_opened', { stage: START.stage, card: START.card });
     else if (/stage=/.test(entryURL())) track('share_link_opened', { stage: 'unknown', url: entryURL().slice(0, 200) });
@@ -100,7 +104,7 @@ export default function App() {
     <div className="screen">
       <div className="scroll" ref={scrollRef} onScroll={onScroll}>
         {view === 'home' ? (
-          <Home onGo={go} onDetail={openDetail} />
+          <Home onGo={go} onDetail={openDetail} onToast={showToast} />
         ) : (
           <>
             <Tabs view={view} onGo={go} />
@@ -153,7 +157,7 @@ function useCheckedLabel() {
   return label;
 }
 
-function Home({ onGo, onDetail }: { onGo: (v: View) => void; onDetail: (id: string) => void }) {
+function Home({ onGo, onDetail, onToast }: { onGo: (v: View) => void; onDetail: (id: string) => void; onToast: (t: string) => void }) {
   return (
     <>
       <header className="hero">
@@ -205,6 +209,24 @@ function Home({ onGo, onDetail }: { onGo: (v: View) => void; onDetail: (id: stri
                       {a.kind === 'detail' ? a.label ?? '자세히' : a.label} {a.kind === 'link' ? '↗' : '›'}
                     </button>
                   ))}
+                  {alertSupported(n.alert) && (
+                    <button
+                      className="alert-btn"
+                      onClick={() =>
+                        askAlert(n.alert!, (r) =>
+                          onToast(
+                            r === 'new' || r === 'already'
+                              ? '마감 3일 전에 토스 알림으로 알려 드릴게요.'
+                              : r === 'rejected'
+                                ? '알림 신청을 하지 않았어요.'
+                                : '지금은 알림 신청을 할 수 없어요. 잠시 뒤 다시 눌러 주세요.',
+                          ),
+                        )
+                      }
+                    >
+                      🔔 마감 전에 알림 받기
+                    </button>
+                  )}
                 </div>
               )}
             </li>
@@ -297,6 +319,7 @@ function StageView({
   async function share(who: ShareWho, list: Card[], from: 'card' | 'box') {
     track('share_clicked', { stage: stage.key, who, from, title: list.length === 1 ? list[0].title : 'all' });
     const r = await shareBenefit(who, stage.key, stage.name, list);
+    if (r === 'shared') window.setTimeout(() => askReview('shared'), 800);
     if (r === 'copied') onToast('메시지를 복사했어요. 카카오톡에 붙여 넣어 보내세요.');
     else if (r === 'failed') onToast('공유창을 열지 못했어요. 잠시 뒤 다시 눌러 주세요.');
   }
@@ -423,7 +446,7 @@ function ShopBox({ stage }: { stage: Stage }) {
                 key={it.name}
                 onClick={() => {
                   track('shop_clicked', { stage: stage.key, name: it.name });
-                  void openLink(it.url);
+                  void openLink(it.url, 'shop');
                 }}
               >
                 {it.name}
@@ -453,7 +476,7 @@ function ShopBox({ stage }: { stage: Stage }) {
                 key={p.id}
                 onClick={() => {
                   track('shop_clicked', { stage: stage.key, group: g.id, id: p.id });
-                  void openLink(p.url);
+                  void openLink(p.url, 'shop');
                 }}
               >
                 <img src={p.thumb} alt="" loading="lazy" />

@@ -5,7 +5,7 @@
 const KEY = 'saengae.resume.v1';
 const TTL = 60 * 60 * 1000;
 
-export type Spot = { view: string; sub: string; detail: string | null; y: number };
+export type Spot = { view: string; sub: string; detail: string | null; y: number; kind?: 'gov' | 'shop' };
 
 let spot: Spot = { view: 'home', sub: '', detail: null, y: 0 };
 let getY: () => number = () => 0;
@@ -19,9 +19,9 @@ export function setScrollGetter(fn: () => number): void {
 }
 
 // 바깥 링크 열기 직전에 불러요 (platform.ts openLink)
-export function markLeaving(): void {
+export function markLeaving(kind: 'gov' | 'shop' = 'gov'): void {
   try {
-    localStorage.setItem(KEY, JSON.stringify({ ...spot, y: Math.round(getY()), at: Date.now() }));
+    localStorage.setItem(KEY, JSON.stringify({ ...spot, kind, y: Math.round(getY()), at: Date.now() }));
   } catch {}
 }
 
@@ -33,7 +33,7 @@ export function takeResume(): Spot | null {
     localStorage.removeItem(KEY);
     const d = JSON.parse(s) as Spot & { at: number };
     if (!d.at || Date.now() - d.at > TTL || typeof d.view !== 'string') return null;
-    return { view: d.view, sub: d.sub ?? '', detail: d.detail ?? null, y: d.y ?? 0 };
+    return { view: d.view, sub: d.sub ?? '', detail: d.detail ?? null, y: d.y ?? 0, kind: d.kind };
   } catch {
     return null;
   }

@@ -15,6 +15,8 @@ export const SHARE_STAGES: StageKey[] = ['midlife', 'senior'];
 // 토스 링크를 못 만들 때 쓰는 앱 공유 주소 (사장님이 받은 미니앱 공유 링크)
 const FALLBACK_LINK = 'https://tossminiapp.com/s/XAESUR6e';
 const APP_NAME = 'saengae-benefit';
+// 카톡 공유 미리보기 그림 (1200×600, 개발자센터 OG 가이드) — 웨비나: 기본 공유 화면보다 눌러 보게 만드는 이미지
+const OG_IMAGE = 'https://raw.githubusercontent.com/yogibabayo7-glitch/saengae/main/docs/og/saengae-benefit-family-share-og.png';
 
 const linkCache = new Map<string, string>();
 
@@ -29,7 +31,7 @@ async function appLink(stage: StageKey, card: number): Promise<string> {
   const hit = linkCache.get(q);
   if (hit) return hit;
   try {
-    const url = await Share.createLink({ path: `intoss://${APP_NAME}?${q}` });
+    const url = await Share.createLink({ path: `intoss://${APP_NAME}?${q}`, ogImageUrl: OG_IMAGE });
     if (url) {
       linkCache.set(q, url);
       return url;

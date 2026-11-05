@@ -3,8 +3,8 @@ import { Analytics, Device, TossAds } from '@apps-in-toss/web-framework';
 import { markLeaving } from './resume';
 
 // 정부 사이트 등 바깥 링크 열기 (토스 안에서는 토스 브라우저, 미리보기에서는 새 창)
-export async function openLink(url: string): Promise<void> {
-  markLeaving(); // 돌아오면 보던 곳으로 (resume.ts)
+export async function openLink(url: string, kind: 'gov' | 'shop' = 'gov'): Promise<void> {
+  markLeaving(kind); // 돌아오면 보던 곳으로 (resume.ts)
   try {
     await Device.openURL(url);
     return;
@@ -25,7 +25,9 @@ export type TrackEvent =
   | 'local_detail_opened' // 정부24 혜택 상세
   | 'local_gov24_clicked' // 정부24 상세 페이지 열기
   | 'share_clicked' // 가족에게 혜택 보내기 (중장년·어르신)
-  | 'share_link_opened'; // 가족이 보낸 링크로 들어옴
+  | 'share_link_opened' // 가족이 보낸 링크로 들어옴
+  | 'review_requested' // 리뷰 요청 띄움 (gov_return·shared)
+  | 'alert_agreed'; // 마감 알림 신청 결과
 
 export function track(name: TrackEvent, params: Record<string, string | number> = {}): void {
   try {
