@@ -19,12 +19,36 @@ SLog "시작 · 카테고리 $($flat.Count)개 · 오늘 이미 쓴 조회 $($Q.
 if ($Q.used -ge $SaCap) { SLog "오늘 조회 한도를 이미 많이 썼어요($($Q.used)개). 다음에 다시 돌려요."; exit 0 }
 $Q.cap = [Math]::Min($Q.cap, $SaCap)
 
+$GH = @{ Authorization = "Bearer $($cfg.githubToken)" }
+function Put-File($path, $content, $msg) {
+  $api = "https://api.github.com/repos/$SaRepo/contents/$path"
+  $sha = $null
+  try { $sha = (Read-Json (Invoke-WebRequest -UseBasicParsing -UserAgent 'saengae-shop' -Uri $api -Headers $GH)).sha } catch {}
+  $body = [ordered]@{ message = $msg; content = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($content)) }
+  if ($sha) { $body.sha = $sha }
+  Invoke-WebRequest -UseBasicParsing -UserAgent 'saengae-shop' -Method Put -Uri $api -Headers $GH -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes(($body | ConvertTo-Json -Compress))) | Out-Null
+}
 # ── 1. 규칙표 (GitHub saengae 저장소) ──
+# 이 폴더에 saengae-rules-new.json 이 있으면 GitHub 규칙표를 그걸로 바꿔 올리고 이름을 .uploaded 로 바꿔요 (한 번만)
+$SaNewRules = Join-Path $Here 'saengae-rules-new.json'
+if (Test-Path $SaNewRules) {
+  try {
+    $newTxt = [IO.File]::ReadAllText($SaNewRules, [Text.Encoding]::UTF8)
+    $null = $newTxt | ConvertFrom-Json
+    Put-File 'docs/data/shop-rules.json' $newTxt '생애혜택 상품 규칙표 갱신 (PC에서 올림)'
+    Move-Item -Force $SaNewRules ($SaNewRules + '.uploaded')
+    SLog '새 규칙표(saengae-rules-new.json)를 GitHub에 올렸어요.'
+    Start-Sleep -Seconds 5
+  } catch { SLog "새 규칙표를 올리지 못했어요: $($_.Exception.Message)" }
+}
 $SaRulesFile = Join-Path $Here 'saengae-rules.json'
 $rules = $null
 try {
-  $rr = Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/$SaRepo/main/docs/data/shop-rules.json"
-  $txt = [Text.Encoding]::UTF8.GetString($rr.RawContentStream.ToArray())
+  if ($newTxt -and (Test-Path ($SaNewRules + '.uploaded'))) { $txt = $newTxt }
+  else {
+    $rr = Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/$SaRepo/main/docs/data/shop-rules.json"
+    $txt = [Text.Encoding]::UTF8.GetString($rr.RawContentStream.ToArray())
+  }
   $rules = $txt | ConvertFrom-Json
   [IO.File]::WriteAllText($SaRulesFile, $txt, $Utf8)
 } catch {
@@ -73,7 +97,7 @@ foreach ($stProp in $rules.stages.PSObject.Properties) {
   $groupsOut = New-Object System.Collections.ArrayList
   foreach ($g in @($stProp.Value)) {
     if ($stopped) { break }
-    $cats = Pick-Cats ([string]$g.cat)
+    $cats = @(Pick-Cats ([string]$g.cat))   # @( ) 꼭 필요: 카테고리가 1개면 PowerShell 5.1에서 개수가 비어 "카테고리 없음"으로 잘못 나와요
     if (-not $cats.Count) { [void]$missing.Add("$stage/$($g.id)(카테고리 없음: $($g.cat))"); continue }
     $cands = New-Object System.Collections.ArrayList
     $seenId = @{}
@@ -122,15 +146,6 @@ SLog "상품 $total 개 골랐어요 · 오늘 조회 사용 $($Q.used)개"
 if ($total -lt 10) { SLog '상품이 너무 적어서 올리지 않아요 (앱엔 지난 상품 그대로).'; exit 1 }
 
 # ── 3. GitHub saengae 저장소에 올리기 (shop.json + 카테고리 이름 목록) ──
-$GH = @{ Authorization = "Bearer $($cfg.githubToken)" }
-function Put-File($path, $content, $msg) {
-  $api = "https://api.github.com/repos/$SaRepo/contents/$path"
-  $sha = $null
-  try { $sha = (Read-Json (Invoke-WebRequest -UseBasicParsing -UserAgent 'saengae-shop' -Uri $api -Headers $GH)).sha } catch {}
-  $body = [ordered]@{ message = $msg; content = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($content)) }
-  if ($sha) { $body.sha = $sha }
-  Invoke-WebRequest -UseBasicParsing -UserAgent 'saengae-shop' -Method Put -Uri $api -Headers $GH -ContentType 'application/json' -Body ([Text.Encoding]::UTF8.GetBytes(($body | ConvertTo-Json -Compress))) | Out-Null
-}
 $shop = [ordered]@{
   updatedAt = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')
   disclosure = '토스쇼핑 쉐어링크 활동의 일환으로, 링크를 통한 구매가 발생하면 일정 수수료를 지급받습니다.'

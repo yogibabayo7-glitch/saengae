@@ -1,8 +1,10 @@
 // 토스 SDK 연결부: 링크 열기, 이벤트 기록, 배너 광고 (오늘밥상물가와 같은 방식)
 import { Analytics, Device, TossAds } from '@apps-in-toss/web-framework';
+import { markLeaving } from './resume';
 
 // 정부 사이트 등 바깥 링크 열기 (토스 안에서는 토스 브라우저, 미리보기에서는 새 창)
 export async function openLink(url: string): Promise<void> {
+  markLeaving(); // 돌아오면 보던 곳으로 (resume.ts)
   try {
     await Device.openURL(url);
     return;

@@ -11,9 +11,17 @@ import { loadShop, priceLabel } from './shop';
 import { cachedCheckedAt, loadCheckedAt } from './benefits';
 import { SHARE_STAGES, entryURL, shareBenefit, startTarget } from './share';
 import type { ShareWho, StartTarget } from './share';
+import { remember, setScrollGetter, takeResume } from './resume';
 
 // 가족 공유 링크로 들어온 경우: 그 메뉴·카드부터 (앱 시작 때 한 번 읽음)
 const START: StartTarget | null = startTarget();
+// 상품·정부 사이트를 보고 돌아온 경우: 보던 메뉴·칸·자세히 창·스크롤 그대로 (공유 링크가 먼저)
+const RESUME = START ? null : takeResume();
+const RESUME_VIEW: View | null =
+  RESUME && (RESUME.view === 'home' || RESUME.view === 'local' || STAGES.some((s) => s.key === RESUME.view))
+    ? (RESUME.view as View)
+    : null;
+const RESUME_DETAIL = RESUME?.detail && findDetail(RESUME.detail) ? RESUME.detail : null;
 import type { ShopData, ShopGroup } from './shop';
 
 type View = 'home' | 'local' | StageKey;
@@ -22,8 +30,8 @@ const TAG_CLASS = { 종료: 'end', '올해 마지막': 'end', '2027 예정': 'pl
 
 export default function App() {
   // 가족 공유 링크로 들어오면 그 메뉴부터 열어요
-  const [view, setView] = useState<View>(() => START?.stage ?? 'home');
-  const [detailId, setDetailId] = useState<string | null>(null);
+  const [view, setView] = useState<View>(() => START?.stage ?? RESUME_VIEW ?? 'home');
+  const [detailId, setDetailId] = useState<string | null>(RESUME_DETAIL);
   const [toast, setToast] = useState('');
   const [entry, setEntry] = useState<StartTarget | null>(START); // 첫 화면에서만 카드 반짝
   const toastTimer = useRef<number | undefined>(undefined);
@@ -34,6 +42,24 @@ export default function App() {
   }
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showTop, setShowTop] = useState(false);
+
+  // 지금 보던 곳을 기억해 둬요 (바깥 링크 열 때 resume.ts가 폰에 적어요)
+  const resumeSub = useRef<string | undefined>(RESUME_VIEW ? RESUME?.sub : undefined); // 처음 한 번만
+  useEffect(() => remember({ view }), [view]);
+  useEffect(() => remember({ detail: detailId }), [detailId]);
+  useEffect(() => {
+    setScrollGetter(() => scrollRef.current?.scrollTop ?? 0);
+    const y = RESUME_VIEW ? RESUME?.y ?? 0 : 0;
+    if (y <= 0) return;
+    // 상품 목록이 늦게 그려질 수 있어서 두 번 맞춰요
+    const go = () => scrollRef.current?.scrollTo({ top: y });
+    const t1 = window.setTimeout(go, 150);
+    const t2 = window.setTimeout(go, 700);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, []);
 
   useEffect(() => {
     initBackHandler();
@@ -56,6 +82,7 @@ export default function App() {
 
   function go(v: View) {
     setEntry(null);
+    resumeSub.current = undefined;
     setView(v);
     setDetailId(null);
     scrollRef.current?.scrollTo({ top: 0 });
@@ -86,6 +113,7 @@ export default function App() {
                 onDetail={openDetail}
                 onToast={showToast}
                 focusCard={entry && entry.stage === view ? entry.card : -1}
+                initialSub={resumeSub.current}
               />
             )}
           </>
@@ -219,16 +247,19 @@ function StageView({
   onDetail,
   onToast,
   focusCard = -1,
+  initialSub,
 }: {
   stage: Stage;
   onGo: (v: View) => void;
   onDetail: (id: string) => void;
   onToast: (text: string) => void;
   focusCard?: number;
+  initialSub?: string;
 }) {
   // 공유 링크로 들어왔으면 그 카드가 있는 칸(기본·1인가구·직장인)부터 열어요
   const target = focusCard >= 0 ? stage.cards[focusCard] : undefined;
-  const [sub, setSub] = useState<SubTab>(() => target?.tab ?? '');
+  const [sub, setSub] = useState<SubTab>(() => target?.tab ?? (initialSub as SubTab | undefined) ?? '');
+  useEffect(() => remember({ sub }), [sub]);
   const [localTag, setLocalTag] = useState('');
   const [flash, setFlash] = useState<Card | undefined>(target);
   const first = useRef(true);
