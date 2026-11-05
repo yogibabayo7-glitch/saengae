@@ -20,6 +20,7 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
     name = os.path.basename(path)
     date = name[:10]
     raw = open(path, encoding='utf-8').read()
+    if '━ 제목 ━' not in raw or '━ 본문 ━' not in raw: continue
     head, rest = raw.split('━ 제목 ━', 1)
     title = rest.split('━ 본문 ━')[0].strip('━ \n')
     body = rest.split('━ 본문 ━')[1].split('━ 태그')[0].strip('━ \n')
