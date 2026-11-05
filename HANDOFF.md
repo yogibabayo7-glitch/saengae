@@ -4,6 +4,7 @@
 
 ## 11/5 — 점검 후 상품 받기
 - 쉐어링크 점검 연장 공지 없음(11/4 23:59 종료). 이번 예약 실행은 PC 연결이 없어 스크립트를 못 돌림 → 사장님이 saengae_run_now.bat 한 번 실행 필요. shop.json 아직 10/29 자료.
+- 11/5 예약 실행 결과: 이번에도 PC 연결 없음 + 쉐어링크 공지 페이지는 권한 문제로 못 열어 확인 못 함. 스크립트 안 돌림. shop.json 여전히 10/29(묶음 8개 중 4개만 상품, 26묶음 자료 아직 안 들어옴).
 
 ## 11/4 — 콘솔 핵심 지표 설정 완료 (사장님)
 - 활성: 템플릿 '7일 이후 재방문 유저'(7). 전환(직접 조합, 파라미터 없음): ①대표 '정부 신청 사이트로 이동' = gov_link_clicked OR local_gov24_clicked ②'혜택 자세히 보기' = detail_opened OR local_detail_opened OR stage_local_opened ③'가족에게 혜택 보내기' = share_clicked. 11/5부터 적용. ⚠ 이 이벤트 이름(src/platform.ts track)은 바꾸지 말 것 — 바꾸면 지표가 끊김.
