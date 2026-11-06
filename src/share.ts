@@ -16,7 +16,7 @@ export const SHARE_STAGES: StageKey[] = ['midlife', 'senior'];
 const FALLBACK_LINK = 'https://tossminiapp.com/s/XAESUR6e';
 const APP_NAME = 'saengae-benefit';
 // 카톡 공유 미리보기 그림 (1200×600, 개발자센터 OG 가이드) — 웨비나: 기본 공유 화면보다 눌러 보게 만드는 이미지
-const OG_IMAGE = 'https://raw.githubusercontent.com/yogibabayo7-glitch/saengae/main/docs/og/saengae-benefit-family-share-og-large.png';
+const OG_IMAGE = 'https://raw.githubusercontent.com/yogibabayo7-glitch/saengae/main/docs/og/saengae-benefit-family-share-og-dark.png';
 
 const linkCache = new Map<string, string>();
 
