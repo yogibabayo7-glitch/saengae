@@ -26,7 +26,9 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
     body = rest.split('━ 본문 ━')[1].split('━ 태그')[0].strip('━ \n')
     tags = rest.split('━ 태그')[1].split('\n', 1)[1].strip() if '━ 태그' in rest else ''
     notes = [l[1:].strip() for l in head.splitlines() if l.startswith('■')]
-    card = [f for f in os.listdir(BLOG) if f.startswith(date) and f.endswith('-카드.png')]
+    rep = re.search(r'대표 이미지:\s*(\S+\.png)', head)
+    card = [rep.group(1)] if rep and os.path.exists(os.path.join(BLOG, rep.group(1))) else \
+        [f for f in os.listdir(BLOG) if f.startswith(date) and f.endswith('-카드.png')]
     cardjson = card[0].replace('.png', '.json') if card else None
     theme = 'guide'
     if cardjson and os.path.exists(os.path.join(BLOG, cardjson)):
@@ -61,7 +63,8 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
         plain.append('')
     d = datetime.date.fromisoformat(date)
     key = ['mon','tue','wed','thu','fri','sat','sun'][d.weekday()] + d.strftime('%m%d')
-    posts.append(dict(key=key, label=f'{d.month}/{d.day}({DAYS[d.weekday()]})', title=title,
+    if any(q['key'] == key for q in posts): key += '-' + str(sum(q['key'].startswith(key) for q in posts) + 1)
+    posts.append(dict(key=key, label=f'{d.month}/{d.day}({DAYS[d.weekday()]})' + (' 마감' if notes and '마감' in notes[0] else ''), title=title,
                       notes=notes, body='\n'.join(parts), plain='\n'.join(plain).strip(),
                       tags=tags, color=COLOR.get(theme, '#0f8a6c')))
 
