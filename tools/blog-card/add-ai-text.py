@@ -1,4 +1,5 @@
-# 사용법: python3 tools/blog-card/add-ai-text.py blog/원고.txt
+# 사용법: python3 tools/blog-card/add-ai-text.py blog/원고.txt [--table-key]
+# 규칙(2026-11-09 사장님): 표마다 '설명 문단'과 표 내용을 한 문단으로 합쳐 직접 쓴다 — 같은 숫자는 '한눈에 정리'에 한 번, 표 아래 설명에 한 번만.
 # AI 브리핑이 읽을 수 있게 표 그림 내용을 글자로 '▶ 표 핵심'에, 클립 자리를 인사말 바로 아래(한눈에 정리 위)에 넣는다(이미 있으면 건너뜀).
 import sys, re, json, glob, os
 p = sys.argv[1]; s = open(p, encoding='utf-8').read()
@@ -16,7 +17,7 @@ for j in glob.glob(f'{blog}/{date}-*-표.json') + glob.glob(f'{blog}/{date}-*표
             txt = ' / '.join(f"{clean(r[0])} – {clean(' '.join(r[1:]))}" for r in t['rows'])
         note = clean(re.sub(r'·\s*', '', t.get('note', ''))) if t.get('note') else ''
         rows[t['file']] = txt + (f". {note}" if note and len(note) < 120 else '')
-if '▶ 표 핵심' not in s:
+if '--table-key' in sys.argv and '▶ 표 핵심' not in s:  # 기본은 끔: 2026-11-09부터 표 설명은 '설명 문단 하나'로 직접 씀(중복 금지)
     out = []; pending = None
     for line in s.split('\n'):
         m = re.match(r'\[표 이미지 \d+: (.+?)\]', line)
