@@ -1,5 +1,5 @@
 # 사용법: python3 tools/blog-card/add-ai-text.py blog/원고.txt
-# AI 브리핑이 읽을 수 있게 표 그림 내용을 글자로 '▶ 표 핵심'에, 클립 나레이션을 '영상 내용'으로 원고에 넣는다(이미 있으면 건너뜀).
+# AI 브리핑이 읽을 수 있게 표 그림 내용을 글자로 '▶ 표 핵심'에, 클립 자리를 인사말 바로 아래(한눈에 정리 위)에 넣는다(이미 있으면 건너뜀).
 import sys, re, json, glob, os
 p = sys.argv[1]; s = open(p, encoding='utf-8').read()
 blog = os.path.dirname(p); date = os.path.basename(p)[:10]
@@ -29,11 +29,10 @@ clips = glob.glob(f'{blog}/{date}-*-클립.json')
 key = lambda c: os.path.basename(c)[:-len('-클립.json')]
 clip = next((c for c in clips if os.path.basename(p).startswith(key(c))), None)
 if clip and '🎬' not in s:
-    c = json.load(open(clip, encoding='utf-8'))
-    say = ' '.join(l[1] for sc in c['scenes'] for l in sc['lines'])
     mp4 = os.path.basename(clip).replace('.json', '.mp4')
-    block = f"🎬 30초 영상으로 한 번에 보기\n\n[클립 영상 자리 — {mp4}]\n\n영상 내용: {say}\n\n[구분선]\n\n"
-    s = s.replace('📱 ', block + '📱 ', 1) if '📱 ' in s else s
+    block = f"🎬 30초 영상으로 먼저 보기\n\n[클립 영상 자리 — {mp4}]\n\n바쁘시면 이 영상만 보셔도 핵심은 다 알 수 있어요. 자세한 숫자와 신청 방법은 아래에 정리했어요.\n\n"
+    a2 = s.index('━ 본문 ━'); i = s.index('✅ 한눈에 정리', a2) if '✅ 한눈에 정리' in s else s.index('[구분선]', a2)
+    s = s[:i] + block + s[i:]
     s = s.replace('■ 붙여넣기:', f"■ [클립 영상 자리]에는 {mp4} 를 동영상으로 넣기(네이버 글쓰기 위쪽 '동영상' 버튼)\n■ 붙여넣기:", 1)
 open(p, 'w', encoding='utf-8').write(s)
 print('ok', p)
