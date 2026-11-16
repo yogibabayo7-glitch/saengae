@@ -44,7 +44,8 @@ export function askAlert(key: string, done: (r: AlertResult) => void): void {
   }
 }
 
-// ── 리뷰 요청: 정부 사이트를 다녀왔을 때·가족에게 혜택을 보낸 직후 (핵심 일을 마친 순간)
+// ── 리뷰 요청: 가족에게 혜택을 보낸 직후에만 (사용자가 스스로 한 행동 뒤).
+// 11/16 심사 점검: 정부 사이트 복귀 때 저절로 띄우는 건 다크패턴 소지라 뺌.
 // 한 세션에 한 번, 30일에 한 번, 두 번째 방문부터만.
 const REVIEW_KEY = 'saengae.review.v1';
 const VISIT_KEY = 'saengae.visits.v1';
@@ -56,7 +57,7 @@ export function countVisit(): void {
   } catch {}
 }
 
-export function askReview(reason: 'gov_return' | 'shared'): void {
+export function askReview(reason: 'shared'): void {
   if (askedThisSession) return;
   try {
     if (!Review.request.isSupported()) return;

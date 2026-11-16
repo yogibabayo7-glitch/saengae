@@ -26,7 +26,7 @@ export type TrackEvent =
   | 'local_gov24_clicked' // 정부24 상세 페이지 열기
   | 'share_clicked' // 가족에게 혜택 보내기 (중장년·어르신)
   | 'share_link_opened' // 가족이 보낸 링크로 들어옴
-  | 'review_requested' // 리뷰 요청 띄움 (gov_return·shared)
+  | 'review_requested' // 리뷰 요청 띄움 (shared)
   | 'alert_agreed'; // 마감 알림 신청 결과
 
 export function track(name: TrackEvent, params: Record<string, string | number> = {}): void {

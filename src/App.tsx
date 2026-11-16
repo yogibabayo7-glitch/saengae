@@ -64,8 +64,8 @@ export default function App() {
 
   useEffect(() => {
     countVisit();
-    // 정부 사이트에서 신청하고 돌아온 순간 = 리뷰 부탁하기 좋은 때
-    if (RESUME?.kind === 'gov') window.setTimeout(() => askReview('gov_return'), 1200);
+    // 리뷰 요청은 가족에게 공유한 직후에만 (11/16 심사 점검: 화면 전환·복귀 때 저절로 뜨는 창은
+    // 비게임 체크리스트 'UX 다크패턴' 위반 소지 → gov_return 자동 리뷰 요청을 뺌)
     initBackHandler();
     if (START) track('share_link_opened', { stage: START.stage, card: START.card });
     else if (/stage=/.test(entryURL())) track('share_link_opened', { stage: 'unknown', url: entryURL().slice(0, 200) });
