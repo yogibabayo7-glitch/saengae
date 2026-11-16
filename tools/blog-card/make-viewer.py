@@ -15,10 +15,13 @@ def esc(s):
     s = html.escape(s)
     return re.sub(r'(https?://[^\s<]+)', r'<a href="\1" target="_blank">\1</a>', s)
 
+# 사장님(11/16): 이미 쓴 지난 글은 미리보기에서 빼기 — 오늘(한국 시간) 이후 글만 보여 줌. 원고 파일은 저장소에 그대로 둠(매일 점검이 씀)
+SHOW_FROM = os.environ.get('SHOW_FROM') or (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).date().isoformat()
 posts = []
 for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
     name = os.path.basename(path)
     date = name[:10]
+    if date < SHOW_FROM: continue
     raw = open(path, encoding='utf-8').read()
     if '━ 제목 ━' not in raw or '━ 본문 ━' not in raw: continue
     head, rest = raw.split('━ 제목 ━', 1)
