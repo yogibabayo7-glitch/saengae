@@ -31,7 +31,7 @@ for block in re.split(r'\n\s*\n', body):
     for l in lines:
         if l == '[대표 이미지]':
             outp.append(f'<p>[ 사진 넣는 자리 · {names["대표"]} ]</p>')
-        elif m := re.match(r'\[표 이미지 (\d+): .+\]', l):
+        elif m := re.match(r'\[표 이미지 (\w+): .+\]', l):
             outp.append(f'<p>[ 사진 넣는 자리 · {names[m.group(1)]} ]</p>')
         elif l.startswith('[클립 영상 자리'):
             mp4 = l.split('—')[-1].strip(' ]')
