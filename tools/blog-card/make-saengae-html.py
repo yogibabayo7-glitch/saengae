@@ -7,7 +7,7 @@
 import sys, re, json, html
 
 src, names, out = sys.argv[1], json.load(open(sys.argv[2], encoding='utf-8')), sys.argv[3]
-COLOR = {'money': '#D9480F', 'digital': '#1C5FD4', 'job': '#4A8C12', 'news': '#D62828'}
+COLOR = {'money': '#D9480F', 'digital': '#1C5FD4', 'job': '#4A8C12', 'news': '#DE5353'}
 theme = COLOR[names.get('theme', 'money')]
 raw = open(src, encoding='utf-8').read()
 title = raw.split('━ 제목 ━')[1].split('━ 본문 ━')[0].strip('━ \n')
