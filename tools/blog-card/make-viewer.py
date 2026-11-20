@@ -21,7 +21,7 @@ posts = []
 for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
     name = os.path.basename(path)
     date = name[:10]
-    if date < SHOW_FROM: continue
+    if date < SHOW_FROM and date not in os.environ.get('SHOW_ALSO', '').split(','): continue
     raw = open(path, encoding='utf-8').read()
     if '━ 제목 ━' not in raw or '━ 본문 ━' not in raw: continue
     head, rest = raw.split('━ 제목 ━', 1)
