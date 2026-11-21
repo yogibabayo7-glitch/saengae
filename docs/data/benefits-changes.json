@@ -1,18 +1,20 @@
 {
- "updatedAt": "2026-11-21T10:37:10+09:00",
+ "updatedAt": "2026-11-22T08:39:23+09:00",
  "first": false,
- "added": [],
- "changed": [],
- "removed": [
+ "added": [
   {
-   "id": "BJWLF00004081",
-   "name": "아동치과주치의사업",
-   "org": "전남광주통합특별시 동구",
-   "cats": [],
-   "stages": [
-    "school"
+   "id": "O00148800003",
+   "name": "2026년 대구광역시장애인 평생교육이용권 2차 신청",
+   "org": "대구광역시행복진흥사회서비스원",
+   "cats": [
+    "disability"
    ],
-   "updated": "20260801"
+   "stages": [
+    "disability"
+   ],
+   "updated": "2026-11-22"
   }
- ]
+ ],
+ "changed": [],
+ "removed": []
 }
