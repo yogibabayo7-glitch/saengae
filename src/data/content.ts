@@ -1,7 +1,7 @@
 // 생애혜택 안내소 — 화면에 보이는 내용 (사이트 index.html 2026-10-29 자료 확인본을 그대로 옮김)
 // 금액·조건을 고칠 때는 이 파일만 고치면 돼요. 분기 점검(1·4·7·10월) 때 CHECKED_AT도 바꿔 주세요.
 
-export const CHECKED_AT = '2026. 10. 30.';
+export const CHECKED_AT = '2026. 11. 23.';
 
 export type StageKey = 'pregnancy' | 'kids' | 'school' | 'youth' | 'midlife' | 'senior' | 'disability' | 'everyone';
 
@@ -63,7 +63,7 @@ export const NOTICES: Notice[] = [
   { tag: '올해 마지막', title: '근로·자녀장려금 기한 후 신청 12월 1일까지', text: '5월에 놓쳤다면 12월 1일까지 홈택스에서 신청하면 95%를 받아요.', go: [L('홈택스에서 신청', 'https://www.hometax.go.kr')] },
   { tag: '올해 마지막', title: '에너지바우처 12월 31일 신청 마감', text: '기초수급 가구 중 노인·영유아·장애인 등이 있으면 연 29.5만~70.1만 원 난방비 지원.', go: [L('복지로에서 신청', 'https://www.bokjiro.go.kr')], alert: 'energy-voucher' },
   { tag: '진행 중', title: '전세사기 피해자 보증금 최소 1/3 보장', text: '11월 13일부터 시행. 돌려받은 돈이 보증금 1/3에 못 미치면 나라가 차액을 지원해요.', go: [D('d-jeonse-victim', '피해 지원 자세히'), L('국토부 안내', 'https://www.korea.kr/news/policyNewsView.do?newsId=148973064')] },
-  { tag: '진행 중', title: '2027학년도 1학기 국가장학금 신청', text: '보통 11월 중순에 1차 신청이 열려요. 고3·대학생은 한국장학재단 공지를 확인하세요.', go: [L('한국장학재단', 'https://www.kosaf.go.kr'), D('d-scholarship', '구간별 금액')] },
+  { tag: '진행 중', title: '2027학년도 1학기 국가장학금 1차 신청 11월 24일~1월 7일', text: '11월 24일 09시부터 2027년 1월 7일 18시까지 신청해요. 서류 제출·가구원 동의는 1월 14일 18시까지. 고3(입학 예정자)·대학생 모두 한국장학재단에서 신청하세요.', go: [L('한국장학재단', 'https://www.kosaf.go.kr'), D('d-scholarship', '구간별 금액')] },
   { tag: '진행 중', title: '65세 이상 독감·코로나19 무료 접종', text: '연령별로 시작됐어요. 코로나19는 2027년 6월 30일까지 맞을 수 있어요.', go: [L('예방접종도우미', 'https://nip.kdca.go.kr'), D('d-vaccine', '자세히')] },
 ];
 
@@ -1057,7 +1057,7 @@ export const DETAILS: Detail[] = [
       {
         kind: 'list',
         items: [
-          '1학기분은 보통 전년 11~12월에 1차 신청해요. 2027학년도 일정은 한국장학재단 공지를 확인하세요.',
+          '2027학년도 1학기 1차 신청: 2026.11.24(화) 09시 ~ 2027.1.7(목) 18시 (서류·가구원 동의는 1.14까지).',
           '주거안정장학금(월 최대 20만 원)과 국가근로장학금도 이때 함께 신청해요.',
           '가구원 정보제공 동의를 꼭 해야 소득구간이 나와요.',
         ],
