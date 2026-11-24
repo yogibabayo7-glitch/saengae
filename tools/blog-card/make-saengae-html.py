@@ -30,7 +30,8 @@ def esc(t):
     return re.sub(r'(https?://[^\s<]+)', r'<a href="\1">\1</a>', t)
 
 # '▶ 제목' 다음 줄이 주소 하나뿐이면 → 제목 글자 속에 링크를 숨김(붙여 넣어도 링크 카드 안 뜨게, 사장님 11/18·11/25)
-body = re.sub(r'(▶[^\n]*)\n(https?://\S+)\s*(?=\n|$)', lambda m: m.group(1)+' ⟦'+m.group(2)+'⟧', body)
+# (사장님 11/25 01:07) 숨긴 링크 말고: '▶ 제목' 줄 그대로 두고 그 밑 줄에 주소를 링크로 보이게 → 합치지 않음
+# body = re.sub(r'(▶[^\n]*)\n(https?://\S+)\s*(?=\n|$)', lambda m: m.group(1)+' ⟦'+m.group(2)+'⟧', body)
 def linkify(l):
     m = re.match(r'(▶\s*)(.*?)\s*⟦(\S+)⟧$', l)
     if not m: return None
