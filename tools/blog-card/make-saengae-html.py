@@ -14,6 +14,41 @@ title = raw.split('━ 제목 ━')[1].split('━ 본문 ━')[0].strip('━ \n'
 body = raw.split('━ 본문 ━')[1].split('━ 태그')[0].strip('━ \n')
 tags = raw.split('━ 태그')[1].split('\n', 1)[1].strip() if '━ 태그' in raw else ''
 
+# ── '📚 함께 보면 좋은 글' 자동으로 붙이기 (사장님 11/25: 앞으로 모든 원고에 자동으로)
+#    blog/글주소-연결줄.json 에서 이 글 카테고리의 줄을 찾아, 그 줄에서 주소가 있는 가장 최근 글(자기 자신 제외)을 '▶ 이어서 보기'로.
+#    모양: '▶ 이어서 보기: 제목' 한 줄 + 그 밑 줄에 주소(링크). 블로그 소개 글도 같은 모양으로 맨 끝에.
+import os
+_notes = raw.split('━ 제목 ━')[0]
+_reg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'blog', '글주소-연결줄.json')
+if not re.search(r'^■ 마감글', _notes, re.M) and os.path.exists(_reg_path):
+    reg = json.load(open(_reg_path, encoding='utf-8'))
+    cat = re.search(r'■ 카테고리:\s*([^→/\n]+)', _notes)
+    line = None
+    if cat:
+        for k, v in reg['카테고리→줄'].items():
+            if k in cat.group(1): line = v
+    m_line = re.search(r'^■ 연결 줄:\s*(\S+)', _notes, re.M)   # 원고 메모로 줄을 직접 지정할 수도 있음
+    if m_line: line = m_line.group(1)
+    # 이 글이 이미 연결 줄에 올라 있으면 그 줄을 쓰고, 줄에서 이 글 바로 뒤(더 예전) 글부터 찾음
+    own = next((k for k, v in reg['posts'].items() if v['t'] == title), None)
+    seq = reg['lines'].get(line, [])
+    if own:
+        for ln, ks in reg['lines'].items():
+            if own in ks: line, seq = ln, ks[ks.index(own)+1:]; break
+    tgt = None
+    for key in seq:
+        pst = reg['posts'][key]
+        if pst['u'] and pst['t'] != title:
+            tgt = pst; break
+    sec = '📚 함께 보면 좋은 글\n\n'
+    if tgt: sec += f"▶ 이어서 보기: {tgt['t']}\n{tgt['u']}\n\n"
+    sec += f"▶ 생애혜택 안내소는 이런 블로그예요 (월 지원금 · 수 디지털 · 금 재취업)\n{reg['intro']['u']}\n"
+    if '📚 함께 보면 좋은 글' in body:
+        body = re.sub(r'📚 함께 보면 좋은 글.*?(?=\n\[구분선\]|\Z)', lambda _m: sec.rstrip('\n'), body, count=1, flags=re.S)
+    else:
+        body = body.rstrip() + '\n\n[구분선]\n\n' + sec
+    print('📚 이어서 보기 →', tgt['d']+' '+tgt['t'] if tgt else '(줄 끝: 소개 글만)', '| 줄:', line)
+
 # ── 빠뜨림 막기 (사장님 11/25): '📚 함께 보면 좋은 글'에 '▶ 이어서 보기' 줄이 없으면 원고를 만들지 않는다.
 #    마감글만 예외 — 원고 맨 위 ■ 메모에 '마감글'이라고 적혀 있으면 통과.
 #    주소 자리([... 주소 ...])가 남아 있으면 경고: 발행기록 시트 '네이버 글 주소' 칸에서 찾아 넣을 것.
