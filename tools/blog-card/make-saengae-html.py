@@ -29,6 +29,13 @@ def esc(t):
     t = html.escape(t)
     return re.sub(r'(https?://[^\s<]+)', r'<a href="\1">\1</a>', t)
 
+# '▶ 제목' 다음 줄이 주소 하나뿐이면 → 제목 글자 속에 링크를 숨김(붙여 넣어도 링크 카드 안 뜨게, 사장님 11/18·11/25)
+body = re.sub(r'(▶[^\n]*)\n(https?://\S+)\s*(?=\n|$)', lambda m: m.group(1)+' ⟦'+m.group(2)+'⟧', body)
+def linkify(l):
+    m = re.match(r'(▶\s*)(.*?)\s*⟦(\S+)⟧$', l)
+    if not m: return None
+    return f'<p {P}>{m.group(1)}<a href="{m.group(3)}" style="color:{theme};text-decoration:underline">{html.escape(m.group(2))}</a></p>'
+
 outp = []
 for block in re.split(r'\n\s*\n', body):
     lines = [l.strip() for l in block.strip().splitlines() if l.strip()]
@@ -47,6 +54,8 @@ for block in re.split(r'\n\s*\n', body):
             outp.append(f'<p>[ 사진 넣는 자리 · 클립 영상(직접 넣기) · {mp4} ]</p>')
         elif l.startswith('[사진 설명]'):
             continue  # 사진 밑 설명은 프로그램이 사진 설명 칸에 넣음
+        elif linkify(l):
+            outp.append(linkify(l))
         elif l == '[구분선]':
             outp.append('<hr>')
         elif l.startswith('[') and l.endswith(']'):
