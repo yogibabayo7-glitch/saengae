@@ -14,6 +14,15 @@ title = raw.split('━ 제목 ━')[1].split('━ 본문 ━')[0].strip('━ \n'
 body = raw.split('━ 본문 ━')[1].split('━ 태그')[0].strip('━ \n')
 tags = raw.split('━ 태그')[1].split('\n', 1)[1].strip() if '━ 태그' in raw else ''
 
+# ── 빠뜨림 막기 (사장님 11/25): '📚 함께 보면 좋은 글'에 '▶ 이어서 보기' 줄이 없으면 원고를 만들지 않는다.
+#    마감글만 예외 — 원고 맨 위 ■ 메모에 '마감글'이라고 적혀 있으면 통과.
+#    주소 자리([... 주소 ...])가 남아 있으면 경고: 발행기록 시트 '네이버 글 주소' 칸에서 찾아 넣을 것.
+if not re.search(r'^■ 마감글', raw.split('━ 제목 ━')[0], re.M):
+    if '📚 함께 보면 좋은 글' not in body or '▶ 이어서 보기' not in body:
+        sys.exit("❌ 멈춤: '📚 함께 보면 좋은 글'에 '▶ 이어서 보기' 줄이 없어요. 발행기록 시트 J칸(이어서 보기)과 I칸(글 주소)을 보고 넣으세요.")
+    if re.search(r'\[[^\]]*주소[^\]]*\]', body):
+        print("⚠ 경고: 아직 채우지 못한 글 주소 자리가 있어요 → 발행기록 시트 I칸 확인 / 없으면 사장님께 그 글 주소를 여쭤보기")
+
 P = 'style="font-size:16px;line-height:1.9;margin:0 0 12px;text-align:left"'
 E = '<p><br></p>'
 def esc(t):
