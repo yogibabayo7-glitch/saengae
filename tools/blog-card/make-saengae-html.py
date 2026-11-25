@@ -58,7 +58,7 @@ if not re.search(r'^■ (마감글|카테고리: 정책 속보)', raw.split('━
     if re.search(r'\[[^\]]*주소[^\]]*\]', body):
         print("⚠ 경고: 아직 채우지 못한 글 주소 자리가 있어요 → 발행기록 시트 I칸 확인 / 없으면 사장님께 그 글 주소를 여쭤보기")
 
-P = 'style="font-size:16px;line-height:1.9;margin:0 0 12px;text-align:left"'
+P = 'style="color:#333333;background-color:transparent;font-size:16px;line-height:1.9;margin:0 0 12px;text-align:left"'
 E = '<p><br></p>'
 def esc(t):
     t = html.escape(t)
@@ -92,7 +92,7 @@ for block in re.split(r'\n\s*\n', body):
             continue  # 사진 밑 설명은 프로그램이 사진 설명 칸에 넣음
         elif l.startswith('👉 쉽게 말하면'):
             rest = l[len('👉 쉽게 말하면'):].lstrip(':： ')
-            outp.append(f'<table style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{theme};border:0"></td><td style="padding:6px 12px;border:0;font-size:16px;line-height:1.75;text-align:left"><b style="color:{theme}">👉 쉽게 말하면:</b> <span style="background-color:#fff1c2">{esc(rest)}</span></td></tr></table>')
+            outp.append(f'<table style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{theme};border:0"></td><td style="padding:6px 12px;border:0;color:#333333;font-size:16px;line-height:1.75;text-align:left"><b style="color:{theme}">👉 쉽게 말하면:</b> <span style="background-color:#fff1c2">{esc(rest)}</span></td></tr></table>')
         elif linkify(l):
             outp.append(linkify(l))
         elif l == '[구분선]':
