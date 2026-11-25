@@ -1,48 +1,120 @@
 {
- "updatedAt": "2026-11-25T08:39:20+09:00",
+ "updatedAt": "2026-11-26T08:39:41+09:00",
  "first": false,
  "added": [
   {
-   "id": "BJWLF00006818",
-   "name": "울산 자영업자 아이와 함께 행복업",
-   "org": "울산광역시",
+   "id": "448000000683",
+   "name": "출생 축하 기념 아기 주민등록증 제작 지원",
+   "org": "충청북도 단양군",
    "cats": [],
    "stages": [
-    "youth"
+    "pregnancy"
    ],
-   "updated": "20261125"
+   "updated": "2026-11-25"
   }
  ],
  "changed": [
   {
-   "id": "315000000297",
-   "name": "자치회관 프로그램 신청/감면",
-   "org": "서울특별시 강서구",
+   "id": "628000000739",
+   "name": "아이 꿈 수당 지급",
+   "org": "인천광역시",
    "cats": [],
    "stages": [
-    "disability"
+    "school"
    ],
-   "updated": "2026-11-24"
+   "updated": "2026-11-25"
   },
   {
-   "id": "BJWLF00004791",
-   "name": "청년인턴 지원사업",
-   "org": "서울특별시 서초구",
+   "id": "490000000280",
+   "name": "화순군 청년하우스 입주 신청",
+   "org": "전남광주통합특별시 화순군",
    "cats": [],
    "stages": [
     "youth"
    ],
-   "updated": "20261125"
+   "updated": "2026-11-25"
   },
   {
-   "id": "BJWLF00002815",
-   "name": "보육료 차액지원",
+   "id": "315000000291",
+   "name": "안심장비 지원",
+   "org": "서울특별시 강서구",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "2026-11-25"
+  },
+  {
+   "id": "BJWLF00005413",
+   "name": "역세권 새빛 청년존(Zone)",
+   "org": "경기도 수원시",
+   "cats": [],
+   "stages": [
+    "youth"
+   ],
+   "updated": "20261126"
+  },
+  {
+   "id": "BJWLF00005407",
+   "name": "장애인가족지원센터 긴급돌봄서비스",
    "org": "서울특별시",
    "cats": [],
    "stages": [
-    "kids"
+    "school",
+    "youth",
+    "midlife",
+    "disability"
+   ],
+   "updated": "20261126"
+  },
+  {
+   "id": "BJWLF00004467",
+   "name": "장애인활동지원 추가지원사업",
+   "org": "충청북도",
+   "cats": [],
+   "stages": [
+    "school",
+    "youth",
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20261126"
+  },
+  {
+   "id": "BJWLF00005880",
+   "name": "더드림 신혼부부 주거비 지원사업",
+   "org": "경상북도 성주군",
+   "cats": [],
+   "stages": [
+    "pregnancy"
    ],
    "updated": "20261125"
+  },
+  {
+   "id": "BJWLF00000926",
+   "name": "참전유공자 사망위로금",
+   "org": "부산광역시 사하구",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20261124"
+  },
+  {
+   "id": "BJWLF00006811",
+   "name": "전세피해 주택임차인 주거비 지원",
+   "org": "전북특별자치도",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20261120"
   },
   {
    "id": "BJWLF00006806",
@@ -53,6 +125,47 @@
     "kids"
    ],
    "updated": "20261120"
+  },
+  {
+   "id": "BJWLF00004763",
+   "name": "해남형 청년 주거비 지원사업",
+   "org": "전남광주통합특별시 해남군",
+   "cats": [],
+   "stages": [
+    "youth"
+   ],
+   "updated": "20261030"
+  },
+  {
+   "id": "BJWLF00006801",
+   "name": "장애인 체력단련센터 운영",
+   "org": "경기도 광명시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20261021"
+  },
+  {
+   "id": "BJWLF00006800",
+   "name": "장애어르신 쉼마루",
+   "org": "경기도 광명시",
+   "cats": [],
+   "stages": [
+    "senior",
+    "disability"
+   ],
+   "updated": "20261021"
+  },
+  {
+   "id": "BJWLF00006799",
+   "name": "주거약자 이사지원",
+   "org": "전남광주통합특별시 북구",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20261021"
   },
   {
    "id": "BJWLF00000203",
@@ -68,9 +181,9 @@
    "updated": "20261021"
   },
   {
-   "id": "BJWLF00000453",
-   "name": "행여자 관리(여비 및 숙박비 지급)",
-   "org": "전북특별자치도 정읍시",
+   "id": "BJWLF00003485",
+   "name": "공공근로사업",
+   "org": "전북특별자치도 무주군",
    "cats": [],
    "stages": [
     "youth",
@@ -134,6 +247,62 @@
    "updated": "20260908"
   },
   {
+   "id": "BJWLF00004373",
+   "name": "발달장애인 직업훈련연계주택 운영 지원",
+   "org": "경상북도",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "disability"
+   ],
+   "updated": "20260829"
+  },
+  {
+   "id": "BJWLF00001756",
+   "name": "요보호아동 자립지원",
+   "org": "제주특별자치도 제주시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school",
+    "youth"
+   ],
+   "updated": "20260829"
+  },
+  {
+   "id": "BJWLF00001755",
+   "name": "장애인거주시설 무연고 기초수급자 간병비 지원",
+   "org": "제주특별자치도 제주시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260828"
+  },
+  {
+   "id": "BJWLF00002566",
+   "name": "노인복지사업 추진",
+   "org": "부산광역시 연제구",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260828"
+  },
+  {
+   "id": "BJWLF00006110",
+   "name": "저장강박 의심가구 [물건비움 마음채움] 사업",
+   "org": "경상남도 창원시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260827"
+  },
+  {
    "id": "BJWLF00006024",
    "name": "광주광역시 치매치료관리비 지원",
    "org": "전남광주통합특별시",
@@ -145,34 +314,26 @@
    "updated": "20260827"
   },
   {
-   "id": "BJWLF00001558",
-   "name": "장애인 재판정 진단비 및 검사비 지원",
-   "org": "전남광주통합특별시 신안군",
+   "id": "BJWLF00001677",
+   "name": "청년기술창업수당",
+   "org": "경상남도 창원시",
    "cats": [],
    "stages": [
-    "disability"
+    "youth",
+    "midlife",
+    "senior"
    ],
    "updated": "20260827"
   },
   {
-   "id": "BJWLF00002363",
-   "name": "장애인복지택시운영 지원",
-   "org": "경상북도 문경시",
+   "id": "BJWLF00005430",
+   "name": "영아종일제등전담아이돌보미지원",
+   "org": "경상북도",
    "cats": [],
    "stages": [
-    "disability"
+    "kids"
    ],
-   "updated": "20260827"
-  },
-  {
-   "id": "BJWLF00000569",
-   "name": "장애인 휠체어 수리사업",
-   "org": "경상북도 문경시",
-   "cats": [],
-   "stages": [
-    "disability"
-   ],
-   "updated": "20260827"
+   "updated": "20260825"
   },
   {
    "id": "BJWLF00004718",
@@ -185,47 +346,52 @@
    "updated": "20260825"
   },
   {
-   "id": "BJWLF00003652",
-   "name": "장애인 이동복지서비스 운영",
-   "org": "충청북도",
+   "id": "BJWLF00004017",
+   "name": "행복지기 사업",
+   "org": "경상남도 창녕군",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
-    "senior",
     "disability"
    ],
    "updated": "20260825"
   },
   {
-   "id": "BJWLF00006751",
-   "name": "책꾸러미 배부사업",
-   "org": "강원특별자치도 삼척시",
+   "id": "BJWLF00003063",
+   "name": "인플루엔자 무료 예방접종",
+   "org": "경상남도 고성군",
    "cats": [],
    "stages": [
-    "kids"
+    "disability"
    ],
-   "updated": "20260822"
+   "updated": "20260825"
   },
   {
-   "id": "BJWLF00004469",
-   "name": "아동급식지원, 토·공휴일결식아동급식",
-   "org": "전남광주통합특별시",
+   "id": "BJWLF00000224",
+   "name": "신생아 육아용품지원",
+   "org": "전남광주통합특별시 구례군",
    "cats": [],
    "stages": [
-    "kids",
-    "school"
+    "pregnancy"
    ],
-   "updated": "20260822"
+   "updated": "20260825"
   },
   {
-   "id": "BJWLF00002899",
-   "name": "4·19혁명국가유공자 등 생활지원금 지급",
-   "org": "경상남도 창원시",
+   "id": "BJWLF00004558",
+   "name": "저소득층 상수도 사용료 감면사업",
+   "org": "강원특별자치도 원주시",
    "cats": [],
    "stages": [
-    "midlife",
-    "senior"
+    "disability"
+   ],
+   "updated": "20260825"
+  },
+  {
+   "id": "BJWLF00003927",
+   "name": "청년 노동자 지원사업(청년 복지포인트)",
+   "org": "경기도",
+   "cats": [],
+   "stages": [
+    "youth"
    ],
    "updated": "20260822"
   },
@@ -241,31 +407,6 @@
    "updated": "20260822"
   },
   {
-   "id": "BJWLF00000991",
-   "name": "행려자 관리",
-   "org": "경기도 과천시",
-   "cats": [],
-   "stages": [
-    "school",
-    "youth",
-    "midlife",
-    "senior"
-   ],
-   "updated": "20260822"
-  },
-  {
-   "id": "BJWLF00002352",
-   "name": "무료급식소 및 장애우 쉼터 운영비",
-   "org": "전북특별자치도 군산시",
-   "cats": [],
-   "stages": [
-    "midlife",
-    "senior",
-    "disability"
-   ],
-   "updated": "20260822"
-  },
-  {
    "id": "BJWLF00001292",
    "name": "장애인 이동보조기기 수리사업",
    "org": "경기도 하남시",
@@ -276,14 +417,13 @@
    "updated": "20260822"
   },
   {
-   "id": "BJWLF00003301",
-   "name": "공공근로사업",
-   "org": "경상남도 합천군",
+   "id": "BJWLF00000385",
+   "name": "아동급식지원",
+   "org": "강원특별자치도 화천군",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
-    "senior"
+    "kids",
+    "school"
    ],
    "updated": "20260822"
   },
@@ -298,14 +438,37 @@
    "updated": "20260822"
   },
   {
-   "id": "BJWLF00006178",
-   "name": "부산광역시 서구 장수축하물품 지원사업",
-   "org": "부산광역시 서구",
+   "id": "BJWLF00005890",
+   "name": "장애인 전자신문 보급사업",
+   "org": "경상남도 거창군",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260821"
+  },
+  {
+   "id": "BJWLF00005272",
+   "name": "생활민원 처리반 운영",
+   "org": "경상남도 함양군",
    "cats": [],
    "stages": [
     "senior"
    ],
-   "updated": "20260820"
+   "updated": "20260821"
+  },
+  {
+   "id": "BJWLF00000714",
+   "name": "장애인활동지원 의정부시 추가 지원",
+   "org": "경기도 의정부시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260821"
   },
   {
    "id": "BJWLF00006177",
@@ -318,49 +481,43 @@
    "updated": "20260820"
   },
   {
-   "id": "BJWLF00005401",
-   "name": "취약계층 어린이 물놀이 수영장 이용권 지원 사업",
-   "org": "서울특별시 광진구",
+   "id": "BJWLF00005512",
+   "name": "대구시교육청 방과후학교 자유수강권 지원",
+   "org": "대구광역시 대구광역시교육청",
    "cats": [],
    "stages": [
-    "kids",
     "school"
    ],
    "updated": "20260820"
   },
   {
-   "id": "BJWLF00003898",
-   "name": "성매매집결지 피해자 지원사업",
-   "org": "경기도 성남시",
+   "id": "BJWLF00005193",
+   "name": "장애인 이동기기 수리비 지원 사업",
+   "org": "경기도 김포시",
    "cats": [],
    "stages": [
-    "school",
-    "youth",
-    "midlife",
-    "senior"
+    "disability"
    ],
    "updated": "20260820"
   },
   {
-   "id": "BJWLF00000938",
-   "name": "저소득층 대상포진 예방접종 지원",
-   "org": "인천광역시 강화군",
+   "id": "BJWLF00003293",
+   "name": "장애인 안전손잡이 설치 지원 사업",
+   "org": "강원특별자치도 삼척시",
    "cats": [],
    "stages": [
-    "midlife",
-    "senior"
+    "disability"
    ],
    "updated": "20260820"
   },
   {
-   "id": "BJWLF00000425",
-   "name": "출산장려추진사업(군산시 출산지원금 지급)",
-   "org": "전북특별자치도 군산시",
+   "id": "BJWLF00002231",
+   "name": "국가유공자 보훈예우수당",
+   "org": "서울특별시",
    "cats": [],
    "stages": [
-    "youth",
     "midlife",
-    "pregnancy"
+    "senior"
    ],
    "updated": "20260820"
   },
@@ -388,16 +545,79 @@
    "updated": "20260820"
   },
   {
-   "id": "BJWLF00000450",
-   "name": "도시가스 공급사업 보조금 지원",
-   "org": "전북특별자치도 익산시",
+   "id": "BJWLF00005893",
+   "name": "저소득층 맞춤형 복지서비스 제공(통합사례관리)",
+   "org": "전남광주통합특별시 해남군",
    "cats": [],
    "stages": [
     "youth",
+    "midlife"
+   ],
+   "updated": "20260819"
+  },
+  {
+   "id": "BJWLF00002636",
+   "name": "청년내일희망카드 지원사업",
+   "org": "대전광역시",
+   "cats": [],
+   "stages": [
+    "youth"
+   ],
+   "updated": "20260819"
+  },
+  {
+   "id": "BJWLF00003880",
+   "name": "사망한 참전유공자의 배우자 수당",
+   "org": "경기도 안성시",
+   "cats": [],
+   "stages": [
     "midlife",
     "senior"
    ],
    "updated": "20260819"
+  },
+  {
+   "id": "BJWLF00001408",
+   "name": "국가보훈대상자 사망위로금",
+   "org": "경기도 안성시",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260819"
+  },
+  {
+   "id": "BJWLF00001502",
+   "name": "안성시 국가보훈대상자 보훈명예수당 지급",
+   "org": "경기도 안성시",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260819"
+  },
+  {
+   "id": "BJWLF00004815",
+   "name": "여주시 초등학생 입학축하금 지원사업",
+   "org": "경기도 여주시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260815"
+  },
+  {
+   "id": "BJWLF00003085",
+   "name": "공공근로사업",
+   "org": "경상남도 사천시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife"
+   ],
+   "updated": "20260815"
   },
   {
    "id": "BJWLF00001547",
@@ -411,14 +631,35 @@
    "updated": "20260815"
   },
   {
-   "id": "BJWLF00000811",
-   "name": "건강생활실천 통합서비스",
-   "org": "경기도 군포시",
+   "id": "BJWLF00006078",
+   "name": "영유아 발달 컨설팅",
+   "org": "전남광주통합특별시",
+   "cats": [],
+   "stages": [
+    "kids"
+   ],
+   "updated": "20260814"
+  },
+  {
+   "id": "BJWLF00005470",
+   "name": "아름다운 동행",
+   "org": "강원특별자치도 철원군",
+   "cats": [],
+   "stages": [
+    "senior"
+   ],
+   "updated": "20260813"
+  },
+  {
+   "id": "BJWLF00001049",
+   "name": "성인장애인을 위한 심리지원서비스",
+   "org": "경기도 포천시",
    "cats": [],
    "stages": [
     "youth",
     "midlife",
-    "senior"
+    "senior",
+    "disability"
    ],
    "updated": "20260813"
   },
@@ -435,6 +676,28 @@
    "updated": "20260813"
   },
   {
+   "id": "BJWLF00002996",
+   "name": "보훈대상자 사망위로금 지급",
+   "org": "경기도 양주시",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260813"
+  },
+  {
+   "id": "BJWLF00000994",
+   "name": "보훈행사 추진(보훈대상자 행사 참가자 보상)",
+   "org": "경기도 구리시",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260813"
+  },
+  {
    "id": "BJWLF00005397",
    "name": "사할린 한인 주민 지원 사업",
    "org": "충청북도",
@@ -445,23 +708,13 @@
    "updated": "20260812"
   },
   {
-   "id": "BJWLF00003626",
-   "name": "정선군 성인 예방접종 지원사업",
-   "org": "강원특별자치도 정선군",
+   "id": "BJWLF00004537",
+   "name": "치매치료관리비 지원 사업 계획",
+   "org": "충청남도 예산군",
    "cats": [],
    "stages": [
     "midlife",
     "senior"
-   ],
-   "updated": "20260812"
-  },
-  {
-   "id": "BJWLF00000003",
-   "name": "장애인활동지원 시추가지원사업",
-   "org": "경상남도 밀양시",
-   "cats": [],
-   "stages": [
-    "disability"
    ],
    "updated": "20260812"
   },
@@ -478,15 +731,50 @@
    "updated": "20260812"
   },
   {
-   "id": "BJWLF00000506",
-   "name": "여성결혼이민자 운전면허 및 자격취득비 지원",
+   "id": "BJWLF00001262",
+   "name": "결혼이민자 국적취득 보상금 지원",
    "org": "경상남도 남해군",
    "cats": [],
    "stages": [
     "youth",
-    "midlife"
+    "midlife",
+    "senior"
    ],
    "updated": "20260812"
+  },
+  {
+   "id": "BJWLF00006143",
+   "name": "아이돌봄서비스 이용자 본인부담금 지원",
+   "org": "강원특별자치도 춘천시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school"
+   ],
+   "updated": "20260811"
+  },
+  {
+   "id": "BJWLF00000573",
+   "name": "저소득층 위문",
+   "org": "경상남도 산청군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260811"
+  },
+  {
+   "id": "BJWLF00001819",
+   "name": "강원도 다문화복지신문 구독 지원",
+   "org": "강원특별자치도",
+   "cats": [],
+   "stages": [
+    "school",
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260811"
   },
   {
    "id": "BJWLF00000004",
@@ -500,36 +788,45 @@
    "updated": "20260811"
   },
   {
-   "id": "BJWLF00003415",
-   "name": "국가유공자 사망위로금",
+   "id": "BJWLF00003494",
+   "name": "평창군 보훈영예 수당",
    "org": "강원특별자치도 평창군",
    "cats": [],
    "stages": [
+    "youth",
     "midlife",
     "senior"
    ],
    "updated": "20260811"
   },
   {
-   "id": "BJWLF00004784",
-   "name": "다둥이가정 숙박시설 지원사업",
-   "org": "대구광역시 달성군",
+   "id": "BJWLF00006138",
+   "name": "군위군 청년 맞춤형 문화 스포츠 프리패스 지원사업",
+   "org": "대구광역시 군위군",
    "cats": [],
    "stages": [
-    "kids",
-    "school"
+    "youth"
    ],
    "updated": "20260808"
   },
   {
-   "id": "BJWLF00000890",
-   "name": "보훈대상자 위문",
-   "org": "경기도 이천시",
+   "id": "BJWLF00006134",
+   "name": "군위군 산모신생아 본인부담금 지원",
+   "org": "대구광역시 군위군",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
-    "senior"
+    "pregnancy"
+   ],
+   "updated": "20260808"
+  },
+  {
+   "id": "BJWLF00003395",
+   "name": "보호아동생활안정지원(결식아동급식지원)",
+   "org": "강원특별자치도 고성군",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school"
    ],
    "updated": "20260808"
   },
@@ -569,6 +866,39 @@
    "updated": "20260806"
   },
   {
+   "id": "BJWLF00005545",
+   "name": "재활용품수집노인 및 장애인지원사업",
+   "org": "충청북도 충주시",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260805"
+  },
+  {
+   "id": "BJWLF00005481",
+   "name": "난청 어르신 보청기 지원 사업",
+   "org": "경상북도 영천시",
+   "cats": [],
+   "stages": [
+    "senior",
+    "disability"
+   ],
+   "updated": "20260805"
+  },
+  {
+   "id": "BJWLF00004922",
+   "name": "학교 밖 청소년 자립지원 및 복지증진 사업",
+   "org": "전북특별자치도 군산시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260805"
+  },
+  {
    "id": "BJWLF00004892",
    "name": "울주군 학대피해아동 아이돌봄서비스 지원",
    "org": "울산광역시 울주군",
@@ -592,16 +922,15 @@
    "updated": "20260805"
   },
   {
-   "id": "BJWLF00001886",
-   "name": "행여자보호지원",
-   "org": "충청남도 아산시",
+   "id": "BJWLF00006715",
+   "name": "청소년 월경통 한방진료사업",
+   "org": "경기도 용인시",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
-    "senior"
+    "school",
+    "disability"
    ],
-   "updated": "20260805"
+   "updated": "20260804"
   },
   {
    "id": "BJWLF00002829",
@@ -613,6 +942,18 @@
     "midlife",
     "senior",
     "disability"
+   ],
+   "updated": "20260804"
+  },
+  {
+   "id": "BJWLF00003418",
+   "name": "괴산군 결혼예식장 이용 장려금 지원",
+   "org": "충청북도 괴산군",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
    ],
    "updated": "20260804"
   },
@@ -640,12 +981,47 @@
    "updated": "20260804"
   },
   {
+   "id": "BJWLF00001872",
+   "name": "어린이집 입학준비금 지원(저소득층 아동 입학준비금 지원)",
+   "org": "강원특별자치도",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school",
+    "disability"
+   ],
+   "updated": "20260804"
+  },
+  {
    "id": "BJWLF00000267",
    "name": "행려자 지원",
    "org": "전남광주통합특별시 화순군",
    "cats": [],
    "stages": [
     "school",
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260804"
+  },
+  {
+   "id": "BJWLF00001615",
+   "name": "장애아동지원",
+   "org": "전남광주통합특별시 남구",
+   "cats": [],
+   "stages": [
+    "school",
+    "disability"
+   ],
+   "updated": "20260804"
+  },
+  {
+   "id": "BJWLF00003413",
+   "name": "결혼이민자 운전면허 취득지원",
+   "org": "강원특별자치도 평창군",
+   "cats": [],
+   "stages": [
     "youth",
     "midlife",
     "senior"
@@ -689,21 +1065,9 @@
    "updated": "20260801"
   },
   {
-   "id": "BJWLF00001560",
-   "name": "심뇌혈관질환 예방 고혈압,당뇨병 합병증 검사",
-   "org": "전남광주통합특별시",
-   "cats": [],
-   "stages": [
-    "youth",
-    "midlife",
-    "senior"
-   ],
-   "updated": "20260731"
-  },
-  {
-   "id": "BJWLF00001298",
-   "name": "중증장애인 사회적응활동 지원",
-   "org": "경기도 성남시",
+   "id": "BJWLF00000359",
+   "name": "취약계층 주거환경개선서비스",
+   "org": "충청북도 영동군",
    "cats": [],
    "stages": [
     "disability"
@@ -711,13 +1075,43 @@
    "updated": "20260731"
   },
   {
-   "id": "BJWLF00001233",
-   "name": "참전명예수당 지급",
-   "org": "대전광역시 유성구",
+   "id": "BJWLF00003724",
+   "name": "결식아동급식지원(연중)",
+   "org": "강원특별자치도 영월군",
    "cats": [],
    "stages": [
-    "midlife",
-    "senior"
+    "school"
+   ],
+   "updated": "20260731"
+  },
+  {
+   "id": "BJWLF00003595",
+   "name": "저소득장애인 보장구 수리지원",
+   "org": "강원특별자치도 양구군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260731"
+  },
+  {
+   "id": "BJWLF00006701",
+   "name": "장애인 수동휠체어 동력보조장치 지원",
+   "org": "서울특별시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260730"
+  },
+  {
+   "id": "BJWLF00006697",
+   "name": "서울 난자동결 시술비용 지원",
+   "org": "서울특별시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife"
    ],
    "updated": "20260730"
   },
@@ -733,26 +1127,41 @@
    "updated": "20260730"
   },
   {
-   "id": "BJWLF00002153",
-   "name": "국가유공자 보훈명예수당 및 사망위로금 지원 사업",
-   "org": "전남광주통합특별시 강진군",
+   "id": "BJWLF00003554",
+   "name": "어린이집 이용 아동(다자녀 아동 등) 입소료 지원",
+   "org": "경기도 구리시",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
-    "senior"
+    "kids"
+   ],
+   "updated": "20260730"
+  },
+  {
+   "id": "BJWLF00005953",
+   "name": "발달장애인 실종예방 스마트기기 지원",
+   "org": "부산광역시 기장군",
+   "cats": [],
+   "stages": [
+    "disability"
    ],
    "updated": "20260729"
   },
   {
-   "id": "BJWLF00000718",
-   "name": "장애인활동지원",
+   "id": "BJWLF00005624",
+   "name": "장애물 없는 생활환경(BF) 수수료 지원",
+   "org": "부산광역시 기장군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260729"
+  },
+  {
+   "id": "BJWLF00003392",
+   "name": "장애인가구 냉난방비",
    "org": "경기도",
    "cats": [],
    "stages": [
-    "school",
-    "youth",
-    "midlife",
     "disability"
    ],
    "updated": "20260729"
@@ -781,15 +1190,83 @@
    "updated": "20260729"
   },
   {
-   "id": "BJWLF00003906",
-   "name": "보훈예우수당 지급",
-   "org": "서울특별시 강동구",
+   "id": "BJWLF00003540",
+   "name": "다문화가족 친정나들이 지원사업",
+   "org": "전남광주통합특별시 신안군",
    "cats": [],
    "stages": [
+    "youth",
     "midlife",
     "senior"
    ],
-   "updated": "20260724"
+   "updated": "20260729"
+  },
+  {
+   "id": "BJWLF00005847",
+   "name": "강진품애(愛) 청년 주거비 지원사업",
+   "org": "전남광주통합특별시 강진군",
+   "cats": [],
+   "stages": [
+    "youth"
+   ],
+   "updated": "20260728"
+  },
+  {
+   "id": "BJWLF00004867",
+   "name": "인플루엔자 예방접종 지원사업",
+   "org": "전남광주통합특별시 강진군",
+   "cats": [],
+   "stages": [
+    "school",
+    "youth",
+    "midlife"
+   ],
+   "updated": "20260728"
+  },
+  {
+   "id": "BJWLF00004543",
+   "name": "정신건강증진사업",
+   "org": "서울특별시 동작구",
+   "cats": [],
+   "stages": [
+    "school",
+    "disability"
+   ],
+   "updated": "20260728"
+  },
+  {
+   "id": "BJWLF00006690",
+   "name": "제주 콘텐츠 청년 일자리 빌드업 지원사업",
+   "org": "제주특별자치도",
+   "cats": [],
+   "stages": [
+    "youth"
+   ],
+   "updated": "20260725"
+  },
+  {
+   "id": "BJWLF00006030",
+   "name": "논산공공산후조리원 설치 및 운영",
+   "org": "충청남도",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school",
+    "youth",
+    "pregnancy",
+    "disability"
+   ],
+   "updated": "20260725"
+  },
+  {
+   "id": "BJWLF00002200",
+   "name": "저소득층 위문",
+   "org": "전남광주통합특별시 담양군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260725"
   },
   {
    "id": "BJWLF00001894",
@@ -803,17 +1280,24 @@
    "updated": "20260724"
   },
   {
-   "id": "BJWLF00001001",
-   "name": "중증 재가 장애인 밑반찬 지원",
+   "id": "BJWLF00006683",
+   "name": "산모신생아 건강관리지원사업(자체)",
+   "org": "전남광주통합특별시 강진군",
+   "cats": [],
+   "stages": [
+    "pregnancy"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00006681",
+   "name": "성동청년 상생학사 운영",
    "org": "서울특별시 성동구",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
-    "senior",
-    "disability"
+    "youth"
    ],
-   "updated": "20260724"
+   "updated": "20260723"
   },
   {
    "id": "BJWLF00006670",
@@ -836,12 +1320,108 @@
    "updated": "20260723"
   },
   {
+   "id": "BJWLF00006653",
+   "name": "서울형 안심 산후조리원 운영 시범사업",
+   "org": "서울특별시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "pregnancy",
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
    "id": "BJWLF00006647",
    "name": "옥천군 영유아 상해보험 지원",
    "org": "충청북도 옥천군",
    "cats": [],
    "stages": [
     "kids"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00006641",
+   "name": "용산구 발달장애인 배상책임보험 가입 지원",
+   "org": "서울특별시 용산구",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00006474",
+   "name": "부산광역시 동래구 입학축하금 지원사업",
+   "org": "부산광역시 동래구",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00006632",
+   "name": "대상포진 예방접종 실시",
+   "org": "전북특별자치도 익산시",
+   "cats": [],
+   "stages": [
+    "senior",
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00005827",
+   "name": "여성문화관 사용료 및 수강료 면제",
+   "org": "전북특별자치도 정읍시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00005822",
+   "name": "다자녀가정 셋째아 고등학생 학자금 지원",
+   "org": "전북특별자치도 정읍시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00005783",
+   "name": "군산시 수도요금 감면",
+   "org": "전북특별자치도 군산시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00005762",
+   "name": "(BIG3) 1천만원+HAPPY I정책",
+   "org": "제주특별자치도",
+   "cats": [],
+   "stages": [
+    "pregnancy",
+    "school",
+    "youth",
+    "midlife"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00005284",
+   "name": "김제시 신장장애인 의료비 지원사업",
+   "org": "전북특별자치도 김제시",
+   "cats": [],
+   "stages": [
+    "disability"
    ],
    "updated": "20260723"
   },
@@ -857,6 +1437,16 @@
    "updated": "20260723"
   },
   {
+   "id": "BJWLF00004694",
+   "name": "저장강박 의심.위기가구 지원사업",
+   "org": "충청남도 아산시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
    "id": "BJWLF00004858",
    "name": "안산시 대학생 본인부담 등록금 반값 지원",
    "org": "경기도 안산시",
@@ -864,6 +1454,17 @@
    "stages": [
     "youth",
     "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00003911",
+   "name": "난치병학생 지원 사업",
+   "org": "제주특별자치도 제주특별자치도교육청",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school"
    ],
    "updated": "20260723"
   },
@@ -878,9 +1479,9 @@
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00001425",
-   "name": "24시간 장애인활동지원 사업",
-   "org": "전남광주통합특별시",
+   "id": "BJWLF00001941",
+   "name": "뇌병변장애인 신변처리용품 구입비 지원",
+   "org": "서울특별시",
    "cats": [],
    "stages": [
     "disability"
@@ -901,24 +1502,23 @@
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00000839",
-   "name": "만61~64세 고혈압당뇨병등록환자 치료비 지원",
-   "org": "경기도 하남시",
+   "id": "BJWLF00002313",
+   "name": "산모신생아 건강관리 지원사업(본인부담금 지원)",
+   "org": "전남광주통합특별시 영광군",
    "cats": [],
    "stages": [
-    "midlife",
-    "senior"
+    "kids",
+    "pregnancy"
    ],
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00003715",
-   "name": "보훈명예수당 및 장제비 지원",
-   "org": "전남광주통합특별시 나주시",
+   "id": "BJWLF00002568",
+   "name": "저소득층 대학생 희망장학금 및 생활장학금 지원",
+   "org": "울산광역시",
    "cats": [],
    "stages": [
-    "midlife",
-    "senior"
+    "youth"
    ],
    "updated": "20260723"
   },
@@ -935,8 +1535,64 @@
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00001051",
-   "name": "국가보훈대상자 사망위로금",
+   "id": "BJWLF00001829",
+   "name": "저소득층 자격취득지원사업",
+   "org": "충청남도 천안시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00003929",
+   "name": "상수도요금감면(기초생활수급자,국가(독립)유공자,어린이집,유치원,사회복지시설,다문화가정,한부모가정,다자녀가정)",
+   "org": "경기도 고양시",
+   "cats": [],
+   "stages": [
+    "kids"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00000560",
+   "name": "통합사례관리가구 주거환경개선사업",
+   "org": "충청남도 청양군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00003047",
+   "name": "독거 및 부부장애인 바우처서비스 지원",
+   "org": "충청북도 옥천군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00003546",
+   "name": "여성장애인 가사도우미 사업",
+   "org": "충청북도 진천군",
+   "cats": [],
+   "stages": [
+    "pregnancy",
+    "youth",
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00001503",
+   "name": "보훈명예수당 지급",
    "org": "경기도 여주시",
    "cats": [],
    "stages": [
@@ -946,9 +1602,29 @@
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00001481",
-   "name": "재가장애인 밑반찬지원사업",
-   "org": "경상북도 문경시",
+   "id": "BJWLF00003808",
+   "name": "장애인활동지원사업 시자체사업",
+   "org": "전남광주통합특별시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00002272",
+   "name": "청소년희망나무프로젝트",
+   "org": "전북특별자치도 익산시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00002147",
+   "name": "장애인인식개선 강사양성 및 자원봉사자 교육",
+   "org": "경상북도 구미시",
    "cats": [],
    "stages": [
     "school",
@@ -956,6 +1632,61 @@
     "midlife",
     "senior",
     "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00002126",
+   "name": "농아인평생교육운영",
+   "org": "경상북도 구미시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00001566",
+   "name": "저소득층건강보험료지원",
+   "org": "경기도 의왕시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00002301",
+   "name": "대일보훈대상 지원",
+   "org": "충청남도",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00002193",
+   "name": "참전유공자 수당 및 장제비",
+   "org": "전남광주통합특별시 나주시",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260723"
+  },
+  {
+   "id": "BJWLF00000195",
+   "name": "보훈단체 및 유공자 지원",
+   "org": "전남광주통합특별시 나주시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
    ],
    "updated": "20260723"
   },
@@ -973,9 +1704,9 @@
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00001871",
-   "name": "부부장애수당",
-   "org": "충청남도 공주시",
+   "id": "BJWLF00001780",
+   "name": "장애인 운전면허 취득지원",
+   "org": "충청남도 천안시",
    "cats": [],
    "stages": [
     "youth",
@@ -986,46 +1717,11 @@
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00000684",
-   "name": "장애인 특별운송사업",
-   "org": "강원특별자치도 태백시",
+   "id": "BJWLF00002008",
+   "name": "보훈대상자 장례비 지원",
+   "org": "충청남도 천안시",
    "cats": [],
    "stages": [
-    "disability"
-   ],
-   "updated": "20260723"
-  },
-  {
-   "id": "BJWLF00001722",
-   "name": "행복충전전문동아리",
-   "org": "전남광주통합특별시 북구",
-   "cats": [],
-   "stages": [
-    "youth",
-    "midlife",
-    "senior"
-   ],
-   "updated": "20260723"
-  },
-  {
-   "id": "BJWLF00003585",
-   "name": "즉시구호사업 (부랑인)",
-   "org": "전북특별자치도 김제시",
-   "cats": [],
-   "stages": [
-    "youth",
-    "midlife",
-    "senior"
-   ],
-   "updated": "20260723"
-  },
-  {
-   "id": "BJWLF00002127",
-   "name": "목포복지재단 운영 보조",
-   "org": "전남광주통합특별시 목포시",
-   "cats": [],
-   "stages": [
-    "school",
     "midlife",
     "senior"
    ],
@@ -1065,39 +1761,12 @@
    "updated": "20260723"
   },
   {
-   "id": "BJWLF00001942",
-   "name": "부부장애수당 지원",
-   "org": "충청남도 보령시",
+   "id": "BJWLF00006610",
+   "name": "공주시 아동급식카드 추가 지원 사업",
+   "org": "충청남도 공주시",
    "cats": [],
    "stages": [
-    "school",
-    "youth",
-    "midlife",
-    "senior",
-    "disability"
-   ],
-   "updated": "20260723"
-  },
-  {
-   "id": "BJWLF00005887",
-   "name": "인천형 중증장애인 맞춤형 복지일자리",
-   "org": "인천광역시",
-   "cats": [],
-   "stages": [
-    "youth",
-    "midlife",
-    "senior",
-    "disability"
-   ],
-   "updated": "20260717"
-  },
-  {
-   "id": "BJWLF00004864",
-   "name": "청년 일자리 근속장려금 지원사업",
-   "org": "강원특별자치도 홍천군",
-   "cats": [],
-   "stages": [
-    "youth"
+    "school"
    ],
    "updated": "20260717"
   },
@@ -1108,6 +1777,27 @@
    "cats": [],
    "stages": [
     "school"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00004186",
+   "name": "고등학생 교복구입비 지원",
+   "org": "부산광역시 사하구",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00003040",
+   "name": "치매 정밀검사비 지원",
+   "org": "충청북도 옥천군",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
    ],
    "updated": "20260717"
   },
@@ -1125,12 +1815,54 @@
    "updated": "20260717"
   },
   {
-   "id": "BJWLF00001671",
-   "name": "결혼이민자 국적취득신청수수료 지원",
-   "org": "부산광역시 기장군",
+   "id": "BJWLF00004268",
+   "name": "저소득 재가장애인 식사배달사업",
+   "org": "충청북도 옥천군",
    "cats": [],
    "stages": [
     "youth",
+    "midlife",
+    "disability"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00000513",
+   "name": "거동불편 중증장애인 구급차 이용지원",
+   "org": "충청북도 옥천군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00002241",
+   "name": "참전유공자 생일축하금",
+   "org": "충청남도 예산군",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00000292",
+   "name": "장애인 신문구독료 지원",
+   "org": "충청북도 증평군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00003809",
+   "name": "참전유공자 명예수당 지원",
+   "org": "대구광역시",
+   "cats": [],
+   "stages": [
     "midlife",
     "senior"
    ],
@@ -1145,6 +1877,48 @@
     "youth",
     "midlife",
     "senior"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00000628",
+   "name": "희망나눔결연사업 시추가",
+   "org": "충청남도 계룡시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00003106",
+   "name": "장애인 전동휠체어, 스쿠터 수리비 지원",
+   "org": "충청북도 증평군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00002240",
+   "name": "참전 및 보훈명예수당 지원",
+   "org": "충청남도 예산군",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260717"
+  },
+  {
+   "id": "BJWLF00002238",
+   "name": "여성장애인출산지원",
+   "org": "충청남도 예산군",
+   "cats": [],
+   "stages": [
+    "pregnancy",
+    "disability"
    ],
    "updated": "20260717"
   },
@@ -1172,6 +1946,17 @@
    "updated": "20260716"
   },
   {
+   "id": "BJWLF00004862",
+   "name": "한부모가정 일가정양립 가사서비스 지원 사업",
+   "org": "경기도 안산시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school"
+   ],
+   "updated": "20260716"
+  },
+  {
    "id": "BJWLF00004704",
    "name": "교통약자 바우처 택시운영",
    "org": "경기도 안산시",
@@ -1182,28 +1967,38 @@
    "updated": "20260716"
   },
   {
-   "id": "BJWLF00000458",
-   "name": "장애인보장구수리지원사업",
-   "org": "전북특별자치도 남원시",
+   "id": "BJWLF00000139",
+   "name": "근로능력평가용 진단서 발급비용 지원",
+   "org": "경상남도 거제시",
    "cats": [],
    "stages": [
-    "school",
     "youth",
-    "midlife",
-    "senior",
-    "disability"
+    "midlife"
    ],
    "updated": "20260716"
   },
   {
-   "id": "BJWLF00002190",
-   "name": "거리노숙인 상담지원",
-   "org": "대구광역시",
+   "id": "BJWLF00000821",
+   "name": "송파구 국가보훈대상자에 대한 보훈수당 지원",
+   "org": "서울특별시 송파구",
    "cats": [],
    "stages": [
     "youth",
     "midlife",
     "senior"
+   ],
+   "updated": "20260716"
+  },
+  {
+   "id": "BJWLF00000312",
+   "name": "중증장애인 부가급여(시자체)",
+   "org": "경상남도 김해시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior",
+    "disability"
    ],
    "updated": "20260716"
   },
@@ -1221,17 +2016,35 @@
    "updated": "20260716"
   },
   {
-   "id": "BJWLF00000865",
-   "name": "보훈대상자 등 지원(3.1절 및 광복절 독립유공자 위문)",
-   "org": "경기도 용인시",
+   "id": "BJWLF00002676",
+   "name": "보훈업무 추진",
+   "org": "부산광역시 수영구",
    "cats": [],
    "stages": [
-    "school",
-    "youth",
     "midlife",
     "senior"
    ],
    "updated": "20260716"
+  },
+  {
+   "id": "BJWLF00002914",
+   "name": "어려운 계층 위문",
+   "org": "경상남도 남해군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260716"
+  },
+  {
+   "id": "BJWLF00003456",
+   "name": "장애인 전동보장구 수리 지원",
+   "org": "경상북도 청도군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260715"
   },
   {
    "id": "BJWLF00006281",
@@ -1244,36 +2057,154 @@
    "updated": "20260714"
   },
   {
-   "id": "BJWLF00005766",
-   "name": "전라남도 난임부부 친환경농산물 꾸러미 지원사업",
-   "org": "전남광주통합특별시",
-   "cats": [],
-   "stages": [
-    "pregnancy",
-    "youth",
-    "midlife"
-   ],
-   "updated": "20260714"
-  },
-  {
-   "id": "BJWLF00004754",
-   "name": "완도군 전 군민 치매조기검진비 지원",
-   "org": "전남광주통합특별시 완도군",
-   "cats": [],
-   "stages": [
-    "senior"
-   ],
-   "updated": "20260714"
-  },
-  {
-   "id": "BJWLF00002227",
-   "name": "장애인 휠체어 보장구 수리비 지원",
-   "org": "서울특별시 강남구",
+   "id": "BJWLF00005982",
+   "name": "장애인신문 보급 사업",
+   "org": "서울특별시 관악구",
    "cats": [],
    "stages": [
     "disability"
    ],
    "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00005928",
+   "name": "냉(冷)큼 달려갑니다! 쿨한 돌봄, 저소득가정 에어컨 청소 사업",
+   "org": "서울특별시 용산구",
+   "cats": [],
+   "stages": [
+    "senior",
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00005877",
+   "name": "저소득 주민 유료방송 시청료 지원",
+   "org": "서울특별시 중구",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00005279",
+   "name": "희귀난치병학생 의료비 지원 사업",
+   "org": "서울특별시 서울특별시교육청",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00004720",
+   "name": "고양시 저소득 미혼 한부모 양육생계비 지원",
+   "org": "경기도 고양시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00003930",
+   "name": "중증장애인활동보조추가지원(구비지원)",
+   "org": "대구광역시 중구",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00001836",
+   "name": "한방난임부부지원사업",
+   "org": "대구광역시",
+   "cats": [],
+   "stages": [
+    "pregnancy",
+    "youth"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00003403",
+   "name": "광주시 장애인휠체어 등 수리 지원",
+   "org": "경기도 광주시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00002526",
+   "name": "보훈명예수당",
+   "org": "경기도 고양시",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00001486",
+   "name": "저소득취약계층 건강보험료지원",
+   "org": "경기도 군포시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00002567",
+   "name": "장애인 콜택시 운영",
+   "org": "울산광역시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00002649",
+   "name": "중구저소득주민국민건강보험료지원",
+   "org": "대구광역시 중구",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260714"
+  },
+  {
+   "id": "BJWLF00005935",
+   "name": "김포시 대상포진 예방접종 지원",
+   "org": "경기도 김포시",
+   "cats": [],
+   "stages": [
+    "senior",
+    "disability"
+   ],
+   "updated": "20260711"
+  },
+  {
+   "id": "BJWLF00002254",
+   "name": "강원특별자치도 육아기본수당 지원사업",
+   "org": "강원특별자치도",
+   "cats": [],
+   "stages": [
+    "pregnancy",
+    "kids",
+    "school"
+   ],
+   "updated": "20260711"
   },
   {
    "id": "BJWLF00002977",
@@ -1284,6 +2215,16 @@
     "midlife",
     "senior",
     "disability"
+   ],
+   "updated": "20260711"
+  },
+  {
+   "id": "BJWLF00004040",
+   "name": "성남시 초등학생 치과주치의사업",
+   "org": "경기도 성남시",
+   "cats": [],
+   "stages": [
+    "school"
    ],
    "updated": "20260711"
   },
@@ -1300,6 +2241,39 @@
    "updated": "20260711"
   },
   {
+   "id": "BJWLF00003416",
+   "name": "방과후 보육료 지원",
+   "org": "충청북도",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school",
+    "disability"
+   ],
+   "updated": "20260711"
+  },
+  {
+   "id": "BJWLF00006556",
+   "name": "365일 24시간 돌봄어린이집",
+   "org": "세종특별자치시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school"
+   ],
+   "updated": "20260710"
+  },
+  {
+   "id": "BJWLF00003671",
+   "name": "장애인보장구 A/S지원센터 운영",
+   "org": "강원특별자치도 동해시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260710"
+  },
+  {
    "id": "BJWLF00003774",
    "name": "저소득주민건강보험료지원",
    "org": "강원특별자치도 동해시",
@@ -1310,6 +2284,62 @@
     "disability"
    ],
    "updated": "20260710"
+  },
+  {
+   "id": "BJWLF00001490",
+   "name": "부랑인 및 행려자 지원",
+   "org": "경기도 의왕시",
+   "cats": [],
+   "stages": [
+    "school",
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260709"
+  },
+  {
+   "id": "BJWLF00001489",
+   "name": "국가유공자 지원",
+   "org": "경기도 의왕시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260709"
+  },
+  {
+   "id": "BJWLF00006540",
+   "name": "저소득장애인가정 안심장비 지원 사업",
+   "org": "전북특별자치도 군산시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00006539",
+   "name": "아이돌봄서비스 본인부담금 지원",
+   "org": "전북특별자치도 군산시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00006525",
+   "name": "초등학부모 10시 출근제 도입 중소기업 지원",
+   "org": "전북특별자치도",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260704"
   },
   {
    "id": "BJWLF00006497",
@@ -1328,6 +2358,16 @@
    "cats": [],
    "stages": [
     "youth"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00006488",
+   "name": "동작형 치매의료비 지원사업",
+   "org": "서울특별시 동작구",
+   "cats": [],
+   "stages": [
+    "senior"
    ],
    "updated": "20260704"
   },
@@ -1354,25 +2394,76 @@
    "updated": "20260704"
   },
   {
-   "id": "BJWLF00000252",
-   "name": "저소득층 여성 위생용품 지원사업",
-   "org": "충청남도 서천군",
+   "id": "BJWLF00004981",
+   "name": "대상포진 예방접종",
+   "org": "전북특별자치도 완주군",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife"
+    "midlife",
+    "senior"
    ],
    "updated": "20260704"
   },
   {
-   "id": "BJWLF00000596",
-   "name": "산모·신생아 건강관리 지원금 지원",
-   "org": "전북특별자치도 부안군",
+   "id": "BJWLF00003895",
+   "name": "저소득층 고등학생 급식비 지원",
+   "org": "충청남도 충청남도교육청",
    "cats": [],
    "stages": [
-    "pregnancy",
+    "school"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00003594",
+   "name": "취약계층 명절위로금 (상품권)지원",
+   "org": "전북특별자치도 임실군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00000843",
+   "name": "저소득층 여성청소년 생리용품 지원사업",
+   "org": "서울특별시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00002530",
+   "name": "저소득 국가유공자 등 지원(설, 추석, 호국보훈의 달)",
+   "org": "부산광역시 동래구",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00001781",
+   "name": "저소득층건강보험료지원",
+   "org": "충청남도 천안시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260704"
+  },
+  {
+   "id": "BJWLF00000695",
+   "name": "여성취(창)업지원사업",
+   "org": "서울특별시 마포구",
+   "cats": [],
+   "stages": [
     "youth",
-    "midlife"
+    "midlife",
+    "senior"
    ],
    "updated": "20260704"
   },
@@ -1388,6 +2479,38 @@
    "updated": "20260704"
   },
   {
+   "id": "BJWLF00006435",
+   "name": "노인 무릎 인공관절 수술비 등 지원 사업",
+   "org": "경상남도 산청군",
+   "cats": [],
+   "stages": [
+    "senior"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00006432",
+   "name": "든든한 동행, 방문 장애인 등록 서비스",
+   "org": "인천광역시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00006412",
+   "name": "취약계층 차열페인트 도장 지원",
+   "org": "서울특별시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
    "id": "BJWLF00006408",
    "name": "이천시 발달장애인 배상책임보험 지원",
    "org": "경기도 이천시",
@@ -1398,9 +2521,9 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00006073",
-   "name": "경기도 청소년복지시설 퇴소청소년 자립정착금 지급",
-   "org": "경기도",
+   "id": "BJWLF00006083",
+   "name": "초중고등학교 입학 및 학습지원비 지원사업",
+   "org": "부산광역시 강서구",
    "cats": [],
    "stages": [
     "school"
@@ -1408,9 +2531,41 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00005981",
-   "name": "가평군 청년 1인가구 월세 지원사업",
-   "org": "경기도 가평군",
+   "id": "BJWLF00006009",
+   "name": "척척세종 생활민원 기동처리반 운영",
+   "org": "세종특별자치시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00005911",
+   "name": "부산광역시 기장군 저소득 중증장애인 교통비 지원",
+   "org": "부산광역시 기장군",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00005772",
+   "name": "저소득 장애인부모 건강검진비 지원",
+   "org": "경상남도",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00005773",
+   "name": "사천시 지역인재 고용장려금 지원 사업",
+   "org": "경상남도 사천시",
    "cats": [],
    "stages": [
     "youth"
@@ -1418,12 +2573,35 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00005463",
-   "name": "인천 I-패스 사업",
-   "org": "인천광역시",
+   "id": "BJWLF00005751",
+   "name": "여주시 청년 창업자 임차료 지원",
+   "org": "경기도 여주시",
    "cats": [],
    "stages": [
     "youth"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00005342",
+   "name": "아동·청소년 부모 빚 대물림 방지 법률지원 사업",
+   "org": "인천광역시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00005273",
+   "name": "발달장애인 등 생필품 지원사업",
+   "org": "경상북도 울진군",
+   "cats": [],
+   "stages": [
+    "school",
+    "youth",
+    "midlife",
+    "disability"
    ],
    "updated": "20260703"
   },
@@ -1438,6 +2616,37 @@
    "updated": "20260703"
   },
   {
+   "id": "BJWLF00005146",
+   "name": "장애인활동지원 경상남도 도 추가지원(장애인도우미지원)",
+   "org": "경상남도",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00005098",
+   "name": "아토피천식 예방관리사업",
+   "org": "경상북도 구미시",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00004987",
+   "name": "학기중 토공휴일 아동급식지원(교육청)",
+   "org": "전남광주통합특별시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260703"
+  },
+  {
    "id": "BJWLF00004832",
    "name": "관외(서울시외)학교 입학생 입학준비금 지원",
    "org": "서울특별시 종로구",
@@ -1448,9 +2657,33 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00002758",
-   "name": "국가보훈대상자 명예수당 지급",
-   "org": "울산광역시 남구",
+   "id": "BJWLF00004360",
+   "name": "산모·신생아 건강관리 지원사업",
+   "org": "서울특별시 용산구",
+   "cats": [],
+   "stages": [
+    "kids",
+    "school",
+    "youth",
+    "midlife",
+    "pregnancy"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00001713",
+   "name": "부산진구 참전명예수당",
+   "org": "부산광역시 부산진구",
+   "cats": [],
+   "stages": [
+    "senior"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00002927",
+   "name": "50세이상 울주군민 대상포진 예방접종 확대지원",
+   "org": "울산광역시 울주군",
    "cats": [],
    "stages": [
     "midlife",
@@ -1459,23 +2692,22 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00002994",
-   "name": "중증장애인 택시요금 할인카드 지원",
-   "org": "경기도 오산시",
+   "id": "BJWLF00004557",
+   "name": "SOS 긴급복지 (인천형 긴급복지)",
+   "org": "인천광역시",
    "cats": [],
    "stages": [
-    "disability"
+    "youth",
+    "midlife"
    ],
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00000772",
-   "name": "구추가 저소득장애인 진단비 및 검사비 지원",
-   "org": "인천광역시 부평구",
+   "id": "BJWLF00001036",
+   "name": "인플루엔자(독감) 무료예방접종 확대",
+   "org": "세종특별자치시",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
     "senior",
     "disability"
    ],
@@ -1496,8 +2728,28 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00000153",
-   "name": "고속도로통행료 할인카드 발급수수료 지원",
+   "id": "BJWLF00000462",
+   "name": "소년소녀가정 및 위탁아동세대 명절제수비",
+   "org": "전남광주통합특별시",
+   "cats": [],
+   "stages": [
+    "youth"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00002422",
+   "name": "장애인보조기구수리센터 운영",
+   "org": "전남광주통합특별시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00000259",
+   "name": "장애인복지카드 배송비 지원",
    "org": "충청북도 음성군",
    "cats": [],
    "stages": [
@@ -1516,9 +2768,19 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00003088",
-   "name": "중증장애인세대 위문(설,추석)",
-   "org": "경상남도 창원시",
+   "id": "BJWLF00003820",
+   "name": "아동급식비 지원(학기중 토공휴일)",
+   "org": "울산광역시 남구",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00003535",
+   "name": "저소득층 명절 위문",
+   "org": "전남광주통합특별시 강진군",
    "cats": [],
    "stages": [
     "disability"
@@ -1538,19 +2800,106 @@
    "updated": "20260703"
   },
   {
-   "id": "BJWLF00006353",
-   "name": "달성 경만이 jump up 인턴 사업",
-   "org": "대구광역시 달성군",
+   "id": "BJWLF00000965",
+   "name": "지역일자리창출지원(동특화사업)",
+   "org": "경기도 안산시",
    "cats": [],
    "stages": [
-    "youth"
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00004593",
+   "name": "장애인 명절위문",
+   "org": "경상남도 밀양시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00000996",
+   "name": "저소득장애인주거환경 개선 사업",
+   "org": "경기도 구리시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00002738",
+   "name": "복지사각지대 제로화 안부확인 요구르트 배달사업",
+   "org": "부산광역시 서구",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00002682",
+   "name": "장애인 생활안정 추가지원(부부장애수당,중증장애인가구 월동비)",
+   "org": "세종특별자치시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00004343",
+   "name": "장애인활동지원 울산시 시비추가지원사업",
+   "org": "울산광역시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00002578",
+   "name": "이동목욕서비스지원사업",
+   "org": "대구광역시 중구",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260703"
+  },
+  {
+   "id": "BJWLF00003874",
+   "name": "버스공영제 추진 무료이용 교통카드 지원",
+   "org": "강원특별자치도 정선군",
+   "cats": [],
+   "stages": [
+    "disability"
    ],
    "updated": "20260630"
   },
   {
-   "id": "BJWLF00000982",
-   "name": "노숙인(부랑인)보호관리",
-   "org": "서울특별시 성동구",
+   "id": "BJWLF00000112",
+   "name": "출산진료비 지원",
+   "org": "경상남도 밀양시",
+   "cats": [],
+   "stages": [
+    "pregnancy",
+    "youth",
+    "midlife"
+   ],
+   "updated": "20260630"
+  },
+  {
+   "id": "BJWLF00000390",
+   "name": "일사천리 생활복지 기동반 운영",
+   "org": "충청남도 홍성군",
    "cats": [],
    "stages": [
     "school",
@@ -1561,16 +2910,110 @@
    "updated": "20260630"
   },
   {
-   "id": "BJWLF00003881",
-   "name": "홍익일자리사업추진",
-   "org": "경기도 오산시",
+   "id": "BJWLF00002445",
+   "name": "국가유공자위문",
+   "org": "서울특별시 성동구",
+   "cats": [],
+   "stages": [
+    "midlife",
+    "senior"
+   ],
+   "updated": "20260630"
+  },
+  {
+   "id": "BJWLF00004365",
+   "name": "저소득 중증장애인 장애수당 추가 지원",
+   "org": "울산광역시",
    "cats": [],
    "stages": [
     "youth",
     "midlife",
-    "senior"
+    "senior",
+    "disability"
    ],
-   "updated": "20260627"
+   "updated": "20260620"
+  },
+  {
+   "id": "BJWLF00003701",
+   "name": "장애인직업재활시설 근로장애인 생산장려금 지원",
+   "org": "강원특별자치도 인제군",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20260619"
+  },
+  {
+   "id": "BJWLF00002210",
+   "name": "저소득 장애인 생일축하 사업",
+   "org": "서울특별시 서대문구",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20260619"
+  },
+  {
+   "id": "BJWLF00005092",
+   "name": "손자녀가족돌보미 지원사업",
+   "org": "전남광주통합특별시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20250820"
+  },
+  {
+   "id": "BJWLF00005381",
+   "name": "교통약자 특별교통수단 운영 사무",
+   "org": "제주특별자치도",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20250807"
+  },
+  {
+   "id": "BJWLF00005700",
+   "name": "공공산후조리원 이용료 지원 사업",
+   "org": "강원특별자치도 양양군",
+   "cats": [],
+   "stages": [
+    "kids",
+    "youth",
+    "midlife",
+    "pregnancy",
+    "disability"
+   ],
+   "updated": "20250806"
+  },
+  {
+   "id": "BJWLF00005876",
+   "name": "여성장애인 가사도우미 사업",
+   "org": "충청북도 진천군",
+   "cats": [],
+   "stages": [
+    "pregnancy",
+    "youth",
+    "midlife",
+    "senior",
+    "disability"
+   ],
+   "updated": "20250805"
+  },
+  {
+   "id": "BJWLF00000324",
+   "name": "행려자 귀가차량비 지원",
+   "org": "충청북도 청주시",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife"
+   ],
+   "updated": "20250802"
   },
   {
    "id": "BJWLF00000581",
@@ -1586,6 +3029,26 @@
    "updated": "20250801"
   },
   {
+   "id": "BJWLF00003431",
+   "name": "저소득층 맞춤형 복지서비스 제공",
+   "org": "충청북도 청주시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20250725"
+  },
+  {
+   "id": "BJWLF00005137",
+   "name": "예천군 입학준비금 지원",
+   "org": "경상북도 예천군",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20250709"
+  },
+  {
    "id": "BJWLF00002835",
    "name": "국가유공자 유족명예수당 지원",
    "org": "울산광역시 동구",
@@ -1597,16 +3060,44 @@
    "updated": "20250701"
   },
   {
-   "id": "BJWLF00005402",
-   "name": "여성농업인 행복이용권",
-   "org": "제주특별자치도",
+   "id": "BJWLF00005985",
+   "name": "강북구 저소득 주민 국민건강보험료 등 지원",
+   "org": "서울특별시 강북구",
    "cats": [],
    "stages": [
-    "youth",
-    "midlife",
-    "senior"
+    "disability"
    ],
    "updated": "20250614"
+  },
+  {
+   "id": "BJWLF00002592",
+   "name": "다자녀가구 수도요금 감면 조건 완화",
+   "org": "경기도 동두천시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20250611"
+  },
+  {
+   "id": "BJWLF00004239",
+   "name": "아동급식확대지원(방학중)",
+   "org": "충청북도 청주시",
+   "cats": [],
+   "stages": [
+    "school"
+   ],
+   "updated": "20250611"
+  },
+  {
+   "id": "BJWLF00002032",
+   "name": "장애인활동지원 시 추가지원",
+   "org": "경상남도 창원시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20250606"
   },
   {
    "id": "BJWLF00002206",
@@ -1620,9 +3111,31 @@
    "updated": "20250603"
   },
   {
-   "id": "BJWLF00001770",
-   "name": "(자체사업)저소득 주민생활안정자금 지원",
-   "org": "경상북도 경산시",
+   "id": "BJWLF00002087",
+   "name": "보훈대상자 설 명절위문금",
+   "org": "서울특별시 은평구",
+   "cats": [],
+   "stages": [
+    "youth",
+    "midlife",
+    "senior"
+   ],
+   "updated": "20250603"
+  },
+  {
+   "id": "BJWLF00001247",
+   "name": "행복한 목수 주택 리모델링 사업",
+   "org": "전남광주통합특별시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20250531"
+  },
+  {
+   "id": "BJWLF00001229",
+   "name": "여성농업인 행복바우처 지원",
+   "org": "대전광역시",
    "cats": [],
    "stages": [
     "youth",
@@ -1632,30 +3145,26 @@
    "updated": "20240604"
   },
   {
-   "id": "BJWLF00005407",
-   "name": "장애인가족지원센터 긴급돌봄서비스",
-   "org": "서울특별시",
+   "id": "BJWLF00004142",
+   "name": "장애인 복지신문 보급",
+   "org": "경기도 -",
    "cats": [],
    "stages": [
-    "school",
-    "youth",
-    "midlife",
     "disability"
    ],
-   "updated": "20240110"
-  },
-  {
-   "id": "BJWLF00001228",
-   "name": "6월 호국보훈의 달 국가유공자 위문",
-   "org": "대전광역시",
-   "cats": [],
-   "stages": [
-    "youth",
-    "midlife",
-    "senior"
-   ],
-   "updated": "20230614"
+   "updated": "20220801"
   }
  ],
- "removed": []
+ "removed": [
+  {
+   "id": "BJWLF00004613",
+   "name": "저장강박 의심 위기가구 지원사업",
+   "org": "전북특별자치도 군산시",
+   "cats": [],
+   "stages": [
+    "disability"
+   ],
+   "updated": "20250726"
+  }
+ ]
 }
