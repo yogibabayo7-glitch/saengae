@@ -59,8 +59,11 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
                 out.append('<div class="hr"><i></i><b>◆</b><i></i></div>'); plain.append('[구분선]')
             elif l.startswith('[') and l.endswith(']'):
                 out.append(f'<p class="todo">{esc(l)}</p>'); plain.append(l)
+            elif l.startswith('👉 쉽게 말하면'):
+                rest = l[len('👉 쉽게 말하면'):].lstrip(':： ')
+                out.append(f'<p class="easy"><span style="background-color:#fff1c2"><b style="color:#de5353">👉 쉽게 말하면:</b> {esc(rest)}</span></p>'); plain.append(l)
             else:
-                cls = ' class="h"' if re.match(r'^[^\w\s\[]', l) and len(l) < 40 else ''
+                cls = ' class="h"' if re.match(r'^[^\w\s\[·▶①②③④⑤"\'(]', l) and len(l) < 40 else ''
                 out.append(f'<p{cls}>{esc(l)}</p>'); plain.append(l)
         parts.append('\n'.join(out))
         plain.append('')
@@ -79,7 +82,7 @@ for p in posts:
 <details class="notes"><summary>📋 올리기 전 확인할 것</summary><ul>{notes}</ul></details>
 <div class="label">제목 <button data-copy="{html.escape(p['title'])}">제목 복사</button></div>
 <h1>{html.escape(p['title'])}</h1>
-<div class="label">본문 <button data-copy="{html.escape(p['plain'])}">본문 글자 전체 복사</button></div>
+<div class="label">본문 <span><button class="rich">본문 색 포함 복사</button> <button data-copy="{html.escape(p['plain'])}">본문 글자 전체 복사</button></span></div>
 <article>{p['body']}</article>
 <div class="label">태그 <button data-copy="{html.escape(p['tags'])}">태그 복사</button></div>
 <p class="tags">{html.escape(p['tags'])}</p>
@@ -106,6 +109,7 @@ h1{{font-size:22px;line-height:1.4;margin:0;background:#fff;padding:16px;border-
 article{{background:#fff;border-radius:12px;padding:18px 16px}}
 article p{{font-size:16px;line-height:1.75;margin:0 0 10px}}
 article p.h{{font-size:19px;font-weight:900;color:var(--c);margin-top:6px}}
+article p.easy{{background:#fff8e1;border-left:5px solid #de5353;border-radius:6px;padding:10px 12px}}
 article p.todo{{background:#fff0f0;color:#c92a2a;border:1px dashed #f08c8c;border-radius:8px;padding:6px 10px;font-size:14px}}
 figure{{margin:6px 0 4px}}figure img{{width:100%;display:block;border-radius:10px;box-shadow:0 2px 10px #0002}}
 .cap{{background:#f1f3f5;border-radius:8px;padding:8px 10px;margin:0 0 14px;font-size:13px;color:#555;display:flex;gap:8px;align-items:flex-start}}
@@ -126,6 +130,15 @@ function show(){{let k=location.hash.slice(1);if(!keys.includes(k))k=keys[0];
 document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===k));
 document.querySelectorAll('.tab').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+k));scrollTo(0,0);}}
 addEventListener('hashchange',show);show();
+document.addEventListener('click',async e=>{{const r=e.target.closest('button.rich');if(!r)return;
+const t=document.getElementById('t');const a=r.closest('section').querySelector('article').cloneNode(true);
+a.querySelectorAll('figure').forEach((f,i)=>{{const q=document.createElement('p');q.textContent=i?'[표 이미지 '+i+']':'[대표 이미지]';f.replaceWith(q)}});
+a.querySelectorAll('.cap').forEach(c=>{{const q=document.createElement('p');q.textContent='[사진 설명] '+c.querySelector('p').textContent;c.replaceWith(q)}});
+a.querySelectorAll('.hr').forEach(h=>{{const q=document.createElement('p');q.textContent='[구분선]';h.replaceWith(q)}});
+const cc=getComputedStyle(r.closest('section')).getPropertyValue('--c').trim()||'#de5353';
+a.querySelectorAll('p.h').forEach(h=>{{h.innerHTML='<b style="font-size:19px;color:'+cc+'">'+h.innerHTML+'</b>'}});
+const htmlStr=a.innerHTML;try{{await navigator.clipboard.write([new ClipboardItem({{'text/html':new Blob([htmlStr],{{type:'text/html'}}),'text/plain':new Blob([a.innerText],{{type:'text/plain'}})}})]);t.textContent='색 포함 복사! 네이버에서 Ctrl+V(Shift 없이)';}}
+catch(_){{t.textContent='복사가 안 돼요. 글자 전체 복사를 써 주세요';}}t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}});
 document.addEventListener('click',async e=>{{const b=e.target.closest('button[data-copy]');if(!b)return;
 const t=document.getElementById('t');try{{await navigator.clipboard.writeText(b.dataset.copy);t.textContent='복사했어요';}}
 catch(_){{t.textContent='복사가 안 돼요. 글자를 길게 눌러 복사해 주세요';}}t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1500);}});
