@@ -66,7 +66,7 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
                 rest = l[len('👉 쉽게 말하면'):].lstrip(':： ')
                 _c = COLOR.get(theme, '#de5353')
                 # 사장님 11/25: 글 길이에 따라 막대가 아래로 같이 늘어나게 → 2칸 표(왼쪽 좁은 칸 = 글 색 막대, 오른쪽 = 연노랑 글)
-                out.append(f'<table class="easy" style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{_c};border:0"></td><td style="padding:10px 14px;background-color:#fff8e1;border:0;font-size:16px;line-height:1.75"><b style="color:{_c}">👉 쉽게 말하면:</b> {esc(rest)}</td></tr></table>'); plain.append(l)
+                out.append(f'<table class="easy" style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{_c};border:0"></td><td style="padding:6px 12px;border:0;font-size:16px;line-height:1.75"><b style="color:{_c}">👉 쉽게 말하면:</b> <span style="background-color:#fff1c2">{esc(rest)}</span></td></tr></table>'); plain.append(l)
             else:
                 cls = ' class="h"' if re.match(r'^[^\w\s\[·▶①②③④⑤"\'(]', l) and len(l) < 40 else ''
                 out.append(f'<p{cls}>{esc(l)}</p>'); plain.append(l)
