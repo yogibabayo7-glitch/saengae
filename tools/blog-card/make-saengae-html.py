@@ -92,7 +92,7 @@ for block in re.split(r'\n\s*\n', body):
             continue  # 사진 밑 설명은 프로그램이 사진 설명 칸에 넣음
         elif l.startswith('👉 쉽게 말하면'):
             rest = l[len('👉 쉽게 말하면'):].lstrip(':： ')
-            outp.append(f'<p {P}><span style="background-color:#fff1c2"><b style="color:{theme}">👉 쉽게 말하면:</b> {esc(rest)}</span></p>')
+            outp.append(f'<p {P}><b style="color:{theme}">▍</b><span style="background-color:#fff1c2"><b style="color:{theme}">👉 쉽게 말하면:</b> {esc(rest)}</span></p>')
         elif linkify(l):
             outp.append(linkify(l))
         elif l == '[구분선]':

@@ -64,7 +64,8 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
                 out.append(f'<p class="todo">{esc(l)}</p>'); plain.append(l)
             elif l.startswith('👉 쉽게 말하면'):
                 rest = l[len('👉 쉽게 말하면'):].lstrip(':： ')
-                out.append(f'<p class="easy"><span style="background-color:#fff1c2"><b style="color:#de5353">👉 쉽게 말하면:</b> {esc(rest)}</span></p>'); plain.append(l)
+                _c = COLOR.get(theme, '#de5353')
+                out.append(f'<p class="easy"><b style="color:{_c}">▍</b><span style="background-color:#fff1c2"><b style="color:{_c}">👉 쉽게 말하면:</b> {esc(rest)}</span></p>'); plain.append('▍' + l)
             else:
                 cls = ' class="h"' if re.match(r'^[^\w\s\[·▶①②③④⑤"\'(]', l) and len(l) < 40 else ''
                 out.append(f'<p{cls}>{esc(l)}</p>'); plain.append(l)
@@ -112,7 +113,7 @@ h1{{font-size:22px;line-height:1.4;margin:0;background:#fff;padding:16px;border-
 article{{background:#fff;border-radius:12px;padding:18px 16px}}
 article p{{font-size:16px;line-height:1.75;margin:0 0 10px}}
 article p.h{{font-size:19px;font-weight:900;color:var(--c);margin-top:6px}}
-article p.easy{{background:#fff8e1;border-left:5px solid #de5353;border-radius:6px;padding:10px 12px}}
+article p.easy{{margin:4px 0 14px}}
 article p.todo{{background:#fff0f0;color:#c92a2a;border:1px dashed #f08c8c;border-radius:8px;padding:6px 10px;font-size:14px}}
 figure{{margin:6px 0 4px}}figure img{{width:100%;display:block;border-radius:10px;box-shadow:0 2px 10px #0002}}
 .cap{{background:#f1f3f5;border-radius:8px;padding:8px 10px;margin:0 0 14px;font-size:13px;color:#555;display:flex;gap:8px;align-items:flex-start}}
