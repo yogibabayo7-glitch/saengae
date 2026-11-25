@@ -20,7 +20,7 @@ tags = raw.split('━ 태그')[1].split('\n', 1)[1].strip() if '━ 태그' in r
 import os
 _notes = raw.split('━ 제목 ━')[0]
 _reg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'blog', '글주소-연결줄.json')
-if not re.search(r'^■ 마감글', _notes, re.M) and os.path.exists(_reg_path):
+if not re.search(r'^■ (마감글|카테고리: 정책 속보)', _notes, re.M) and os.path.exists(_reg_path):
     reg = json.load(open(_reg_path, encoding='utf-8'))
     cat = re.search(r'■ 카테고리:\s*([^→/\n]+)', _notes)
     line = None
@@ -50,9 +50,9 @@ if not re.search(r'^■ 마감글', _notes, re.M) and os.path.exists(_reg_path):
     print('📚 이어서 보기 →', tgt['d']+' '+tgt['t'] if tgt else '(줄 끝: 소개 글만)', '| 줄:', line)
 
 # ── 빠뜨림 막기 (사장님 11/25): '📚 함께 보면 좋은 글'에 '▶ 이어서 보기' 줄이 없으면 원고를 만들지 않는다.
-#    마감글만 예외 — 원고 맨 위 ■ 메모에 '마감글'이라고 적혀 있으면 통과.
+#    마감글·정책 속보는 예외 — 원고 맨 위 ■ 메모에 '마감글' 또는 '카테고리: 정책 속보'가 있으면 통과(속보는 연결 줄에 안 넣음, 11/25 규칙).
 #    주소 자리([... 주소 ...])가 남아 있으면 경고: 발행기록 시트 '네이버 글 주소' 칸에서 찾아 넣을 것.
-if not re.search(r'^■ 마감글', raw.split('━ 제목 ━')[0], re.M):
+if not re.search(r'^■ (마감글|카테고리: 정책 속보)', raw.split('━ 제목 ━')[0], re.M):
     if '📚 함께 보면 좋은 글' not in body or '▶ 이어서 보기' not in body:
         sys.exit("❌ 멈춤: '📚 함께 보면 좋은 글'에 '▶ 이어서 보기' 줄이 없어요. 발행기록 시트 J칸(이어서 보기)과 I칸(글 주소)을 보고 넣으세요.")
     if re.search(r'\[[^\]]*주소[^\]]*\]', body):
