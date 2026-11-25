@@ -66,7 +66,7 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
                 rest = l[len('👉 쉽게 말하면'):].lstrip(':： ')
                 _c = COLOR.get(theme, '#de5353')
                 # 사장님 11/25: 글 길이에 따라 막대가 아래로 같이 늘어나게 → 2칸 표(왼쪽 좁은 칸 = 글 색 막대, 오른쪽 = 연노랑 글)
-                out.append(f'<table class="easy" style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{_c};border:0"></td><td style="padding:6px 12px;border:0;font-size:16px;line-height:1.75"><b style="color:{_c}">👉 쉽게 말하면:</b> <span style="background-color:#fff1c2">{esc(rest)}</span></td></tr></table>'); plain.append(l)
+                out.append(f'<table class="easy" style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{_c};border:0"></td><td style="padding:6px 12px;border:0;font-size:16px;line-height:1.75"><b style="color:{_c}">👉 쉽게 말하면:</b> {esc(rest)}</td></tr></table>'); plain.append(l)
             else:
                 cls = ' class="h"' if re.match(r'^[^\w\s\[·▶①②③④⑤"\'(]', l) and len(l) < 40 else ''
                 out.append(f'<p{cls}>{esc(l)}</p>'); plain.append(l)
@@ -142,10 +142,10 @@ a.querySelectorAll('.cap').forEach(c=>{{const q=document.createElement('p');q.te
 a.querySelectorAll('.hr').forEach(h=>{{const q=document.createElement('p');q.textContent='[구분선]';h.replaceWith(q)}});
 const cc=getComputedStyle(r.closest('section')).getPropertyValue('--c').trim()||'#de5353';
 a.querySelectorAll('p.h').forEach(h=>{{h.innerHTML='<b style="font-size:19px;color:'+cc+'">'+h.innerHTML+'</b>'}});
-a.querySelectorAll('p').forEach(q=>{{q.removeAttribute('class');q.setAttribute('style','color:#333333;background-color:transparent;font-size:16px;line-height:1.9;text-align:left')}});
+a.querySelectorAll('p').forEach(q=>{{q.removeAttribute('class');q.setAttribute('style','color:#333333;font-size:16px;line-height:1.9;text-align:left')}});
 a.querySelectorAll('td').forEach(td=>{{if(!td.style.backgroundColor)td.style.color='#333333'}});
 a.querySelectorAll('table').forEach(t=>t.removeAttribute('class'));
-const htmlStr='<div style="color:#333333;background-color:transparent">'+a.innerHTML+'</div>';try{{await navigator.clipboard.write([new ClipboardItem({{'text/html':new Blob([htmlStr],{{type:'text/html'}}),'text/plain':new Blob([a.innerText],{{type:'text/plain'}})}})]);t.textContent='색 포함 복사! 네이버에서 Ctrl+V(Shift 없이)';}}
+const htmlStr='<div style="color:#333333">'+a.innerHTML+'</div>';try{{await navigator.clipboard.write([new ClipboardItem({{'text/html':new Blob([htmlStr],{{type:'text/html'}}),'text/plain':new Blob([a.innerText],{{type:'text/plain'}})}})]);t.textContent='색 포함 복사! 네이버에서 Ctrl+V(Shift 없이)';}}
 catch(_){{t.textContent='복사가 안 돼요. 글자 전체 복사를 써 주세요';}}t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}});
 document.addEventListener('click',async e=>{{const b=e.target.closest('button[data-copy]');if(!b)return;
 const t=document.getElementById('t');try{{await navigator.clipboard.writeText(b.dataset.copy);t.textContent='복사했어요';}}
