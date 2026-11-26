@@ -60,9 +60,14 @@ if not re.search(r'^■ (마감글|카테고리: 정책 속보)', raw.split('━
 
 P = 'style="color:#333333;font-size:16px;line-height:1.9;margin:0 0 12px;text-align:left"'
 E = '<p><br></p>'
+HID = re.compile(r'⟦([^|⟧]+)\|(https?://[^⟧\s]+)⟧')  # 글자에 숨긴 링크: ⟦보이는 글자|주소⟧ (사장님 11/26)
 def esc(t):
-    t = html.escape(t)
-    return re.sub(r'(https?://[^\s<]+)', r'<a href="\1">\1</a>', t)
+    links = []
+    def keep(m):
+        links.append((m.group(1), m.group(2))); return f'\x00{len(links)-1}\x00'
+    t = html.escape(HID.sub(keep, t))
+    t = re.sub(r'(https?://[^\s<]+)', r'<a href="\1">\1</a>', t)
+    return re.sub(r'\x00(\d+)\x00', lambda m: f'<a href="{html.escape(links[int(m.group(1))][1])}" style="color:{theme};text-decoration:underline">{html.escape(links[int(m.group(1))][0])}</a>', t)
 
 # '▶ 제목' 다음 줄이 주소 하나뿐이면 → 제목 글자 속에 링크를 숨김(붙여 넣어도 링크 카드 안 뜨게, 사장님 11/18·11/25)
 # (사장님 11/25 01:07) 숨긴 링크 말고: '▶ 제목' 줄 그대로 두고 그 밑 줄에 주소를 링크로 보이게 → 합치지 않음

@@ -11,9 +11,15 @@ COLOR = {'money': '#d9480f', 'digital': '#1c5fd4', 'job': '#4a8c12', 'guide': '#
 shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(os.path.join(OUT, 'img'))
 
+HID = re.compile(r'⟦([^|⟧]+)\|(https?://[^⟧\s]+)⟧')  # 글자에 숨긴 링크: ⟦보이는 글자|주소⟧ (사장님 11/26 '글씨에 링크')
 def esc(s):
-    s = html.escape(s)
-    return re.sub(r'(https?://[^\s<]+)', r'<a href="\1" target="_blank">\1</a>', s)
+    links = []
+    def keep(m):
+        links.append((m.group(1), m.group(2))); return f'\x00{len(links)-1}\x00'
+    s = html.escape(HID.sub(keep, s))
+    s = re.sub(r'(https?://[^\s<]+)', r'<a href="\1" target="_blank">\1</a>', s)
+    return re.sub(r'\x00(\d+)\x00', lambda m: f'<a href="{html.escape(links[int(m.group(1))][1])}" target="_blank">{html.escape(links[int(m.group(1))][0])}</a>', s)
+def unhide(s): return HID.sub(lambda m: m.group(1), s)
 
 # 사장님(11/25): 원고 페이지에는 '이번 주(월~일, 한국 시간) 쓸 글'만 보이게 — 지난 주 글·다음 주 글은 숨김(많아지면 찾기 힘듦).
 #   원고 파일은 저장소에 그대로 둠(매일 점검이 씀). SHOW_FROM/SHOW_ALSO 로 지난 글을 다시 넣지 않는다.
@@ -66,10 +72,10 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
                 rest = l[len('👉 쉽게 말하면'):].lstrip(':： ')
                 _c = COLOR.get(theme, '#de5353')
                 # 사장님 11/25: 글 길이에 따라 막대가 아래로 같이 늘어나게 → 2칸 표(왼쪽 좁은 칸 = 글 색 막대, 오른쪽 = 연노랑 글)
-                out.append(f'<table class="easy" style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{_c};border:0"></td><td style="padding:6px 12px;border:0;font-size:16px;line-height:1.75"><b style="color:{_c}">👉 쉽게 말하면:</b> {esc(rest)}</td></tr></table>'); plain.append(l)
+                out.append(f'<table class="easy" style="width:100%;border-collapse:collapse;border:0;margin:4px 0 14px"><tr><td style="width:6px;padding:0;background-color:{_c};border:0"></td><td style="padding:6px 12px;border:0;font-size:16px;line-height:1.75"><b style="color:{_c}">👉 쉽게 말하면:</b> {esc(rest)}</td></tr></table>'); plain.append(unhide(l))
             else:
                 cls = ' class="h"' if re.match(r'^[^\w\s\[·▶①②③④⑤"\'(]', l) and len(l) < 40 else ''
-                out.append(f'<p{cls}>{esc(l)}</p>'); plain.append(l)
+                out.append(f'<p{cls}>{esc(l)}</p>'); plain.append(unhide(l))
         parts.append('\n'.join(out))
         plain.append('')
     d = datetime.date.fromisoformat(date)
