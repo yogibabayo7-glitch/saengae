@@ -11,6 +11,19 @@ COLOR = {'money': '#d9480f', 'digital': '#1c5fd4', 'job': '#4a8c12', 'guide': '#
 shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(os.path.join(OUT, 'img'))
 
+# 사장님(11/26): 카드 사진 밑에 '1줄에 3칸' 링크 표 — 원고 txt에서 [링크표] 다음 줄들을 '번호 이름|카드|주소(또는 안내 글)'로 씀
+def linktable(rows, color, blank=''):
+    cells = []
+    for r in rows:
+        a, b, c = (r.split('|') + ['', ''])[:3]
+        go = (f'<a href="{html.escape(c.strip())}"{blank} style="color:{color};font-weight:bold;text-decoration:underline">👉 여기를 누르세요</a>'
+              if c.strip().startswith('http') else f'<span style="color:#666666;font-size:13px">{html.escape(c.strip())}</span>')
+        cells.append(f'<td style="width:33%;border:1px solid #dddddd;padding:10px 6px;text-align:center;vertical-align:top;font-size:15px;line-height:1.5">'
+                     f'<b style="color:{color}">{html.escape(a.strip())}</b><br><span style="color:#333333">{html.escape(b.strip())}</span><br>{go}</td>')
+    while len(cells) % 3: cells.append('<td style="width:33%;border:1px solid #dddddd"></td>')
+    trs = ''.join('<tr>' + ''.join(cells[i:i+3]) + '</tr>' for i in range(0, len(cells), 3))
+    return f'<table style="width:100%;border-collapse:collapse;margin:6px 0 16px">{trs}</table>'
+
 HID = re.compile(r'⟦([^|⟧]+)\|(https?://[^⟧\s]+)⟧')  # 글자에 숨긴 링크: ⟦보이는 글자|주소⟧ (사장님 11/26 '글씨에 링크')
 def esc(s):
     links = []
@@ -55,6 +68,11 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
         lines = block.strip().splitlines()
         if not lines: continue
         out = []
+        if lines[0].strip() == '[링크표]':
+            rows = [x.strip() for x in lines[1:] if x.strip()]
+            parts.append(linktable(rows, COLOR.get(theme, '#de5353'), ' target="_blank"'))
+            plain.extend(f"{r.split('|')[0].strip()} {r.split('|')[1].strip()}" for r in rows); plain.append('')
+            continue
         for l in lines:
             l = l.strip()
             if l == '[대표 이미지]' and card:

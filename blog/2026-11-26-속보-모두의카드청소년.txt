@@ -3,7 +3,7 @@
 ■ 속보 주제 고르는 법(사장님 11/18): 글마다 고름. 지원금·연금·수당·세금·일자리 소식 = 비즈니스·경제, 보이스피싱·스미싱·디지털 소식 = IT·컴퓨터. 사회·정치·'주제 선택 안 함'은 쓰지 않음.
 ■ 색(사장님 11/18 확정): 속보는 항상 빨강 theme "news"(#DE5353) — 카드·표·원고 모두. 원문 카드 다시 그린 사진(표1)만 원문 색(초록)을 따름.
 ■ 대표 이미지: 2026-11-26-속보-모두의카드청소년-카드.png — 우리 속보 카드 형식(사장님 11/25). 사진 폴더 01 = 대표, 02 = 국토부 카드(다시 그림), 03 = 한눈에 표
-■ 사진(사장님 11/25·11/26 지시): 국토부 카드 '12월부터 청소년도 모두의카드 이용 가능!'을 다시 그림 — 학생 캐릭터는 빼고, 카드는 사장님이 보내 주신 카드 실물 사진 12장(테두리 다듬고 가로 카드는 세로로, 이즐은 노란 카드만)을 3줄×4칸 표로. 링크는 사진이 아니라 아래 글자 '👉 여기를 누르세요'에 숨김. 다듬는 도구 tools/blog-card/prep-modoo-cards-1126.py 위에 '자료: 국토교통부', 아래 출처. 도구: tools/blog-card/make-modoo-1126.cjs
+■ 사진(사장님 11/25·11/26 지시): 국토부 카드 '12월부터 청소년도 모두의카드 이용 가능!'을 다시 그림 — 학생 캐릭터는 빼고, 카드는 사장님이 보내 주신 카드 실물 사진 12장(테두리 다듬고 가로 카드는 세로로, 이즐은 노란 카드만)을 3줄×4칸 표로. 링크는 사진이 아니라 사진 밑 '1줄에 3칸' 링크 표([링크표])의 '👉 여기를 누르세요' 글자에 숨김(사장님 11/26). 다듬는 도구 tools/blog-card/prep-modoo-cards-1126.py 위에 '자료: 국토교통부', 아래 출처. 도구: tools/blog-card/make-modoo-1126.cjs
 ■ 붙여넣기: 원고 페이지 '본문 색 포함 복사' → 네이버에서 Ctrl+V / [구분선] 자리는 가운데 마름모 선
 ■ 연결: 정책 속보는 '이어서 보기' 줄에 넣지 않음(11/25 규칙) → 블로그 소개 글 링크만.
 ■ 근거(12.1 시작·만 13~18세·선불/체크·정률형 20%·정액형 6만 2000원(수도권, 일반형)·12개 카드사·카카오뱅크/케이뱅크 18세만·앱/누리집 등록·2027.2 신상품 3종·문의처): 정책브리핑 ''모두의카드' 12월부터 13세~18세 청소년도 이용 가능'(국토교통부, 2026.11.25) https://www.korea.kr/news/policyNewsView.do?newsId=148976499 — 작업 공간에서는 다른 기사로 열려 사장님이 보내 주신 기사 인쇄본(PDF 3쪽)으로 확인
@@ -36,19 +36,21 @@
 
 👉 쉽게 말하면: 신용카드가 아니라 선불·체크카드라서 아이 이름으로 만들 수 있어요. 만 13세부터는 농협·신한·우리·이즐·코레일·토스뱅크·티머니·하나·IBK기업은행·KB 카드 중에서 고르면 되고, 카카오뱅크·케이뱅크 카드는 만 18세부터 만들 수 있어요. 평소 거래하는 은행 체크카드로 고르면 부모님이 용돈 넣어 주기도 편해요.
 
-사진 속 번호와 같아요. 원하는 카드 옆 '여기를 누르세요'를 누르면 그 카드사 안내 페이지로 바로 가요.
-① 농협 · NH 모두의카드 체크 👉 ⟦여기를 누르세요|https://card.nonghyup.com/servlet/IpCc2021R.act?CD_WRS_SQNO=90010470⟧
-② 신한 · 모두의카드 체크 👉 ⟦여기를 누르세요|https://www.shinhancard.com/pconts/html/card/apply/check/1225544_2206.html⟧
-③ 우리 · 모두의카드 체크 👉 ⟦여기를 누르세요|https://m.wooricard.com/dcmw/yh1/crd/crd01/M1CRD101S02.do?recomNo=102865⟧
-④ 이즐 · 이즐 모두의카드(실물/모바일) 👉 ⟦여기를 누르세요|https://www.myezl.com/ezl/sub/kpass.do⟧
-⑤ 코레일 · 모바일 Rail+(모바일) 👉 ⟦여기를 누르세요|https://railplus.korail.com/⟧
-⑥ 토스뱅크 · 체크카드(K-패스) 👉 ⟦여기를 누르세요|https://www.tossbank.com/card/k-pass⟧
-⑦ 티머니 · 모두의카드(실물/모바일) 👉 ⟦여기를 누르세요|https://www.tmoney.co.kr/aeb/cmnctn/news/readNewsView.dev?bdSeqNo=4170⟧
-⑧ 하나 · 모두의카드 체크카드 👉 ⟦여기를 누르세요|https://m.hanacard.co.kr/MKCDCM1000M.web?CD_PD_SEQ=17034⟧
-⑨ IBK기업은행 · K-패스(체크) 👉 가까운 IBK기업은행 지점이나 i-ONE Bank 앱에서 물어보세요
-⑩ KB · 모두의카드 체크 👉 ⟦여기를 누르세요|https://card.kbcard.com/CRD/DVIEW/HCAMCXPRICAC0076?mainCC=a&cooperationcode=09322⟧
-⑪ 카카오뱅크 · The 체크카드 with 모두의 카드 (18세부터) 👉 ⟦여기를 누르세요|https://www.kakaobank.com/products/thecheckcard⟧
-⑫ 케이뱅크 · ONE 체크카드(K-패스) (18세부터) 👉 ⟦여기를 누르세요|https://www.kbanknow.com/web/product/card/one-card⟧
+사진 속 번호와 같아요. 원하는 카드 칸의 '👉 여기를 누르세요'를 누르면 그 카드사 안내 페이지로 바로 가요.
+
+[링크표]
+① 농협|NH 모두의카드 체크|https://card.nonghyup.com/servlet/IpCc2021R.act?CD_WRS_SQNO=90010470
+② 신한|모두의카드 체크|https://www.shinhancard.com/pconts/html/card/apply/check/1225544_2206.html
+③ 우리|모두의카드 체크|https://m.wooricard.com/dcmw/yh1/crd/crd01/M1CRD101S02.do?recomNo=102865
+④ 이즐|이즐 모두의카드|https://www.myezl.com/ezl/sub/kpass.do
+⑤ 코레일|모바일 Rail+|https://railplus.korail.com/
+⑥ 토스뱅크|체크카드(K-패스)|https://www.tossbank.com/card/k-pass
+⑦ 티머니|모두의카드|https://www.tmoney.co.kr/aeb/cmnctn/news/readNewsView.dev?bdSeqNo=4170
+⑧ 하나|모두의카드 체크카드|https://m.hanacard.co.kr/MKCDCM1000M.web?CD_PD_SEQ=17034
+⑨ IBK기업은행|K-패스(체크)|지점·i-ONE Bank 앱 문의
+⑩ KB|모두의카드 체크|https://card.kbcard.com/CRD/DVIEW/HCAMCXPRICAC0076?mainCC=a&cooperationcode=09322
+⑪ 카카오뱅크|The 체크카드 with 모두의 카드(18세부터)|https://www.kakaobank.com/products/thecheckcard
+⑫ 케이뱅크|ONE 체크카드(K-패스)(18세부터)|https://www.kbanknow.com/web/product/card/one-card
 
 💰 얼마나 돌려받나, 어떻게 시작하나
 

@@ -58,6 +58,19 @@ if not re.search(r'^■ (마감글|카테고리: 정책 속보)', raw.split('━
     if re.search(r'\[[^\]]*주소[^\]]*\]', body):
         print("⚠ 경고: 아직 채우지 못한 글 주소 자리가 있어요 → 발행기록 시트 I칸 확인 / 없으면 사장님께 그 글 주소를 여쭤보기")
 
+# 사장님(11/26): 카드 사진 밑에 '1줄에 3칸' 링크 표 — 원고 txt에서 [링크표] 다음 줄들을 '번호 이름|카드|주소(또는 안내 글)'로 씀
+def linktable(rows, color, blank=''):
+    cells = []
+    for r in rows:
+        a, b, c = (r.split('|') + ['', ''])[:3]
+        go = (f'<a href="{html.escape(c.strip())}"{blank} style="color:{color};font-weight:bold;text-decoration:underline">👉 여기를 누르세요</a>'
+              if c.strip().startswith('http') else f'<span style="color:#666666;font-size:13px">{html.escape(c.strip())}</span>')
+        cells.append(f'<td style="width:33%;border:1px solid #dddddd;padding:10px 6px;text-align:center;vertical-align:top;font-size:15px;line-height:1.5">'
+                     f'<b style="color:{color}">{html.escape(a.strip())}</b><br><span style="color:#333333">{html.escape(b.strip())}</span><br>{go}</td>')
+    while len(cells) % 3: cells.append('<td style="width:33%;border:1px solid #dddddd"></td>')
+    trs = ''.join('<tr>' + ''.join(cells[i:i+3]) + '</tr>' for i in range(0, len(cells), 3))
+    return f'<table style="width:100%;border-collapse:collapse;margin:6px 0 16px">{trs}</table>'
+
 P = 'style="color:#333333;font-size:16px;line-height:1.9;margin:0 0 12px;text-align:left"'
 E = '<p><br></p>'
 HID = re.compile(r'⟦([^|⟧]+)\|(https?://[^⟧\s]+)⟧')  # 글자에 숨긴 링크: ⟦보이는 글자|주소⟧ (사장님 11/26)
@@ -85,6 +98,8 @@ for block in re.split(r'\n\s*\n', body):
         outp += [E, f'<p {P}><b style="font-size:18px;color:{theme}">✅ 한눈에 정리</b></p>']
         outp += [f'<p {P}>{esc(l)}</p>' for l in lines[1:]]
         continue
+    if lines[0] == '[링크표]':
+        outp.append(linktable(lines[1:], theme)); continue
     for l in lines:
         if l == '[대표 이미지]':
             outp.append(f'<p>[ 사진 넣는 자리 · {names["대표"]} ]</p>')
