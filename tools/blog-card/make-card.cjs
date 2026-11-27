@@ -2,7 +2,7 @@
 // card.json: {theme:"guide|money|digital|job|news(속보)", badge, title:["줄1","*강조*줄2"], sub, chips:[["월","지원금·혜택"],...]}
 const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
 const c=JSON.parse(fs.readFileSync(process.argv[2]));const out=process.argv[3];
-const T={guide:['#e6faf3','#a9e8d4','#0f8a6c'],money:['#fff6e3','#ffd98a','#d9480f'],digital:['#e8f1ff','#a9c8ff','#1c5fd4'],job:['#f0fae3','#c3e79a','#4a8c12'],news:['#fff4f4','#ffcaca','#de5353']}[c.theme||'guide'];
+const TM={guide:['#e6faf3','#a9e8d4','#0f8a6c'],money:['#fff6e3','#ffd98a','#d9480f'],digital:['#e8f1ff','#a9c8ff','#1c5fd4'],job:['#f0fae3','#c3e79a','#4a8c12'],news:['#fff4f4','#ffcaca','#de5353'],purple:['#f3f0ff','#d0bfff','#6741d9'],pink:['#fff0f6','#fcc2d7','#c2255c']};TM.mon=TM.money;TM.tue=TM.purple;TM.wed=TM.digital;TM.thu=TM.pink;TM.fri=TM.job;/* 요일색 11/27: 월 다홍·화 보라·수 파랑·목 분홍·금 녹색 */const T=TM[c.theme||'guide'];
 const logo='data:image/png;base64,'+fs.readFileSync(path.join(__dirname,'logo.png')).toString('base64');
 const hl=s=>s.replace(/\*(.+?)\*/g,`<span class="hl">$1</span>`);
 const chips=(c.chips||[]).map(([d,t])=>`<div class="chip"><b>${d}</b>${t}</div>`).join('');

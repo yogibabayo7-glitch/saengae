@@ -7,7 +7,8 @@
 import sys, re, json, html
 
 src, names, out = sys.argv[1], json.load(open(sys.argv[2], encoding='utf-8')), sys.argv[3]
-COLOR = {'money': '#D9480F', 'digital': '#1C5FD4', 'job': '#4A8C12', 'news': '#DE5353'}
+COLOR = {'money': '#D9480F', 'purple': '#6741D9', 'digital': '#1C5FD4', 'pink': '#C2255C', 'job': '#4A8C12', 'news': '#DE5353'}
+# 요일색 (사장님 11/27 '날짜별로 색깔을 다 달리'): 월 다홍 money · 화 보라 purple · 수 파랑 digital · 목 분홍 pink · 금 녹색 job
 theme = COLOR[names.get('theme', 'money')]
 raw = open(src, encoding='utf-8').read()
 title = raw.split('━ 제목 ━')[1].split('━ 본문 ━')[0].strip('━ \n')
@@ -32,7 +33,10 @@ if not re.search(r'^■ (마감글|카테고리: 정책 속보)', _notes, re.M) 
     # 이 글이 이미 연결 줄에 올라 있으면 그 줄을 쓰고, 줄에서 이 글 바로 뒤(더 예전) 글부터 찾음
     own = next((k for k, v in reg['posts'].items() if v['t'] == title), None)
     seq = reg['lines'].get(line, [])
-    if own:
+    # 사장님 11/27: '연결은 그 카테고리 안에서만' — 다른 카테고리 줄로 넘어가지 않음
+    if own and own in seq:
+        seq = seq[seq.index(own)+1:]
+    elif own and not line:
         for ln, ks in reg['lines'].items():
             if own in ks: line, seq = ln, ks[ks.index(own)+1:]; break
     tgt = None
@@ -40,20 +44,21 @@ if not re.search(r'^■ (마감글|카테고리: 정책 속보)', _notes, re.M) 
         pst = reg['posts'][key]
         if pst['u'] and pst['t'] != title:
             tgt = pst; break
+    first_in_cat = tgt is None   # 카테고리 첫 글이면 이어 볼 글이 아직 없음 → 소개 글만
     sec = '📚 함께 보면 좋은 글\n\n'
     if tgt: sec += f"▶ 이어서 보기: {tgt['t']}\n{tgt['u']}\n\n"
-    sec += f"▶ 생애혜택 안내소는 이런 블로그예요 (월 지원금 · 수 디지털 · 금 재취업)\n{reg['intro']['u']}\n"
+    sec += f"▶ 생애혜택 안내소는 이런 블로그예요 (나이별 정부 혜택, 평일 매일)\n{reg['intro']['u']}\n"
     if '📚 함께 보면 좋은 글' in body:
         body = re.sub(r'📚 함께 보면 좋은 글.*?(?=\n\[구분선\]|\Z)', lambda _m: sec.rstrip('\n'), body, count=1, flags=re.S)
     else:
         body = body.rstrip() + '\n\n[구분선]\n\n' + sec
-    print('📚 이어서 보기 →', tgt['d']+' '+tgt['t'] if tgt else '(줄 끝: 소개 글만)', '| 줄:', line)
+    print('📚 이어서 보기 →', tgt['d']+' '+tgt['t'] if tgt else '(카테고리 첫 글·줄 끝: 소개 글만)', '| 줄:', line)
 
 # ── 빠뜨림 막기 (사장님 11/25): '📚 함께 보면 좋은 글'에 '▶ 이어서 보기' 줄이 없으면 원고를 만들지 않는다.
 #    마감글·정책 속보는 예외 — 원고 맨 위 ■ 메모에 '마감글' 또는 '카테고리: 정책 속보'가 있으면 통과(속보는 연결 줄에 안 넣음, 11/25 규칙).
 #    주소 자리([... 주소 ...])가 남아 있으면 경고: 발행기록 시트 '네이버 글 주소' 칸에서 찾아 넣을 것.
 if not re.search(r'^■ (마감글|카테고리: 정책 속보)', raw.split('━ 제목 ━')[0], re.M):
-    if '📚 함께 보면 좋은 글' not in body or '▶ 이어서 보기' not in body:
+    if '📚 함께 보면 좋은 글' not in body or ('▶ 이어서 보기' not in body and not globals().get('first_in_cat')):
         sys.exit("❌ 멈춤: '📚 함께 보면 좋은 글'에 '▶ 이어서 보기' 줄이 없어요. 발행기록 시트 J칸(이어서 보기)과 I칸(글 주소)을 보고 넣으세요.")
     if re.search(r'\[[^\]]*주소[^\]]*\]', body):
         print("⚠ 경고: 아직 채우지 못한 글 주소 자리가 있어요 → 발행기록 시트 I칸 확인 / 없으면 사장님께 그 글 주소를 여쭤보기")

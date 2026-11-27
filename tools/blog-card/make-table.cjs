@@ -3,7 +3,7 @@
 // 폭 1080px, 높이는 내용만큼. *글자* = 테마 색 굵게.
 const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
 const c=JSON.parse(fs.readFileSync(process.argv[2]));const outDir=process.argv[3]||'.';
-const T={guide:['#e6faf3','#a9e8d4','#0f8a6c'],money:['#fff6e3','#ffd98a','#d9480f'],digital:['#e8f1ff','#a9c8ff','#1c5fd4'],job:['#f0fae3','#c3e79a','#4a8c12'],news:['#fff4f4','#ffcaca','#de5353']}[c.theme||'guide'];
+const TM={guide:['#e6faf3','#a9e8d4','#0f8a6c'],money:['#fff6e3','#ffd98a','#d9480f'],digital:['#e8f1ff','#a9c8ff','#1c5fd4'],job:['#f0fae3','#c3e79a','#4a8c12'],news:['#fff4f4','#ffcaca','#de5353'],purple:['#f3f0ff','#d0bfff','#6741d9'],pink:['#fff0f6','#fcc2d7','#c2255c']};TM.mon=TM.money;TM.tue=TM.purple;TM.wed=TM.digital;TM.thu=TM.pink;TM.fri=TM.job;/* 요일색 11/27: 월 다홍·화 보라·수 파랑·목 분홍·금 녹색 */const T=TM[c.theme||'guide'];
 const hl=s=>String(s).replace(/\*(.+?)\*/g,`<b class="hl">$1</b>`);
 const page=t=>`<html><head><style>
 *{margin:0;box-sizing:border-box}body{font-family:'Noto Sans CJK KR',sans-serif;background:#fff;word-break:keep-all}
