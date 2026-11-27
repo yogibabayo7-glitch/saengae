@@ -7,8 +7,8 @@
 import sys, re, json, html
 
 src, names, out = sys.argv[1], json.load(open(sys.argv[2], encoding='utf-8')), sys.argv[3]
-COLOR = {'money': '#D9480F', 'purple': '#6741D9', 'digital': '#1C5FD4', 'pink': '#C2255C', 'job': '#4A8C12', 'news': '#DE5353'}
-# 요일색 (사장님 11/27 '날짜별로 색깔을 다 달리'): 월 다홍 money · 화 보라 purple · 수 파랑 digital · 목 분홍 pink · 금 녹색 job
+COLOR = {'money': '#D9480F', 'purple': '#6741D9', 'digital': '#1C5FD4', 'pink': '#C2255C', 'cyan': '#0C8599', 'job': '#4A8C12', 'news': '#DE5353'}
+# 카테고리색 (사장님 11/27 15:33): 어르신·중장년은 쓰던 색 그대로(money 다홍·digital 파랑·job 녹색) / 청년 purple 보라 · 임신·자녀 pink 분홍 · 장애인 cyan 청록
 theme = COLOR[names.get('theme', 'money')]
 raw = open(src, encoding='utf-8').read()
 title = raw.split('━ 제목 ━')[1].split('━ 본문 ━')[0].strip('━ \n')
