@@ -179,6 +179,34 @@ catch(_){{t.textContent='복사가 안 돼요. 크롬·엣지로 이 파일을 �
 document.addEventListener('click',async e=>{{const b=e.target.closest('button[data-copy]');if(!b)return;
 const t=document.getElementById('t');try{{await navigator.clipboard.writeText(b.dataset.copy);t.textContent='복사했어요';}}
 catch(_){{t.textContent='복사가 안 돼요. 글자를 길게 눌러 복사해 주세요';}}t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1500);}});
-</script></body></html>'''
+</script>
+<script>
+/* 사장님 11/27 16:55 '복사가 전혀 안 돼' → 버튼 복사가 막힌 화면(미리보기 창 등)에서도 되게:
+   글마다 '네이버 붙여넣기용 상자'를 보여 주고, 버튼을 누르면 그 상자를 선택해 복사. 복사가 막혀도 선택된 채로 남아 Ctrl+C만 누르면 됨. */
+function cleanBody(sec){{const a=sec.querySelector('article').cloneNode(true);
+a.querySelectorAll('figure').forEach((f,i)=>{{const q=document.createElement('p');q.textContent=i?'[사진 '+String(i+1).padStart(2,'0')+' 넣기]':'[사진 01 넣기 · 대표 사진]';f.replaceWith(q)}});
+a.querySelectorAll('.cap').forEach(c=>{{const q=document.createElement('p');q.textContent=c.querySelector('p').textContent;q.setAttribute('data-cap','1');c.replaceWith(q)}});
+a.querySelectorAll('.hr').forEach(h=>{{const q=document.createElement('p');q.textContent='[구분선]';h.replaceWith(q)}});
+const cc=getComputedStyle(sec).getPropertyValue('--c').trim()||'#de5353';
+a.querySelectorAll('p.h').forEach(h=>{{h.innerHTML='<b style="font-size:19px;color:'+cc+'">'+h.innerHTML+'</b>'}});
+a.querySelectorAll('p').forEach(q=>{{const cap=q.hasAttribute('data-cap');q.removeAttribute('class');q.removeAttribute('data-cap');q.setAttribute('style',cap?'color:#888888;font-size:14px;line-height:1.7;text-align:left':'color:#333333;font-size:16px;line-height:1.9;text-align:left')}});
+a.querySelectorAll('td').forEach(td=>{{if(!td.style.backgroundColor)td.style.color='#333333'}});
+a.querySelectorAll('table').forEach(t=>t.removeAttribute('class'));return a.innerHTML}}
+function pick(el){{const s=getSelection();s.removeAllRanges();const r=document.createRange();r.selectNodeContents(el);s.addRange(r);let ok=false;try{{ok=document.execCommand('copy')}}catch(_){{}}return ok}}
+function say(m){{const t=document.getElementById('t');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3500)}}
+document.querySelectorAll('section').forEach(sec=>{{const box=document.createElement('div');box.className='pastebox';box.contentEditable='true';box.spellcheck=false;box.innerHTML='<div style="color:#333333">'+cleanBody(sec)+'</div>';
+const lab=document.createElement('div');lab.className='label';lab.innerHTML='📋 네이버 붙여넣기용 본문 <span style="font-weight:400;font-size:13px;color:#666">(안 되면: 이 상자 안을 한 번 클릭 → Ctrl+A → Ctrl+C)</span>';
+const art=sec.querySelector('article');art.after(lab);lab.after(box);box.addEventListener('keydown',e=>{{if(!(e.ctrlKey||e.metaKey))e.preventDefault()}})}});
+document.addEventListener('click',e=>{{const r=e.target.closest('button.rich');if(!r)return;e.stopImmediatePropagation();e.preventDefault();
+const box=r.closest('section').querySelector('.pastebox');box.scrollIntoView({{block:'center'}});
+if(pick(box))say('✅ 본문 복사됨 → 네이버 본문에 Ctrl+V (Shift 없이)');else say('👉 본문이 선택됐어요. 지금 Ctrl+C 누르고 네이버에 Ctrl+V');}},true);
+document.addEventListener('click',e=>{{const b=e.target.closest('button[data-copy]');if(!b)return;e.stopImmediatePropagation();e.preventDefault();
+const sec=b.closest('section');let el=null;const tx=b.textContent;
+if(tx.includes('제목'))el=sec.querySelector('h1');else if(tx.includes('태그'))el=sec.querySelector('.tags');else if(b.closest('.cap'))el=b.closest('.cap').querySelector('p');
+if(el&&pick(el)){{say('✅ 복사됨 → 네이버에 Ctrl+V');return}}
+if(el){{pick(el);say('👉 선택됐어요. 지금 Ctrl+C');return}}
+navigator.clipboard.writeText(b.dataset.copy).then(()=>say('✅ 복사됨'),()=>say('복사가 막혀 있어요. 글자를 드래그해서 Ctrl+C'));}},true);
+</script>
+<style>.pastebox{{background:#fff;border:2px dashed var(--c);border-radius:10px;padding:18px 20px;margin:6px 0 24px;max-height:520px;overflow:auto;outline:none}}.pastebox p{{margin:0 0 10px}}</style></body></html>'''
 open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(page)
 print('ok', len(posts), 'posts →', OUT)
