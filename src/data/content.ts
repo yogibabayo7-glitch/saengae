@@ -1,7 +1,7 @@
 // 생애혜택 안내소 — 화면에 보이는 내용 (사이트 index.html 2026-10-29 자료 확인본을 그대로 옮김)
 // 금액·조건을 고칠 때는 이 파일만 고치면 돼요. 분기 점검(1·4·7·10월) 때 CHECKED_AT도 바꿔 주세요.
 
-export const CHECKED_AT = '2026. 11. 23.';
+export const CHECKED_AT = '2026. 11. 28.';
 
 export type StageKey = 'pregnancy' | 'kids' | 'school' | 'youth' | 'midlife' | 'senior' | 'disability' | 'everyone';
 
@@ -63,6 +63,7 @@ export const NOTICES: Notice[] = [
   { tag: '올해 마지막', title: '근로·자녀장려금 기한 후 신청 12월 1일까지', text: '5월에 놓쳤다면 12월 1일까지 홈택스에서 신청하면 95%를 받아요.', go: [L('홈택스에서 신청', 'https://www.hometax.go.kr')] },
   { tag: '올해 마지막', title: '에너지바우처 12월 31일 신청 마감', text: '기초수급 가구 중 노인·영유아·장애인 등이 있으면 연 29.5만~70.1만 원 난방비 지원.', go: [L('복지로에서 신청', 'https://www.bokjiro.go.kr')], alert: 'energy-voucher' },
   { tag: '진행 중', title: '전세사기 피해자 보증금 최소 1/3 보장', text: '11월 13일부터 시행. 돌려받은 돈이 보증금 1/3에 못 미치면 나라가 차액을 지원해요.', go: [D('d-jeonse-victim', '피해 지원 자세히'), L('국토부 안내', 'https://www.korea.kr/news/policyNewsView.do?newsId=148973064')] },
+  { tag: '진행 중', title: '2027년 노인일자리 참여자 모집 11월 27일~12월 24일', text: '역대 최대 118만 개. 공익활동은 65세 이상 기초연금 받는 분, 역량활용은 65세 이상(일부 60세 이상), 공동체사업단은 60세 이상. 주민센터·노인복지관·시니어클럽 또는 노인일자리 여기에서 신청(문의 1544-3388). 시·군·구마다 기간이 다를 수 있어요.', go: [L('노인일자리 여기', 'https://www.seniorro.or.kr')] },
   { tag: '진행 중', title: '2027학년도 1학기 국가장학금 1차 신청 11월 24일~1월 7일', text: '11월 24일 09시부터 2027년 1월 7일 18시까지 신청해요. 서류 제출·가구원 동의는 1월 14일 18시까지. 고3(입학 예정자)·대학생 모두 한국장학재단에서 신청하세요.', go: [L('한국장학재단', 'https://www.kosaf.go.kr'), D('d-scholarship', '구간별 금액')] },
   { tag: '진행 중', title: '65세 이상 독감·코로나19 무료 접종', text: '연령별로 시작됐어요. 코로나19는 2027년 6월 30일까지 맞을 수 있어요.', go: [L('예방접종도우미', 'https://nip.kdca.go.kr'), D('d-vaccine', '자세히')] },
 ];
@@ -849,7 +850,7 @@ const ALL_STAGES: Stage[] = [
         amount: '월 29만 원',
         amountNote: '월 30시간',
         who: '65세 이상 기초연금 수급자',
-        bullets: ['2026년 노인일자리 115만 개 · 공익활동 70만 개', '역량활용형·공동체사업단 등 다른 유형도 있어요'],
+        bullets: ['2027년 참여자 모집 2026.11.27~12.24 (시·군·구마다 다를 수 있어요)', '2027년 노인일자리 118만 개 · 역량활용(65세 이상, 일부 60세)·공동체사업단(60세 이상)도 있어요'],
         actions: [L('노인일자리 여기', 'https://www.seniorro.or.kr'), L('정책브리핑', 'https://www.korea.kr/news/policyNewsView.do?newsId=148958935', false)],
       },
     ],
