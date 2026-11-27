@@ -169,8 +169,13 @@ a.querySelectorAll('p.h').forEach(h=>{{h.innerHTML='<b style="font-size:19px;col
 a.querySelectorAll('p').forEach(q=>{{q.removeAttribute('class');q.setAttribute('style','color:#333333;font-size:16px;line-height:1.9;text-align:left')}});
 a.querySelectorAll('td').forEach(td=>{{if(!td.style.backgroundColor)td.style.color='#333333'}});
 a.querySelectorAll('table').forEach(t=>t.removeAttribute('class'));
-const htmlStr='<div style="color:#333333">'+a.innerHTML+'</div>';try{{await navigator.clipboard.write([new ClipboardItem({{'text/html':new Blob([htmlStr],{{type:'text/html'}}),'text/plain':new Blob([a.innerText],{{type:'text/plain'}})}})]);t.textContent='색 포함 복사! 네이버에서 Ctrl+V(Shift 없이)';}}
-catch(_){{t.textContent='복사가 안 돼요. 글자 전체 복사를 써 주세요';}}t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}});
+// 사장님 11/27: 붙여 넣으면 '소스(태그 글자)'로 들어감 → 화면에 그려진 글을 선택해서 복사(브라우저 기본 복사)하는 방식으로 바꿈
+const box=document.createElement('div');box.style.cssText='position:fixed;left:-9999px;top:0;width:700px;background:#fff;color:#333333';box.innerHTML='<div style="color:#333333">'+a.innerHTML+'</div>';document.body.appendChild(box);
+const sel=getSelection();sel.removeAllRanges();const rg=document.createRange();rg.selectNodeContents(box);sel.addRange(rg);
+let ok=false;try{{ok=document.execCommand('copy')}}catch(_){{}}sel.removeAllRanges();box.remove();
+if(ok){{t.textContent='색 포함 복사! 네이버 본문에 Ctrl+V (Shift 누르지 말기)';}}
+else{{try{{const htmlStr='<div style="color:#333333">'+a.innerHTML+'</div>';await navigator.clipboard.write([new ClipboardItem({{'text/html':new Blob([htmlStr],{{type:'text/html'}}),'text/plain':new Blob([a.innerText],{{type:'text/plain'}})}})]);t.textContent='색 포함 복사! 네이버 본문에 Ctrl+V';}}
+catch(_){{t.textContent='복사가 안 돼요. 크롬·엣지로 이 파일을 열어 주세요';}}}}t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}});
 document.addEventListener('click',async e=>{{const b=e.target.closest('button[data-copy]');if(!b)return;
 const t=document.getElementById('t');try{{await navigator.clipboard.writeText(b.dataset.copy);t.textContent='복사했어요';}}
 catch(_){{t.textContent='복사가 안 돼요. 글자를 길게 눌러 복사해 주세요';}}t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1500);}});
