@@ -6,7 +6,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 BLOG = os.path.join(ROOT, 'blog')
 OUT = os.path.join(ROOT, 'viewer')
 DAYS = '월화수목금토일'
-COLOR = {'money': '#d9480f', 'digital': '#1c5fd4', 'job': '#4a8c12', 'guide': '#0f8a6c', 'news': '#de5353'}
+COLOR = {'money': '#d9480f', 'digital': '#1c5fd4', 'job': '#4a8c12', 'guide': '#0f8a6c', 'news': '#de5353', 'purple': '#6741d9', 'pink': '#c2255c', 'cyan': '#0c8599'}
 
 shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(os.path.join(OUT, 'img'))
