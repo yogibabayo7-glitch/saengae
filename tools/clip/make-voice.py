@@ -1,12 +1,12 @@
 # 사용법: python3 tools/clip/make-voice.py 장면.json 출력.mp3 출력.srt [injoon|m1]
-# 생애혜택 클립 무료 남자 목소리 (사장님 11/23 확정: '인준'·'수퍼톤 M1' 두 가지)
+# 생애혜택 클립 무료 남자 목소리 — 사장님 11/27 확정: 기본은 수퍼톤 M1 (m1). 인준(injoon)은 예비
 #  - injoon: 마이크로소프트 ko-KR-InJoonNeural (edge-tts, 무료, speech.platform.bing.com 허용 필요)
 #  - m1: 수퍼톤 Supertonic-3 M1 (무료 공개 모델, 처음 한 번 huggingface.co 에서 받음)
 # 장면.json 의 lines = [[자막, 나레이션], ...] — 나레이션 숫자는 한글로. 문장 사이 0.45초 쉼, 음량 -14 LUFS.
 import json, sys, os, subprocess, tempfile
 import numpy as np, soundfile as sf
 cfg = json.load(open(sys.argv[1], encoding='utf-8')); out_mp3, out_srt = sys.argv[2], sys.argv[3]
-voice = sys.argv[4] if len(sys.argv) > 4 else 'injoon'
+voice = sys.argv[4] if len(sys.argv) > 4 else 'm1'  # 11/27 기본 M1
 lines = [ln for sc in cfg['scenes'] for ln in sc['lines']]
 tmp = tempfile.mkdtemp(); SR = 44100
 def to_arr(path):
