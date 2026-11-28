@@ -60,7 +60,13 @@ for path in sorted(glob.glob(os.path.join(BLOG, '20??-??-??-*.txt'))):
         theme = json.load(open(os.path.join(BLOG, cardjson), encoding='utf-8')).get('theme', 'guide')
 
     def img(f):
-        shutil.copy(os.path.join(BLOG, f), os.path.join(OUT, 'img', f))
+        src = os.path.join(BLOG, f)
+        if not os.path.exists(src):  # 사진이 주제 폴더(blog/…-사진/ 등) 안에만 있을 때
+            for d in sorted(os.listdir(BLOG)):
+                cand = os.path.join(BLOG, d, f)
+                if os.path.isdir(os.path.join(BLOG, d)) and os.path.exists(cand):
+                    src = cand; break
+        shutil.copy(src, os.path.join(OUT, 'img', f))
         return f'<figure><img src="img/{html.escape(f)}" alt="{html.escape(f)}" loading="lazy"></figure>'
 
     parts, plain = [], []
